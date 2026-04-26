@@ -4,1137 +4,384 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
 <meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="SS JARVIS">
-<meta name="theme-color" content="#0A0A08">
-<link rel="manifest" id="manifest-placeholder">
+<meta name="theme-color" content="#040408">
 <title>SS JARVIS</title>
 <style>
-@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;700;900&family=Share+Tech+Mono&display=swap');
-
-:root {
-  --gold: #C9A84C;
-  --gold-dim: #7A5F20;
-  --gold-bright: #F0C040;
-  --bg: #040408;
-  --bg2: #0A0A12;
-  --bg3: #0F0F1A;
-  --text: #C8D8E8;
-  --text-dim: #506070;
-  --red: #FF3040;
-  --green: #00FF80;
-  --blue: #0080FF;
-  --border: rgba(0,128,255,0.15);
-  --gold-border: rgba(201,168,76,0.2);
-}
-
-* { margin:0; padding:0; box-sizing:border-box; }
-
-body {
-  background: var(--bg);
-  color: var(--text);
-  font-family: 'Share Tech Mono', monospace;
-  min-height: 100vh;
-  overflow-x: hidden;
-  user-select: none;
-}
-
-/* Animated background grid */
-body::before {
-  content:'';
-  position:fixed;
-  inset:0;
-  background-image: 
-    linear-gradient(rgba(0,128,255,0.03) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(0,128,255,0.03) 1px, transparent 1px);
-  background-size: 40px 40px;
-  pointer-events:none;
-  z-index:0;
-}
-
-body::after {
-  content:'';
-  position:fixed;
-  inset:0;
-  background: 
-    radial-gradient(ellipse at 50% 0%, rgba(0,128,255,0.08) 0%, transparent 60%),
-    radial-gradient(ellipse at 50% 100%, rgba(201,168,76,0.05) 0%, transparent 60%);
-  pointer-events:none;
-  z-index:0;
-}
-
-.app { position:relative; z-index:1; max-width:640px; margin:0 auto; padding:16px; }
-
-/* ── HEADER ── */
-.header {
-  padding: 20px 0 16px;
-  border-bottom: 1px solid var(--border);
-  margin-bottom: 16px;
-  position: relative;
-}
-
-.jarvis-logo {
-  font-family: 'Orbitron', sans-serif;
-  font-size: 1.8rem;
-  font-weight: 900;
-  letter-spacing: 0.3em;
-  color: var(--gold);
-  text-shadow: 0 0 20px rgba(201,168,76,0.4), 0 0 60px rgba(201,168,76,0.1);
-}
-
-.jarvis-sub {
-  font-size: 0.6rem;
-  color: var(--text-dim);
-  letter-spacing: 0.4em;
-  text-transform: uppercase;
-  margin-top: 4px;
-}
-
-.status-row {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  margin-top: 12px;
-  flex-wrap: wrap;
-}
-
-.status-dot {
-  width: 8px; height: 8px;
-  border-radius: 50%;
-  background: var(--green);
-  box-shadow: 0 0 8px var(--green);
-  animation: pulse-dot 2s infinite;
-}
-
-@keyframes pulse-dot {
-  0%,100% { opacity:1; transform:scale(1); }
-  50% { opacity:0.5; transform:scale(0.8); }
-}
-
-.status-text {
-  font-size: 0.65rem;
-  color: var(--green);
-  letter-spacing: 0.15em;
-}
-
-.clock {
-  font-family: 'Orbitron', sans-serif;
-  font-size: 0.75rem;
-  color: var(--gold);
-  letter-spacing: 0.1em;
-  margin-left: auto;
-}
-
-/* ── SETUP PANEL ── */
-.setup-panel {
-  background: var(--bg2);
-  border: 1px solid var(--gold-border);
-  padding: 20px;
-  margin-bottom: 16px;
-  display: none;
-}
-
-.setup-panel.show { display: block; }
-
-.setup-title {
-  font-family: 'Orbitron', sans-serif;
-  font-size: 0.7rem;
-  color: var(--gold);
-  letter-spacing: 0.2em;
-  margin-bottom: 12px;
-}
-
-.setup-note {
-  font-size: 0.65rem;
-  color: var(--text-dim);
-  line-height: 1.6;
-  margin-bottom: 12px;
-}
-
-.api-input {
-  width: 100%;
-  background: var(--bg3);
-  border: 1px solid var(--border);
-  color: var(--text);
-  font-family: 'Share Tech Mono', monospace;
-  font-size: 0.72rem;
-  padding: 10px 12px;
-  outline: none;
-  margin-bottom: 10px;
-}
-
-.api-input:focus { border-color: var(--gold-dim); }
-
-.btn {
-  background: transparent;
-  border: 1px solid var(--gold-dim);
-  color: var(--gold);
-  font-family: 'Orbitron', sans-serif;
-  font-size: 0.6rem;
-  font-weight: 700;
-  letter-spacing: 0.2em;
-  padding: 10px 18px;
-  cursor: pointer;
-  transition: all 0.2s;
-  text-transform: uppercase;
-}
-
-.btn:hover { background: var(--gold); color: var(--bg); border-color: var(--gold); }
-.btn.secondary { border-color: var(--border); color: var(--text-dim); font-size: 0.55rem; }
-.btn.secondary:hover { border-color: var(--text-dim); background: transparent; color: var(--text); }
-.btn.danger { border-color: var(--red); color: var(--red); }
-.btn.danger:hover { background: var(--red); color: var(--bg); }
-
-/* ── METRICS ── */
-.metrics {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 1px;
-  background: var(--border);
-  border: 1px solid var(--border);
-  margin-bottom: 16px;
-}
-
-.metric {
-  background: var(--bg2);
-  padding: 12px 8px;
-  text-align: center;
-}
-
-.metric-val {
-  font-family: 'Orbitron', sans-serif;
-  font-size: 1.3rem;
-  font-weight: 700;
-  color: var(--gold);
-}
-
-.metric-val.green { color: var(--green); text-shadow: 0 0 10px rgba(0,255,128,0.3); }
-.metric-val.red { color: var(--red); }
-
-.metric-label {
-  font-size: 0.52rem;
-  color: var(--text-dim);
-  letter-spacing: 0.15em;
-  text-transform: uppercase;
-  margin-top: 3px;
-}
-
-/* ── MISSION BOARD ── */
-.section {
-  margin-bottom: 16px;
-}
-
-.section-header {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  margin-bottom: 10px;
-}
-
-.section-label {
-  font-size: 0.58rem;
-  letter-spacing: 0.3em;
-  color: var(--text-dim);
-  text-transform: uppercase;
-  flex: 1;
-}
-
-.section-line {
-  flex: 1;
-  height: 1px;
-  background: var(--border);
-}
-
-.missions {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 6px;
-}
-
-.mission {
-  background: var(--bg2);
-  border: 1px solid var(--border);
-  padding: 10px 12px;
-  cursor: pointer;
-  transition: all 0.15s;
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  position: relative;
-  overflow: hidden;
-}
-
-.mission::before {
-  content: '';
-  position: absolute;
-  left: 0; top: 0; bottom: 0;
-  width: 2px;
-  background: var(--text-dim);
-  transition: background 0.2s;
-}
-
-.mission:hover { border-color: var(--gold-dim); }
-
-.mission.done {
-  border-color: rgba(0,255,128,0.2);
-  background: rgba(0,255,128,0.03);
-}
-
-.mission.done::before { background: var(--green); box-shadow: 0 0 8px var(--green); }
-
-.mission-icon { font-size: 1rem; flex-shrink: 0; }
-
-.mission-text {
-  font-size: 0.65rem;
-  color: var(--text);
-  line-height: 1.3;
-}
-
-.mission.done .mission-text { color: var(--text-dim); text-decoration: line-through; }
-
-/* ── STREAK ── */
-.streak-row {
-  display: flex;
-  gap: 4px;
-}
-
-.streak-pip {
-  flex: 1;
-  height: 24px;
-  background: var(--bg2);
-  border: 1px solid var(--border);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 0.5rem;
-  color: var(--text-dim);
-  font-family: 'Orbitron', sans-serif;
-  transition: all 0.2s;
-}
-
-.streak-pip.hot {
-  background: rgba(0,255,128,0.1);
-  border-color: var(--green);
-  color: var(--green);
-  box-shadow: 0 0 8px rgba(0,255,128,0.2);
-}
-
-.streak-pip.warm {
-  background: rgba(201,168,76,0.1);
-  border-color: var(--gold-dim);
-  color: var(--gold);
-}
-
-/* ── CHAT ── */
-.chat-container {
-  background: var(--bg2);
-  border: 1px solid var(--border);
-  margin-bottom: 12px;
-}
-
-.chat-header {
-  padding: 10px 14px;
-  border-bottom: 1px solid var(--border);
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
-
-.chat-header-dot {
-  width: 6px; height: 6px;
-  border-radius: 50%;
-  background: var(--gold);
-  animation: pulse-dot 1.5s infinite;
-}
-
-.chat-header-text {
-  font-family: 'Orbitron', sans-serif;
-  font-size: 0.58rem;
-  color: var(--gold);
-  letter-spacing: 0.2em;
-}
-
-.chat-mode {
-  margin-left: auto;
-  font-size: 0.52rem;
-  color: var(--text-dim);
-  letter-spacing: 0.1em;
-}
-
-.messages {
-  height: 300px;
-  overflow-y: auto;
-  padding: 16px;
-  scroll-behavior: smooth;
-}
-
-.messages::-webkit-scrollbar { width: 2px; }
-.messages::-webkit-scrollbar-thumb { background: var(--gold-dim); }
-
-.msg { margin-bottom: 16px; animation: msgIn 0.3s ease; }
-@keyframes msgIn { from { opacity:0; transform:translateY(8px); } to { opacity:1; transform:translateY(0); } }
-
-.msg-from {
-  font-size: 0.52rem;
-  letter-spacing: 0.25em;
-  text-transform: uppercase;
-  margin-bottom: 5px;
-}
-
-.msg.jarvis .msg-from { color: var(--gold-dim); }
-.msg.user .msg-from { color: var(--text-dim); }
-
-.msg-body {
-  font-size: 0.78rem;
-  line-height: 1.65;
-  white-space: pre-wrap;
-}
-
-.msg.jarvis .msg-body { color: var(--text); }
-.msg.user .msg-body { color: var(--text-dim); font-style: italic; }
-
-.typing {
-  display: none;
-  margin-bottom: 16px;
-}
-.typing.show { display: block; }
-.typing-inner {
-  display: inline-flex;
-  gap: 5px;
-  padding: 6px 0;
-}
-.typing-inner span {
-  width: 5px; height: 5px;
-  background: var(--gold-dim);
-  border-radius: 50%;
-  animation: blink 1.2s infinite;
-}
-.typing-inner span:nth-child(2) { animation-delay: 0.2s; }
-.typing-inner span:nth-child(3) { animation-delay: 0.4s; }
-@keyframes blink { 0%,60%,100%{opacity:0.2;transform:scale(0.8)} 30%{opacity:1;transform:scale(1)} }
-
-/* Quick commands */
-.cmds {
-  padding: 10px 14px;
-  border-top: 1px solid var(--border);
-  display: flex;
-  gap: 6px;
-  flex-wrap: wrap;
-}
-
-.cmd {
-  background: transparent;
-  border: 1px solid var(--border);
-  color: var(--text-dim);
-  font-family: 'Share Tech Mono', monospace;
-  font-size: 0.58rem;
-  padding: 4px 8px;
-  cursor: pointer;
-  transition: all 0.15s;
-  letter-spacing: 0.05em;
-}
-.cmd:hover { border-color: var(--gold-dim); color: var(--gold); }
-
-/* Input */
-.input-area {
-  display: flex;
-  gap: 6px;
-}
-
-textarea {
-  flex: 1;
-  background: var(--bg3);
-  border: 1px solid var(--border);
-  color: var(--text);
-  font-family: 'Share Tech Mono', monospace;
-  font-size: 0.78rem;
-  padding: 10px 12px;
-  resize: none;
-  height: 70px;
-  outline: none;
-  line-height: 1.5;
-}
-
-textarea:focus { border-color: var(--gold-dim); }
-textarea::placeholder { color: var(--text-dim); font-size: 0.7rem; }
-
-.send-btn {
-  background: transparent;
-  border: 1px solid var(--gold-dim);
-  color: var(--gold);
-  font-family: 'Orbitron', sans-serif;
-  font-size: 0.55rem;
-  font-weight: 700;
-  letter-spacing: 0.15em;
-  padding: 0 16px;
-  cursor: pointer;
-  transition: all 0.2s;
-  min-width: 70px;
-}
-.send-btn:hover { background: var(--gold); color: var(--bg); }
-.send-btn:disabled { opacity: 0.3; cursor: not-allowed; }
-
-/* ── ALERTS ── */
-.alert-panel {
-  background: rgba(255,48,64,0.05);
-  border: 1px solid rgba(255,48,64,0.3);
-  padding: 12px 16px;
-  margin-bottom: 16px;
-  display: none;
-}
-.alert-panel.show { display: block; }
-.alert-text {
-  font-size: 0.7rem;
-  color: var(--red);
-  line-height: 1.6;
-}
-
-/* ── FOOTER ── */
-.footer {
-  display: flex;
-  gap: 8px;
-  margin-top: 20px;
-  padding-top: 16px;
-  border-top: 1px solid var(--border);
-  flex-wrap: wrap;
-}
-
-.notif-status {
-  font-size: 0.58rem;
-  color: var(--text-dim);
-  letter-spacing: 0.1em;
-  padding: 6px 0;
-  flex: 1;
-}
-
-.notif-status.on { color: var(--green); }
-
-/* ── SCAN ANIMATION ── */
-@keyframes scan {
-  0% { transform: translateY(-100%); }
-  100% { transform: translateY(100vh); }
-}
-
-.scan-line {
-  position: fixed;
-  left: 0; right: 0;
-  height: 2px;
-  background: linear-gradient(90deg, transparent, rgba(0,128,255,0.1), rgba(0,128,255,0.3), rgba(0,128,255,0.1), transparent);
-  animation: scan 4s linear infinite;
-  pointer-events: none;
-  z-index: 999;
-}
-
-@media (max-width:480px) {
-  .missions { grid-template-columns: 1fr; }
-  .metrics { grid-template-columns: repeat(2,1fr); }
-  .jarvis-logo { font-size: 1.4rem; }
-}
+@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Share+Tech+Mono&display=swap');
+:root{--gold:#C9A84C;--gold-dim:#7A5F20;--bg:#040408;--bg2:#0A0A12;--bg3:#0F0F1A;--text:#C8D8E8;--text-dim:#506070;--red:#FF3040;--green:#00FF80;--border:rgba(0,128,255,0.15);--gborder:rgba(201,168,76,0.2)}
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:var(--bg);color:var(--text);font-family:'Share Tech Mono',monospace;min-height:100vh;overflow-x:hidden}
+body::before{content:'';position:fixed;inset:0;background-image:linear-gradient(rgba(0,128,255,0.03) 1px,transparent 1px),linear-gradient(90deg,rgba(0,128,255,0.03) 1px,transparent 1px);background-size:40px 40px;pointer-events:none;z-index:0}
+.app{position:relative;z-index:1;max-width:640px;margin:0 auto;padding:14px}
+.header{padding:18px 0 14px;border-bottom:1px solid var(--border);margin-bottom:14px}
+.logo{font-family:'Orbitron',sans-serif;font-size:1.7rem;font-weight:900;letter-spacing:0.3em;color:var(--gold);text-shadow:0 0 20px rgba(201,168,76,0.4)}
+.sub{font-size:0.56rem;color:var(--text-dim);letter-spacing:0.35em;text-transform:uppercase;margin-top:4px}
+.status-row{display:flex;align-items:center;gap:10px;margin-top:10px}
+.dot{width:8px;height:8px;border-radius:50%;background:var(--green);box-shadow:0 0 8px var(--green);animation:pd 2s infinite}
+@keyframes pd{0%,100%{opacity:1;transform:scale(1)}50%{opacity:0.5;transform:scale(0.8)}}
+.stxt{font-size:0.6rem;color:var(--green);letter-spacing:0.15em}
+.clk{margin-left:auto;font-family:'Orbitron',sans-serif;font-size:0.78rem;color:var(--gold);letter-spacing:0.1em}
+.nav{display:flex;gap:1px;background:var(--border);border:1px solid var(--border);margin-bottom:14px}
+.ntab{flex:1;background:var(--bg2);border:none;color:var(--text-dim);font-family:'Orbitron',sans-serif;font-size:0.48rem;font-weight:700;letter-spacing:0.15em;padding:10px 4px;cursor:pointer;transition:all 0.2s;text-transform:uppercase}
+.ntab.active{background:rgba(201,168,76,0.1);color:var(--gold);border-bottom:2px solid var(--gold)}
+.panel{display:none}.panel.active{display:block}
+.metrics{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--border);border:1px solid var(--border);margin-bottom:14px}
+.metric{background:var(--bg2);padding:11px 8px;text-align:center}
+.mv{font-family:'Orbitron',sans-serif;font-size:1.2rem;font-weight:700;color:var(--gold)}
+.mv.g{color:var(--green);text-shadow:0 0 8px rgba(0,255,128,0.3)}.mv.r{color:var(--red)}
+.ml{font-size:0.48rem;color:var(--text-dim);letter-spacing:0.15em;text-transform:uppercase;margin-top:3px}
+.sec{margin-bottom:14px}
+.sechdr{display:flex;align-items:center;gap:8px;margin-bottom:9px}
+.seclbl{font-size:0.54rem;letter-spacing:0.28em;color:var(--text-dim);text-transform:uppercase;white-space:nowrap}
+.secline{flex:1;height:1px;background:var(--border)}
+.mlist{display:flex;flex-direction:column;gap:4px}
+.mi{background:var(--bg2);border:1px solid var(--border);padding:10px 12px;display:flex;align-items:center;gap:9px;cursor:pointer;transition:all 0.15s;position:relative;overflow:hidden}
+.mi::before{content:'';position:absolute;left:0;top:0;bottom:0;width:2px;background:var(--text-dim);transition:all 0.2s}
+.mi.done{border-color:rgba(0,255,128,0.2);background:rgba(0,255,128,0.03)}.mi.done::before{background:var(--green);box-shadow:0 0 8px var(--green)}
+.mchk{width:17px;height:17px;border:1px solid var(--text-dim);border-radius:2px;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:0.68rem;transition:all 0.15s}
+.mi.done .mchk{background:var(--green);border-color:var(--green);color:var(--bg)}
+.mico{font-size:0.95rem;flex-shrink:0}.mname{flex:1;font-size:0.68rem;color:var(--text)}
+.mi.done .mname{color:var(--text-dim);text-decoration:line-through}
+.mfreq{font-size:0.5rem;color:var(--text-dim);letter-spacing:0.08em}
+.spips{display:flex;gap:3px}
+.pip{flex:1;height:21px;background:var(--bg2);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:0.46rem;color:var(--text-dim);font-family:'Orbitron',sans-serif}
+.pip.hot{background:rgba(0,255,128,0.1);border-color:var(--green);color:var(--green)}
+.pip.warm{background:rgba(201,168,76,0.1);border-color:var(--gold-dim);color:var(--gold)}
+.chatbox{background:var(--bg2);border:1px solid var(--border);margin-bottom:9px}
+.chdr{padding:8px 13px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:8px}
+.chdot{width:6px;height:6px;border-radius:50%;background:var(--gold);animation:pd 1.5s infinite}
+.chtxt{font-family:'Orbitron',sans-serif;font-size:0.52rem;color:var(--gold);letter-spacing:0.2em}
+.cmode{margin-left:auto;font-size:0.48rem;color:var(--text-dim)}
+.msgs{height:250px;overflow-y:auto;padding:13px;scroll-behavior:smooth}
+.msgs::-webkit-scrollbar{width:2px}.msgs::-webkit-scrollbar-thumb{background:var(--gold-dim)}
+.msg{margin-bottom:13px;animation:mI 0.3s ease}
+@keyframes mI{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
+.mfrom{font-size:0.48rem;letter-spacing:0.25em;text-transform:uppercase;margin-bottom:4px}
+.msg.j .mfrom{color:var(--gold-dim)}.msg.u .mfrom{color:var(--text-dim)}
+.mbody{font-size:0.74rem;line-height:1.65;white-space:pre-wrap}
+.msg.j .mbody{color:var(--text)}.msg.u .mbody{color:var(--text-dim);font-style:italic}
+.typing{display:none;margin-bottom:13px}.typing.show{display:block}
+.tdots{display:inline-flex;gap:4px;padding:4px 0}
+.tdots span{width:5px;height:5px;background:var(--gold-dim);border-radius:50%;animation:bl 1.2s infinite}
+.tdots span:nth-child(2){animation-delay:0.2s}.tdots span:nth-child(3){animation-delay:0.4s}
+@keyframes bl{0%,60%,100%{opacity:0.2;transform:scale(0.8)}30%{opacity:1;transform:scale(1)}}
+.cmds{padding:7px 13px;border-top:1px solid var(--border);display:flex;gap:4px;flex-wrap:wrap}
+.cmd{background:transparent;border:1px solid var(--border);color:var(--text-dim);font-family:'Share Tech Mono',monospace;font-size:0.54rem;padding:4px 8px;cursor:pointer;transition:all 0.15s}
+.cmd:hover{border-color:var(--gold-dim);color:var(--gold)}
+.irow{display:flex;gap:5px}
+textarea{flex:1;background:var(--bg3);border:1px solid var(--border);color:var(--text);font-family:'Share Tech Mono',monospace;font-size:0.74rem;padding:9px 11px;resize:none;height:65px;outline:none;line-height:1.5}
+textarea:focus{border-color:var(--gold-dim)}
+textarea::placeholder{color:var(--text-dim);font-size:0.66rem}
+.sbtn{background:transparent;border:1px solid var(--gold-dim);color:var(--gold);font-family:'Orbitron',sans-serif;font-size:0.5rem;font-weight:700;letter-spacing:0.15em;padding:0 13px;cursor:pointer;transition:all 0.2s;min-width:60px}
+.sbtn:hover{background:var(--gold);color:var(--bg)}.sbtn:disabled{opacity:0.3;cursor:not-allowed}
+.stitle{font-family:'Orbitron',sans-serif;font-size:0.6rem;color:var(--gold);letter-spacing:0.2em;margin-bottom:11px;padding-bottom:7px;border-bottom:1px solid var(--gborder)}
+.ssec{margin-bottom:18px}
+.mei{background:var(--bg2);border:1px solid var(--border);padding:9px 11px;margin-bottom:5px;display:flex;align-items:center;gap:7px}
+.eico{width:34px;background:var(--bg3);border:1px solid var(--border);color:var(--text);font-size:0.95rem;padding:4px;text-align:center;outline:none}
+.enm{flex:1;background:var(--bg3);border:1px solid var(--border);color:var(--text);font-family:'Share Tech Mono',monospace;font-size:0.68rem;padding:6px 9px;outline:none}
+.enm:focus{border-color:var(--gold-dim)}
+.efrq{background:var(--bg3);border:1px solid var(--border);color:var(--text-dim);font-family:'Share Tech Mono',monospace;font-size:0.58rem;padding:6px 7px;outline:none;width:76px;cursor:pointer}
+.dbtn{background:transparent;border:1px solid rgba(255,48,64,0.3);color:var(--red);font-size:0.68rem;padding:4px 8px;cursor:pointer;transition:all 0.15s}
+.dbtn:hover{background:var(--red);color:var(--bg)}
+.addrow{display:flex;gap:5px;margin-top:9px;flex-wrap:wrap}
+.ai{width:46px;background:var(--bg3);border:1px solid var(--border);color:var(--text);font-size:0.95rem;padding:7px;text-align:center;outline:none}
+.an{flex:1;background:var(--bg3);border:1px solid var(--border);color:var(--text);font-family:'Share Tech Mono',monospace;font-size:0.68rem;padding:7px 11px;outline:none;min-width:110px}
+.an:focus,.ai:focus{border-color:var(--gold-dim)}
+.btn{background:transparent;border:1px solid var(--gold-dim);color:var(--gold);font-family:'Orbitron',sans-serif;font-size:0.52rem;font-weight:700;letter-spacing:0.15em;padding:8px 14px;cursor:pointer;transition:all 0.2s;text-transform:uppercase}
+.btn:hover{background:var(--gold);color:var(--bg);border-color:var(--gold)}
+.btn.sm{font-size:0.48rem;padding:7px 11px}.btn.sec{border-color:var(--border);color:var(--text-dim)}.btn.sec:hover{border-color:var(--text-dim);background:transparent;color:var(--text)}
+.btn.dng{border-color:rgba(255,48,64,0.4);color:var(--red)}.btn.dng:hover{background:var(--red);color:var(--bg);border-color:var(--red)}
+.atimes{display:grid;grid-template-columns:1fr 1fr;gap:5px;margin-top:9px}
+.ati{background:var(--bg2);border:1px solid var(--border);padding:9px 11px;display:flex;align-items:center;gap:7px}
+.atl{flex:1;font-size:0.6rem;color:var(--text-dim)}
+.tinp{background:var(--bg3);border:1px solid var(--border);color:var(--text);font-family:'Share Tech Mono',monospace;font-size:0.62rem;padding:4px 7px;outline:none;width:68px}
+.tinp:focus{border-color:var(--gold-dim)}
+.nbar{display:flex;align-items:center;gap:9px;flex-wrap:wrap;padding:10px 13px;background:var(--bg2);border:1px solid var(--border);margin-top:9px}
+.nstat{font-size:0.58rem;letter-spacing:0.1em;flex:1}
+.nstat.on{color:var(--green)}.nstat.off{color:var(--text-dim)}
+.astat{font-size:0.6rem;margin-bottom:9px;padding:7px 11px;border:1px solid var(--border)}
+.astat.ok{border-color:rgba(0,255,128,0.3);color:var(--green);background:rgba(0,255,128,0.05)}
+.astat.no{border-color:var(--border);color:var(--text-dim)}
+.ainp{width:100%;background:var(--bg3);border:1px solid var(--border);color:var(--text);font-family:'Share Tech Mono',monospace;font-size:0.68rem;padding:9px 11px;outline:none;margin-bottom:9px}
+.ainp:focus{border-color:var(--gold-dim)}
+.scan{position:fixed;left:0;right:0;height:2px;background:linear-gradient(90deg,transparent,rgba(0,128,255,0.06),rgba(0,128,255,0.2),rgba(0,128,255,0.06),transparent);animation:sc 5s linear infinite;pointer-events:none;z-index:999}
+@keyframes sc{0%{transform:translateY(-10px)}100%{transform:translateY(100vh)}}
+@media(max-width:480px){.metrics{grid-template-columns:repeat(2,1fr)}.logo{font-size:1.35rem}.atimes{grid-template-columns:1fr}}
 </style>
 </head>
 <body>
-<div class="scan-line"></div>
-
+<div class="scan"></div>
 <div class="app">
-
-  <!-- Header -->
-  <div class="header">
-    <div class="jarvis-logo">SS JARVIS</div>
-    <div class="jarvis-sub">Shankar Singh Command Intelligence · Active Since 29 Apr 2026</div>
-    <div class="status-row">
-      <div class="status-dot"></div>
-      <div class="status-text" id="status-text">SYSTEMS ONLINE</div>
-      <div class="clock" id="clock">--:--</div>
-    </div>
+<div class="header">
+  <div class="logo">SS JARVIS</div>
+  <div class="sub">Shankar Singh Command Intelligence · Est. 29 Apr 2026</div>
+  <div class="status-row">
+    <div class="dot"></div>
+    <div class="stxt">SYSTEMS ONLINE</div>
+    <div class="clk" id="clk">--:--:--</div>
   </div>
+</div>
+<div class="nav">
+  <button class="ntab active" onclick="showTab('home',this)">HOME</button>
+  <button class="ntab" onclick="showTab('coach',this)">COACH</button>
+  <button class="ntab" onclick="showTab('settings',this)">SETTINGS</button>
+</div>
 
-  <!-- Setup / API Key -->
-  <div class="setup-panel" id="setup-panel">
-    <div class="setup-title">⚡ JARVIS INITIALIZATION</div>
-    <div class="setup-note">
-      To activate AI coaching, enter your Anthropic API key.<br>
-      Get it at: console.anthropic.com → API Keys<br>
-      Key is stored locally on your device only.
-    </div>
-    <input type="password" class="api-input" id="api-key-input" placeholder="sk-ant-api03-...">
-    <div style="display:flex;gap:8px;flex-wrap:wrap;">
-      <button class="btn" onclick="saveApiKey()">Activate JARVIS</button>
-      <button class="btn secondary" onclick="skipSetup()">Use Without AI (Basic Mode)</button>
-    </div>
-  </div>
-
-  <!-- Alert -->
-  <div class="alert-panel" id="alert-panel">
-    <div class="alert-text" id="alert-text"></div>
-  </div>
-
-  <!-- Metrics -->
+<!-- HOME -->
+<div class="panel active" id="tab-home">
   <div class="metrics">
-    <div class="metric">
-      <div class="metric-val" id="m-streak">0</div>
-      <div class="metric-label">Streak</div>
-    </div>
-    <div class="metric">
-      <div class="metric-val" id="m-done">0%</div>
-      <div class="metric-label">Today</div>
-    </div>
-    <div class="metric">
-      <div class="metric-val" id="m-sessions">0</div>
-      <div class="metric-label">Sessions</div>
-    </div>
-    <div class="metric">
-      <div class="metric-val" id="m-days">0</div>
-      <div class="metric-label">Day</div>
-    </div>
+    <div class="metric"><div class="mv" id="mstreak">0</div><div class="ml">Streak</div></div>
+    <div class="metric"><div class="mv" id="mdone">0%</div><div class="ml">Today</div></div>
+    <div class="metric"><div class="mv" id="msess">0</div><div class="ml">Sessions</div></div>
+    <div class="metric"><div class="mv" id="mday">1</div><div class="ml">Day</div></div>
   </div>
-
-  <!-- Missions -->
-  <div class="section">
-    <div class="section-header">
-      <div class="section-label">Daily Missions</div>
-      <div class="section-line"></div>
-    </div>
-    <div class="missions" id="missions"></div>
+  <div class="sec">
+    <div class="sechdr"><div class="seclbl">Daily Missions</div><div class="secline"></div><div style="font-size:0.5rem;color:var(--text-dim);white-space:nowrap">Tap to complete</div></div>
+    <div class="mlist" id="mlist"></div>
   </div>
-
-  <!-- 7-day streak -->
-  <div class="section">
-    <div class="section-header">
-      <div class="section-label">7-Day Consistency</div>
-      <div class="section-line"></div>
-    </div>
-    <div class="streak-row" id="streak-row"></div>
+  <div class="sec">
+    <div class="sechdr"><div class="seclbl">7-Day Consistency</div><div class="secline"></div></div>
+    <div class="spips" id="spips"></div>
   </div>
+</div>
 
-  <!-- Chat -->
-  <div class="section">
-    <div class="section-header">
-      <div class="section-label" id="session-label">Active Session</div>
-      <div class="section-line"></div>
-    </div>
-    <div class="chat-container">
-      <div class="chat-header">
-        <div class="chat-header-dot"></div>
-        <div class="chat-header-text">JARVIS COACHING INTERFACE</div>
-        <div class="chat-mode" id="mode-label">LOADING</div>
+<!-- COACH -->
+<div class="panel" id="tab-coach">
+  <div class="chatbox">
+    <div class="chdr"><div class="chdot"></div><div class="chtxt">JARVIS COACHING</div><div class="cmode" id="cmode">LOADING</div></div>
+    <div class="msgs" id="msgs">
+      <div class="msg j"><div class="mfrom">JARVIS</div><div class="mbody" id="bootmsg">Initializing...</div></div>
+      <div class="typing" id="typing">
+        <div class="mfrom" style="font-size:0.48rem;letter-spacing:0.25em;color:var(--gold-dim);margin-bottom:4px">JARVIS</div>
+        <div class="tdots"><span></span><span></span><span></span></div>
       </div>
-      <div class="messages" id="messages">
-        <div class="msg jarvis">
-          <div class="msg-from">JARVIS</div>
-          <div class="msg-body" id="boot-msg">Initializing...</div>
-        </div>
-        <div class="typing" id="typing">
-          <div class="msg-from" style="font-size:0.52rem;letter-spacing:0.25em;color:var(--gold-dim);margin-bottom:5px;">JARVIS</div>
-          <div class="typing-inner"><span></span><span></span><span></span></div>
-        </div>
-      </div>
-      <div class="cmds" id="cmds"></div>
     </div>
-    <div class="input-area">
-      <textarea id="input" placeholder="Talk to JARVIS... (Enter to send)"></textarea>
-      <button class="send-btn" id="send-btn" onclick="send()">SEND</button>
+    <div class="cmds" id="cmds"></div>
+  </div>
+  <div class="irow">
+    <textarea id="inp" placeholder="Talk to JARVIS... (Enter to send)"></textarea>
+    <button class="sbtn" id="sbtn" onclick="send()">SEND</button>
+  </div>
+</div>
+
+<!-- SETTINGS -->
+<div class="panel" id="tab-settings">
+  <div class="ssec">
+    <div class="stitle">⚙ Mission Manager — Add / Edit / Delete</div>
+    <div id="meditor"></div>
+    <div class="addrow">
+      <input class="ai" id="nei" placeholder="🎯" maxlength="2">
+      <input class="an" id="nen" placeholder="New mission name...">
+      <select class="efrq" id="nef"><option value="daily">Daily</option><option value="weekday">Weekday</option><option value="weekend">Weekend</option></select>
+      <button class="btn sm" onclick="addMission()">+ Add</button>
     </div>
   </div>
-
-  <!-- Footer -->
-  <div class="footer">
-    <div class="notif-status" id="notif-status">● Notifications: checking...</div>
-    <button class="btn secondary" onclick="requestNotifications()">Enable Alerts</button>
-    <button class="btn secondary" onclick="testNotif()">Test Alert</button>
-    <button class="btn danger" onclick="resetAll()">Reset</button>
+  <div class="ssec">
+    <div class="stitle">🔔 Alert Schedule — Edit Times</div>
+    <div class="atimes" id="atimes"></div>
+    <div style="margin-top:9px;display:flex;gap:7px;flex-wrap:wrap">
+      <button class="btn sm" onclick="saveAlertTimes()">Save Times</button>
+      <button class="btn sm sec" onclick="reqNotif()">Enable Alerts</button>
+      <button class="btn sm sec" onclick="testNotif()">Test Alert</button>
+    </div>
+    <div class="nbar"><div class="nstat off" id="nstat">● Alerts: checking...</div></div>
   </div>
-
+  <div class="ssec">
+    <div class="stitle">🤖 AI Coach — Anthropic API Key</div>
+    <div style="font-size:0.6rem;color:var(--text-dim);line-height:1.7;margin-bottom:10px">Get key: console.anthropic.com → API Keys<br>Cost: ~₹400 per $5 credit. Lasts 3–4 weeks.<br>Key stored only on this device.</div>
+    <div class="astat no" id="astatbox">Not connected — Basic Mode</div>
+    <input type="password" class="ainp" id="akinp" placeholder="sk-ant-api03-...">
+    <div style="display:flex;gap:7px;flex-wrap:wrap">
+      <button class="btn sm" onclick="saveKey()">Connect AI</button>
+      <button class="btn sm dng" onclick="removeKey()">Remove Key</button>
+    </div>
+  </div>
+  <div class="ssec">
+    <div class="stitle">⚠ System Reset</div>
+    <button class="btn dng sm" onclick="resetAll()">Reset All Data</button>
+  </div>
+</div>
 </div>
 
 <script>
-// ── CONFIG ──────────────────────────────────────────────────────────────────
-const MISSIONS = [
-  { id: 'meditation', icon: '🧘', text: 'Morning Meditation' },
-  { id: 'market',     icon: '📊', text: 'Market Analysis' },
-  { id: 'equity',     icon: '💹', text: 'Equity Review' },
-  { id: 'law',        icon: '⚖️', text: 'Law / A&K Work' },
-  { id: 'command',    icon: '🖥️', text: 'SS Command Centre' },
-  { id: 'physical',   icon: '🏃', text: 'Physical Activity' },
-  { id: 'review',     icon: '🌙', text: 'Evening Review' }
+const DEF_M=[
+  {id:'m1',emoji:'🧘',name:'Morning Meditation',freq:'daily'},
+  {id:'m2',emoji:'📊',name:'Market Analysis',freq:'weekday'},
+  {id:'m3',emoji:'💹',name:'Equity Review',freq:'daily'},
+  {id:'m4',emoji:'⚖️',name:'Law / A&K Work',freq:'weekday'},
+  {id:'m5',emoji:'🖥️',name:'SS Command Centre',freq:'daily'},
+  {id:'m6',emoji:'🏃',name:'Physical Activity',freq:'daily'},
+  {id:'m7',emoji:'🌙',name:'Evening Review',freq:'daily'}
 ];
+const DEF_A=[
+  {label:'Pre-Dawn',time:'03:15',msg:'Shankar. Meditation time. Your Shiva is waiting.'},
+  {label:'Office Start',time:'08:00',msg:'Entering office hours. Top priority confirmed?'},
+  {label:'Midday',time:'13:00',msg:'Half the day gone. What have you completed?'},
+  {label:'Home Arrival',time:'19:30',msg:'Office hours over. Evening review begins now.'},
+  {label:'Pre-Sleep',time:'22:00',msg:'Did you do what you said this morning?'}
+];
+const SYS=`You are SS JARVIS — Shankar Singh's personal command intelligence. Not a chatbot. A monitoring system.
+Profile: CA/CS/LLB, lawyer + Finance at Abercrombie & Kent India, Jamshedpur. Wakes 3AM. Office 8AM-7:30PM weekdays. Wife Priya. Sons Avnish and Samarth. Advaita Vedanta practitioner, Samadhi goal 2050. Intraday Nifty/Sensex trader, lost 30 lakhs, still going. 5-bucket equity compounding, 20cr target, 101 steps. Tight budget.
+Style: Short. Sharp. No flattery. Name incomplete missions. Weekend drift: call immediately. ONE question per response. Under 120 words. If philosophical without missions done: say "Missions first. Philosophy after."`;
 
-const START_DATE = new Date('2026-04-29');
+let missions=[],done={},hist=[],alerts=[],busy=false;
+const td=()=>new Date().toISOString().split('T')[0];
+const mode=()=>{const h=new Date().getHours(),d=new Date().getDay();if(d==0||d==6)return'weekend';if(h<8)return'early';if(h<13)return'morning';if(h<19)return'afternoon';return'evening'};
+const dayN=()=>Math.max(1,Math.floor((new Date()-new Date('2026-04-29'))/86400000)+1);
+const getKey=()=>localStorage.getItem('j_key')||'';
 
-const SYSTEM = `You are SS JARVIS — Shankar Singh's personal command intelligence. You are not a chatbot. You are a monitoring system with attitude.
+function load(){
+  missions=JSON.parse(localStorage.getItem('j_ms')||'null')||DEF_M;
+  done=JSON.parse(localStorage.getItem('j_d_'+td())||'{}');
+  hist=JSON.parse(localStorage.getItem('j_h')||'[]');
+  alerts=JSON.parse(localStorage.getItem('j_al')||'null')||DEF_A;
+}
+function sv(){localStorage.setItem('j_ms',JSON.stringify(missions))}
+function svd(){localStorage.setItem('j_d_'+td(),JSON.stringify(done))}
+function svh(){localStorage.setItem('j_h',JSON.stringify(hist.slice(-30)))}
+function sval(){localStorage.setItem('j_al',JSON.stringify(alerts))}
 
-SHANKAR'S PROFILE:
-- CA, CS, LLB — lawyer + Finance/Compliance at Abercrombie & Kent India, Jamshedpur
-- Wakes 3:00 AM daily. Office 8 AM–7:30 PM weekdays. Off weekends.
-- Married to Priya. Sons: Avnish and Samarth.
-- Deep Advaita Vedanta practitioner. Goal: conscious Samadhi by 2050.
-- Intraday trader: Nifty/Sensex, 3-min charts, TradingView.
-- 5-bucket equity compounding system. ₹20 crore corpus target. 101 steps.
-- Lost ₹30 lakhs in markets. Tight budget currently.
-- Biggest battle: knows everything, does too little. Bridge that gap.
+function stats(){
+  let streak=0;
+  for(let i=0;i<60;i++){const d2=new Date();d2.setDate(d2.getDate()-i);const dt=localStorage.getItem('j_d_'+d2.toISOString().split('T')[0]);if(dt&&Object.values(JSON.parse(dt)).some(Boolean)){if(i===streak)streak++;}else if(i>0)break;}
+  const am=activeMissions();const dn=am.filter(m=>done[m.id]).length;
+  return{streak,pct:am.length?Math.round(dn/am.length*100):0,sessions:parseInt(localStorage.getItem('j_sess')||'0')};
+}
+function activeMissions(){const d=new Date().getDay(),iw=d==0||d==6;return missions.filter(m=>m.freq==='daily'||(m.freq==='weekday'&&!iw)||(m.freq==='weekend'&&iw))}
+function s7(){const n=['S','M','T','W','T','F','S'];return Array.from({length:7},(_,i)=>{const d=new Date();d.setDate(d.getDate()-(6-i));const dt=localStorage.getItem('j_d_'+d.toISOString().split('T')[0]);let c='';if(dt){const cnt=Object.values(JSON.parse(dt)).filter(Boolean).length;c=cnt>=5?'hot':cnt>0?'warm':'';}return{l:n[d.getDay()],c}})}
 
-DAILY MISSIONS TO TRACK:
-1. Morning Meditation (3–4 AM)
-2. Market Analysis (pre-market hypothesis)
-3. Equity Review (positions + journal)
-4. Law / A&K Work (at least one real task)
-5. SS Command Centre (update and use)
-6. Physical Activity (any movement)
-7. Evening Review (honest self-assessment)
+function startClock(){const el=document.getElementById('clk');const t=()=>{el.textContent=new Date().toLocaleTimeString('en-IN',{hour:'2-digit',minute:'2-digit',second:'2-digit',hour12:true})};t();setInterval(t,1000)}
 
-YOUR STYLE — JARVIS, NOT A CHEERLEADER:
-- Short. Sharp. Direct. No motivation speech. No flattery.
-- Reference what he told you previously. Hold him accountable.
-- If missions are incomplete, name them specifically.
-- If it's weekend and he's drifting — call it immediately.
-- Ask ONE focused question. Don't give speeches.
-- Under 120 words unless he asks for something detailed.
-- You are monitoring him. He knows this. Speak accordingly.
-- If he gets philosophical without having done his work — redirect: "Missions first. Philosophy after."`;
+function renderHome(){renderM();renderMetrics();renderS7()}
+function renderM(){
+  const am=activeMissions();
+  document.getElementById('mlist').innerHTML=am.map(m=>`<div class="mi ${done[m.id]?'done':''}" onclick="toggleM('${m.id}')"><div class="mchk">${done[m.id]?'✓':''}</div><span class="mico">${m.emoji}</span><span class="mname">${m.name}</span><span class="mfreq">${m.freq}</span></div>`).join('')||'<div style="color:var(--text-dim);font-size:0.68rem;padding:10px">No missions today. Add in Settings.</div>';
+}
+function renderMetrics(){
+  const s=stats();
+  const el=(id,v,c)=>{const e=document.getElementById(id);e.textContent=v;e.className='mv'+(c?' '+c:'')};
+  el('mstreak',s.streak,s.streak>=3?'g':s.streak===0?'r':'');
+  el('mdone',s.pct+'%',s.pct>=70?'g':s.pct<30?'r':'');
+  el('msess',s.sessions,'');el('mday',dayN(),'');
+}
+function renderS7(){document.getElementById('spips').innerHTML=s7().map(d=>`<div class="pip ${d.c}">${d.l}</div>`).join('')}
+function renderCmode(){const m={early:'PRE-DAWN',morning:'MORNING OPS',afternoon:'OFFICE MODE',evening:'EVENING REVIEW',weekend:'WEEKEND MODE'};document.getElementById('cmode').textContent=m[mode()]||'ACTIVE'}
+function renderCmds(){const m=mode();const mp={early:['Morning check-in',"Today's priority",'Meditation done'],morning:['Morning check-in','Market hypothesis',"What's pending?"],afternoon:['Midday report','I\'m losing focus','What I\'ve done'],evening:['Evening review','Honest assessment',"Tomorrow's plan"],weekend:['Weekend check-in','I am drifting','What to do now?']};document.getElementById('cmds').innerHTML=(mp[m]||mp.morning).map(c=>`<button class="cmd" onclick="useCmd('${c}')">${c}</button>`).join('')}
 
-// ── STATE ────────────────────────────────────────────────────────────────────
-let apiKey = '';
-let history = [];
-let todayDone = {};
-let busy = false;
+function renderSM(){
+  document.getElementById('meditor').innerHTML=missions.map((m,i)=>`<div class="mei"><input class="eico" value="${m.emoji}" onchange="missions[${i}].emoji=this.value;sv();renderHome()" maxlength="2"><input class="enm" value="${m.name}" onchange="missions[${i}].name=this.value;sv();renderHome()"><select class="efrq" onchange="missions[${i}].freq=this.value;sv();renderHome()"><option value="daily" ${m.freq==='daily'?'selected':''}>Daily</option><option value="weekday" ${m.freq==='weekday'?'selected':''}>Weekday</option><option value="weekend" ${m.freq==='weekend'?'selected':''}>Weekend</option></select><button class="dbtn" onclick="delM('${m.id}')">✕</button></div>`).join('');
+}
+function renderAT(){document.getElementById('atimes').innerHTML=alerts.map((a,i)=>`<div class="ati"><div class="atl">${a.label}</div><input type="time" class="tinp" value="${a.time}" onchange="alerts[${i}].time=this.value"></div>`).join('')}
+function renderAKey(){const k=getKey(),b=document.getElementById('astatbox');if(k&&k!=='BASIC'){b.textContent='✓ AI Connected — Full coaching active';b.className='astat ok';}else{b.textContent='✗ Not connected — Basic Mode';b.className='astat no'}}
+function renderNS(){const el=document.getElementById('nstat');if(!('Notification'in window)){el.textContent='● Alerts: Not supported';return}if(Notification.permission==='granted'){el.textContent='● Alerts: ACTIVE';el.className='nstat on';}else{el.textContent='● Alerts: Off — tap Enable Alerts';el.className='nstat off'}}
 
-function today() { return new Date().toISOString().split('T')[0]; }
-
-function getMode() {
-  const h = new Date().getHours();
-  const d = new Date().getDay();
-  if (d === 0 || d === 6) return 'weekend';
-  if (h < 8) return 'early';
-  if (h < 13) return 'morning';
-  if (h < 19) return 'afternoon';
-  return 'evening';
+function showTab(tab,btn){
+  document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.ntab').forEach(t=>t.classList.remove('active'));
+  document.getElementById('tab-'+tab).classList.add('active');
+  btn.classList.add('active');
+  if(tab==='settings'){renderSM();renderAT();renderAKey();renderNS()}
+  if(tab==='coach'){renderCmode();renderCmds()}
 }
 
-function dayNumber() {
-  const diff = new Date() - START_DATE;
-  return Math.max(1, Math.floor(diff / 86400000) + 1);
+function toggleM(id){
+  done[id]=!done[id];svd();renderHome();
+  if(done[id]){const m=missions.find(x=>x.id===id);const am=activeMissions();const dc=am.filter(x=>done[x.id]).length;let msg=`Mission logged: ${m?.name}.\n${dc===am.length?'\nAll missions complete. Day logged. Strong.':dc+'/'+am.length+' done.'}`;addMsg('j',msg);}
 }
-
-function load() {
-  apiKey = localStorage.getItem('jarvis_key') || '';
-  const td = localStorage.getItem('jarvis_done_' + today());
-  todayDone = td ? JSON.parse(td) : {};
-  const h = localStorage.getItem('jarvis_history');
-  history = h ? JSON.parse(h) : [];
+function addMission(){
+  const e=document.getElementById('nei').value.trim()||'🎯';
+  const n=document.getElementById('nen').value.trim();
+  const f=document.getElementById('nef').value;
+  if(!n){alert('Enter a mission name.');return}
+  missions.push({id:'m'+Date.now(),emoji:e,name:n,freq:f});sv();
+  document.getElementById('nei').value='';document.getElementById('nen').value='';
+  renderSM();renderHome();
 }
+function delM(id){if(!confirm('Delete this mission?'))return;missions=missions.filter(m=>m.id!==id);sv();renderSM();renderHome()}
 
-function saveDone() {
-  localStorage.setItem('jarvis_done_' + today(), JSON.stringify(todayDone));
-}
-
-function saveHistory() {
-  localStorage.setItem('jarvis_history', JSON.stringify(history.slice(-30)));
-}
-
-function saveApiKey() {
-  const val = document.getElementById('api-key-input').value.trim();
-  if (!val.startsWith('sk-')) {
-    showAlert('Invalid key format. Must start with sk-ant-api03-');
-    return;
-  }
-  localStorage.setItem('jarvis_key', val);
-  apiKey = val;
-  document.getElementById('setup-panel').classList.remove('show');
-  boot();
-}
-
-function skipSetup() {
-  localStorage.setItem('jarvis_key', 'BASIC');
-  apiKey = 'BASIC';
-  document.getElementById('setup-panel').classList.remove('show');
-  boot();
-}
-
-function getStats() {
-  let streak = 0;
-  for (let i = 0; i < 30; i++) {
-    const d = new Date();
-    d.setDate(d.getDate() - i);
-    const key = 'jarvis_done_' + d.toISOString().split('T')[0];
-    const data = localStorage.getItem(key);
-    if (data) {
-      const g = JSON.parse(data);
-      if (Object.values(g).some(Boolean)) {
-        if (i === streak) streak++;
-      } else break;
-    } else if (i > 0) break;
-  }
-  const sessions = parseInt(localStorage.getItem('jarvis_sessions') || '0');
-  const done = MISSIONS.filter(m => todayDone[m.id]).length;
-  const pct = Math.round((done / MISSIONS.length) * 100);
-  return { streak, sessions, pct };
-}
-
-function get7Day() {
-  const days = [];
-  const names = ['S','M','T','W','T','F','S'];
-  for (let i = 6; i >= 0; i--) {
-    const d = new Date();
-    d.setDate(d.getDate() - i);
-    const key = 'jarvis_done_' + d.toISOString().split('T')[0];
-    const data = localStorage.getItem(key);
-    let cls = '';
-    if (data) {
-      const g = JSON.parse(data);
-      const cnt = Object.values(g).filter(Boolean).length;
-      if (cnt >= 5) cls = 'hot';
-      else if (cnt > 0) cls = 'warm';
-    }
-    days.push({ label: names[d.getDay()], cls });
-  }
-  return days;
-}
-
-// ── RENDER ───────────────────────────────────────────────────────────────────
-function renderAll() {
-  renderClock();
-  renderMissions();
-  renderStreak();
-  renderMetrics();
-  renderMode();
-}
-
-function renderClock() {
-  const now = new Date();
-  const t = now.toLocaleTimeString('en-IN', { hour:'2-digit', minute:'2-digit', hour12:true });
-  document.getElementById('clock').textContent = t;
-}
-
-function renderMissions() {
-  document.getElementById('missions').innerHTML = MISSIONS.map(m => `
-    <div class="mission ${todayDone[m.id] ? 'done' : ''}" onclick="toggleMission('${m.id}')">
-      <span class="mission-icon">${m.icon}</span>
-      <span class="mission-text">${m.text}</span>
-    </div>
-  `).join('');
-}
-
-function renderStreak() {
-  const days = get7Day();
-  document.getElementById('streak-row').innerHTML = days.map(d => `
-    <div class="streak-pip ${d.cls}">${d.label}</div>
-  `).join('');
-}
-
-function renderMetrics() {
-  const s = getStats();
-  const dn = dayNumber();
-  document.getElementById('m-streak').textContent = s.streak;
-  document.getElementById('m-streak').className = 'metric-val ' + (s.streak >= 3 ? 'green' : s.streak === 0 ? 'red' : '');
-  document.getElementById('m-done').textContent = s.pct + '%';
-  document.getElementById('m-done').className = 'metric-val ' + (s.pct >= 70 ? 'green' : s.pct < 30 ? 'red' : '');
-  document.getElementById('m-sessions').textContent = s.sessions;
-  document.getElementById('m-days').textContent = dn;
-}
-
-function renderMode() {
-  const mode = getMode();
-  const labels = {
-    early: 'PRE-DAWN MODE',
-    morning: 'MORNING OPS',
-    afternoon: 'OFFICE MODE',
-    evening: 'EVENING REVIEW',
-    weekend: 'WEEKEND MODE'
+function boot(){
+  const md=mode();const am=activeMissions();
+  const dn=am.filter(m=>done[m.id]).map(m=>m.name);
+  const pd=am.filter(m=>!done[m.id]).map(m=>m.name);
+  const s=stats();
+  const msgs={
+    early:`JARVIS ONLINE.\n\n${pd.length} missions pending.\nStart with meditation. Everything else follows.`,
+    morning:`JARVIS ONLINE. Morning ops.\n\n${dn.length>0?'Done: '+dn.join(', ')+'.\n':'Nothing completed yet.\n'}Pending: ${pd.join(', ')||'all clear'}.\n\nMarket opens soon. Your hypothesis?`,
+    afternoon:`JARVIS CHECK-IN.\n\nDay ${dayN()} · ${s.pct}% complete · Streak: ${s.streak} days.\n\nStill open: ${pd.join(', ')||'nothing — good'}.\n\nWhat are you working on right now?`,
+    evening:`JARVIS EVENING REVIEW.\n\n${dn.length}/${am.length} missions done.\n${pd.length>0?'Missed: '+pd.join(', ')+'.\n':''}\nBe honest — what happened today?`,
+    weekend:`JARVIS WEEKEND.\n\nLast weekend was reported as wasted. This one starts now.\n\n${dn.length}/${am.length} done.\n\nONE thing that will make this weekend count?`
   };
-  document.getElementById('mode-label').textContent = labels[mode] || 'ACTIVE';
+  document.getElementById('bootmsg').textContent=msgs[md]||msgs.morning;
 }
 
-function renderCommands() {
-  const mode = getMode();
-  const cmds = {
-    early: ['Morning check-in', 'How did I sleep?', 'Today\'s top priority'],
-    morning: ['Morning check-in', 'Market hypothesis', 'What\'s pending?'],
-    afternoon: ['Midday report', 'What I\'ve done', 'I\'m losing focus'],
-    evening: ['Evening review', 'Honest assessment', 'Tomorrow\'s plan'],
-    weekend: ['Weekend check-in', 'I am drifting', 'What should I do now?']
-  };
-  const list = cmds[mode] || cmds.morning;
-  document.getElementById('cmds').innerHTML = list.map(c => `
-    <button class="cmd" onclick="useCmd('${c}')">${c}</button>
-  `).join('');
+function addMsg(r,txt){
+  const box=document.getElementById('msgs');
+  const d=document.createElement('div');d.className='msg '+(r==='j'?'j':'u');
+  d.innerHTML=`<div class="mfrom">${r==='j'?'JARVIS':'SHANKAR'}</div><div class="mbody">${txt}</div>`;
+  box.insertBefore(d,document.getElementById('typing'));box.scrollTop=99999;
 }
+function showT(s){document.getElementById('typing').className='typing'+(s?' show':'');document.getElementById('msgs').scrollTop=99999}
+function useCmd(t){document.getElementById('inp').value=t;send()}
 
-// ── BOOT MESSAGE ─────────────────────────────────────────────────────────────
-function boot() {
-  const mode = getMode();
-  const done = MISSIONS.filter(m => todayDone[m.id]).map(m => m.text);
-  const pending = MISSIONS.filter(m => !todayDone[m.id]).map(m => m.text);
-  const stats = getStats();
-
-  const boots = {
-    early: `JARVIS ONLINE. ${new Date().toLocaleTimeString('en-IN', {hour:'2-digit',minute:'2-digit'})} — You are awake before the world.\n\nMissions pending: ${pending.length}.\n\nStart with meditation. Everything else follows. Talk to me.`,
-    morning: `JARVIS ONLINE. Morning ops active.\n\n${done.length > 0 ? 'Completed: ' + done.join(', ') + '.\n' : 'Nothing completed yet today.\n'}\nPending: ${pending.join(', ')}.\n\nWhat is your market hypothesis for today before 9 AM?`,
-    afternoon: `JARVIS CHECKING IN.\n\nDay ${dayNumber()} · ${stats.pct}% missions done · Streak: ${stats.streak} days.\n\nYou have ${pending.length} missions still open: ${pending.join(', ')}.\n\nWhat are you working on right now? Be specific.`,
-    evening: `JARVIS EVENING REVIEW.\n\nMissions done: ${done.length}/${MISSIONS.length}.\n${pending.length > 0 ? 'Not done: ' + pending.join(', ') + '.\n' : 'Full mission day.\n'}\nBe honest — what actually happened today versus what you planned this morning?`,
-    weekend: `JARVIS WEEKEND MODE.\n\nLast weekend: self-reported sleeping and reading. That is your baseline.\n\nToday's missions done: ${done.length}/${MISSIONS.length}.\n\nWhat is the one thing that if done before Sunday night, will make this weekend count?`
-  };
-
-  document.getElementById('boot-msg').textContent = boots[mode] || boots.morning;
-  renderCommands();
-}
-
-// ── AI CALL ──────────────────────────────────────────────────────────────────
-async function callAI(userMsg) {
-  if (!apiKey || apiKey === 'BASIC') {
-    return basicResponse(userMsg);
+async function send(){
+  const inp=document.getElementById('inp');const txt=inp.value.trim();
+  if(!txt||busy)return;inp.value='';busy=true;document.getElementById('sbtn').disabled=true;
+  addMsg('u',txt);
+  const key=getKey();
+  if(!key||key==='BASIC'){
+    const am=activeMissions();const pd=am.filter(m=>!done[m.id]).map(m=>m.name);
+    addMsg('j',`BASIC MODE — AI not connected.\n\nPending: ${pd.join(', ')||'All clear'}.\n\nGo to Settings → Connect AI for full coaching.`);
+    busy=false;document.getElementById('sbtn').disabled=false;return;
   }
-
-  const done = MISSIONS.filter(m => todayDone[m.id]).map(m => m.text);
-  const pending = MISSIONS.filter(m => !todayDone[m.id]).map(m => m.text);
-  const stats = getStats();
-  const ctx = `[${today()} | ${getMode()} | Day ${dayNumber()} | Done: ${done.join(', ') || 'none'} | Pending: ${pending.join(', ')} | Streak: ${stats.streak}d | Today: ${stats.pct}%]`;
-
-  history.push({ role: 'user', content: ctx + '\n\n' + userMsg });
-
-  const res = await fetch('https://api.anthropic.com/v1/messages', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json', 'x-api-key': apiKey, 'anthropic-version': '2023-06-01' },
-    body: JSON.stringify({
-      model: 'claude-sonnet-4-6',
-      max_tokens: 1000,
-      system: SYSTEM,
-      messages: history
-    })
-  });
-
-  if (!res.ok) {
-    const err = await res.json();
-    throw new Error(err.error?.message || 'API error');
+  const am=activeMissions();
+  const dn=am.filter(m=>done[m.id]).map(m=>m.name);
+  const pd=am.filter(m=>!done[m.id]).map(m=>m.name);
+  const s=stats();
+  const ctx=`[${td()} | ${mode()} | Day ${dayN()} | Done:${dn.join(',')||'none'} | Pending:${pd.join(',')} | Streak:${s.streak}d | ${s.pct}%]`;
+  hist.push({role:'user',content:ctx+'\n\n'+txt});showT(true);
+  try{
+    const res=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',headers:{'Content-Type':'application/json','x-api-key':key,'anthropic-version':'2023-06-01'},body:JSON.stringify({model:'claude-sonnet-4-6',max_tokens:500,system:SYS,messages:hist})});
+    if(!res.ok){const e=await res.json();throw new Error(e.error?.message||'API error '+res.status)}
+    const data=await res.json();const reply=data.content?.[0]?.text||'No response.';
+    hist.push({role:'assistant',content:reply});svh();
+    const n=parseInt(localStorage.getItem('j_sess')||'0')+1;localStorage.setItem('j_sess',''+n);renderMetrics();
+    showT(false);addMsg('j',reply);
+  }catch(err){
+    showT(false);
+    if(err.message.includes('401')||err.message.includes('auth')){localStorage.removeItem('j_key');addMsg('j','API key rejected. Go to Settings → Connect AI.');}
+    else addMsg('j','Error: '+err.message);
   }
-
-  const data = await res.json();
-  const reply = data.content?.[0]?.text || 'No response.';
-  history.push({ role: 'assistant', content: reply });
-  saveHistory();
-
-  const n = parseInt(localStorage.getItem('jarvis_sessions') || '0') + 1;
-  localStorage.setItem('jarvis_sessions', n);
-  renderMetrics();
-
-  return reply;
+  busy=false;document.getElementById('sbtn').disabled=false;
 }
 
-function basicResponse(msg) {
-  const mode = getMode();
-  const pending = MISSIONS.filter(m => !todayDone[m.id]).map(m => m.text);
-  const pct = getStats().pct;
+function saveKey(){const v=document.getElementById('akinp').value.trim();if(!v)return alert('Enter key.');if(!v.startsWith('sk-'))return alert('Key must start with sk-');localStorage.setItem('j_key',v);document.getElementById('akinp').value='';renderAKey();alert('AI Connected. Go to Coach tab.')}
+function removeKey(){if(!confirm('Remove API key?'))return;localStorage.removeItem('j_key');renderAKey()}
+function saveAlertTimes(){sval();if(Notification.permission==='granted')schedAlerts();alert('Alert times saved.')}
 
-  if (pct === 100) return `All missions complete. Exceptional. Rest and prepare for tomorrow. Same standard, every day.`;
-  if (pending.length > 0) return `JARVIS BASIC MODE — AI not connected.\n\nPending missions: ${pending.join(', ')}.\n\nEnable AI coaching by entering your Anthropic API key for real-time analysis.`;
-  return `JARVIS BASIC MODE — Connect your API key for full coaching.`;
+async function reqNotif(){
+  if(!('Notification'in window))return alert('Not supported on this browser.');
+  const p=await Notification.requestPermission();renderNS();
+  if(p==='granted'){schedAlerts();alert('Alerts enabled! JARVIS will monitor you at scheduled times.');}
+  else alert('Alerts blocked. Enable in phone Settings → Browser notifications.');
 }
-
-// ── INTERACTIONS ─────────────────────────────────────────────────────────────
-function toggleMission(id) {
-  todayDone[id] = !todayDone[id];
-  saveDone();
-  renderMissions();
-  renderMetrics();
-  renderStreak();
-
-  // Auto notify JARVIS
-  const m = MISSIONS.find(x => x.id === id);
-  if (todayDone[id]) {
-    addMsg('jarvis', `Mission logged: ${m.text}.\n${checkAllDone()}`);
-  }
-}
-
-function checkAllDone() {
-  const done = MISSIONS.filter(m => todayDone[m.id]).length;
-  if (done === MISSIONS.length) return 'All 7 missions complete. Day logged. Strong.';
-  if (done >= 5) return `${done}/7 done. Keep going.`;
-  return '';
-}
-
-function useCmd(text) {
-  document.getElementById('input').value = text;
-  send();
-}
-
-function addMsg(role, text) {
-  const box = document.getElementById('messages');
-  const div = document.createElement('div');
-  div.className = 'msg ' + (role === 'jarvis' ? 'jarvis' : 'user');
-  div.innerHTML = `
-    <div class="msg-from">${role === 'jarvis' ? 'JARVIS' : 'SHANKAR'}</div>
-    <div class="msg-body">${text}</div>
-  `;
-  box.insertBefore(div, document.getElementById('typing'));
-  box.scrollTop = box.scrollHeight;
-}
-
-function showTyping(show) {
-  document.getElementById('typing').className = 'typing' + (show ? ' show' : '');
-  const box = document.getElementById('messages');
-  box.scrollTop = box.scrollHeight;
-}
-
-async function send() {
-  const inp = document.getElementById('input');
-  const text = inp.value.trim();
-  if (!text || busy) return;
-
-  inp.value = '';
-  busy = true;
-  document.getElementById('send-btn').disabled = true;
-
-  addMsg('user', text);
-  showTyping(true);
-
-  try {
-    const reply = await callAI(text);
-    showTyping(false);
-    addMsg('jarvis', reply);
-  } catch(err) {
-    showTyping(false);
-    if (err.message.includes('401') || err.message.includes('auth')) {
-      addMsg('jarvis', 'Authentication failed. Your API key appears invalid. Update it in setup.');
-      localStorage.removeItem('jarvis_key');
-      apiKey = '';
-      document.getElementById('setup-panel').classList.add('show');
-    } else {
-      addMsg('jarvis', 'Connection error: ' + err.message + '\n\nCheck your network or API key.');
-    }
-  }
-
-  busy = false;
-  document.getElementById('send-btn').disabled = false;
-}
-
-// ── NOTIFICATIONS ─────────────────────────────────────────────────────────────
-function updateNotifStatus() {
-  const el = document.getElementById('notif-status');
-  if (!('Notification' in window)) {
-    el.textContent = '● Notifications: not supported';
-    return;
-  }
-  if (Notification.permission === 'granted') {
-    el.textContent = '● Notifications: ACTIVE';
-    el.className = 'notif-status on';
-  } else {
-    el.textContent = '● Notifications: off';
-    el.className = 'notif-status';
-  }
-}
-
-async function requestNotifications() {
-  if (!('Notification' in window)) {
-    showAlert('Notifications not supported on this browser.');
-    return;
-  }
-  const perm = await Notification.requestPermission();
-  updateNotifStatus();
-  if (perm === 'granted') {
-    addMsg('jarvis', 'Notification access granted. JARVIS will alert you at:\n• 3:15 AM — Meditation check\n• 8:00 AM — Office mode activation\n• 1:00 PM — Midday review\n• 7:30 PM — Home arrival check\n• 10:00 PM — Pre-sleep review\n\nKeep this app open or installed on your home screen for alerts to work.');
-    scheduleNotifications();
-  } else {
-    addMsg('jarvis', 'Notifications blocked. You will not receive alerts. Open this app manually for check-ins.');
-  }
-}
-
-function scheduleNotifications() {
-  const now = new Date();
-  const schedule = [
-    { h: 3, m: 15, title: '⚡ JARVIS | 3:15 AM', body: 'Shankar. Meditation time. Your Shiva is waiting. Open JARVIS.' },
-    { h: 8, m: 0,  title: '⚡ JARVIS | Office Mode', body: 'Entering office hours. Top priority confirmed? Open JARVIS.' },
-    { h: 13, m: 0, title: '⚡ JARVIS | Midday', body: 'Half the day gone. What have you completed? Open JARVIS.' },
-    { h: 19, m: 30,title: '⚡ JARVIS | You Are Home', body: 'Office hours over. Evening review begins now. Open JARVIS.' },
-    { h: 22, m: 0, title: '⚡ JARVIS | Pre-Sleep', body: 'Did you do what you said this morning? Open JARVIS.' }
-  ];
-
-  schedule.forEach(s => {
-    const target = new Date();
-    target.setHours(s.h, s.m, 0, 0);
-    if (target < now) target.setDate(target.getDate() + 1);
-    const delay = target - now;
-    setTimeout(() => {
-      if (Notification.permission === 'granted') {
-        new Notification(s.title, {
-          body: s.body,
-          icon: '⚡',
-          requireInteraction: true,
-          vibrate: [200, 100, 200]
-        });
-      }
-      // Reschedule for next day
-      setTimeout(() => scheduleNotifications(), 1000);
-    }, delay);
+function schedAlerts(){
+  alerts.forEach(a=>{
+    const[h,m]=a.time.split(':').map(Number);const now=new Date();const t=new Date();t.setHours(h,m,0,0);
+    if(t<=now)t.setDate(t.getDate()+1);
+    setTimeout(()=>{fire('⚡ JARVIS | '+a.label,a.msg);setInterval(()=>fire('⚡ JARVIS | '+a.label,a.msg),86400000)},t-now);
   });
 }
+function fire(title,body){if(Notification.permission==='granted')new Notification(title,{body,requireInteraction:true,vibrate:[200,100,200]})}
+function testNotif(){if(Notification.permission!=='granted'){reqNotif();return}fire('⚡ JARVIS TEST','Shankar. Alert system working. You are being monitored.')}
+function resetAll(){if(!confirm('Reset ALL data?'))return;const ks=[];for(let i=0;i<localStorage.length;i++){const k=localStorage.key(i);if(k&&k.startsWith('j_'))ks.push(k)}ks.forEach(k=>localStorage.removeItem(k));location.reload()}
 
-function testNotif() {
-  if (Notification.permission !== 'granted') {
-    requestNotifications();
-    return;
-  }
-  new Notification('⚡ JARVIS TEST', {
-    body: 'Shankar. JARVIS alert system is working. You will be monitored.',
-    requireInteraction: false
-  });
-  addMsg('jarvis', 'Test alert sent. If you received it — notification system is working.');
-}
+document.getElementById('inp').addEventListener('keydown',e=>{if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();send()}});
 
-function showAlert(msg) {
-  const el = document.getElementById('alert-panel');
-  document.getElementById('alert-text').textContent = msg;
-  el.classList.add('show');
-  setTimeout(() => el.classList.remove('show'), 5000);
-}
-
-function resetAll() {
-  if (!confirm('Reset all JARVIS data? Cannot be undone.')) return;
-  const keys = [];
-  for (let i = 0; i < localStorage.length; i++) {
-    const k = localStorage.key(i);
-    if (k && k.startsWith('jarvis')) keys.push(k);
-  }
-  keys.forEach(k => localStorage.removeItem(k));
-  location.reload();
-}
-
-// ── INIT ──────────────────────────────────────────────────────────────────────
-load();
-
-if (!apiKey) {
-  document.getElementById('setup-panel').classList.add('show');
-} else {
-  boot();
-}
-
-renderAll();
-renderCommands();
-updateNotifStatus();
-
-// Auto-schedule if already permitted
-if (Notification.permission === 'granted') {
-  scheduleNotifications();
-}
-
-// Enter to send
-document.getElementById('input').addEventListener('keydown', e => {
-  if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); send(); }
-});
-
-// Refresh clock and check for time-based alerts
-setInterval(() => {
-  renderClock();
-  const now = new Date();
-  const h = now.getHours(), m = now.getMinutes();
-  // If mode just changed — update UI
-  renderMode();
-  renderCommands();
-}, 60000);
-
-// Register service worker if on HTTPS
-if ('serviceWorker' in navigator && location.protocol === 'https:') {
-  navigator.serviceWorker.register('jarvis-sw.js')
-    .then(reg => console.log('JARVIS SW registered:', reg.scope))
-    .catch(err => console.log('SW registration failed:', err));
-}
+load();startClock();renderHome();renderCmode();renderCmds();boot();
+if(Notification.permission==='granted')schedAlerts();
+setInterval(()=>{renderCmode();renderCmds();renderHome()},60000);
+if('serviceWorker'in navigator&&location.protocol==='https:')navigator.serviceWorker.register('jarvis-sw.js').catch(()=>{});
 </script>
 </body>
 </html>
