@@ -1,0 +1,1140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="SS JARVIS">
+<meta name="theme-color" content="#0A0A08">
+<link rel="manifest" id="manifest-placeholder">
+<title>SS JARVIS</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;700;900&family=Share+Tech+Mono&display=swap');
+
+:root {
+  --gold: #C9A84C;
+  --gold-dim: #7A5F20;
+  --gold-bright: #F0C040;
+  --bg: #040408;
+  --bg2: #0A0A12;
+  --bg3: #0F0F1A;
+  --text: #C8D8E8;
+  --text-dim: #506070;
+  --red: #FF3040;
+  --green: #00FF80;
+  --blue: #0080FF;
+  --border: rgba(0,128,255,0.15);
+  --gold-border: rgba(201,168,76,0.2);
+}
+
+* { margin:0; padding:0; box-sizing:border-box; }
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: 'Share Tech Mono', monospace;
+  min-height: 100vh;
+  overflow-x: hidden;
+  user-select: none;
+}
+
+/* Animated background grid */
+body::before {
+  content:'';
+  position:fixed;
+  inset:0;
+  background-image: 
+    linear-gradient(rgba(0,128,255,0.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(0,128,255,0.03) 1px, transparent 1px);
+  background-size: 40px 40px;
+  pointer-events:none;
+  z-index:0;
+}
+
+body::after {
+  content:'';
+  position:fixed;
+  inset:0;
+  background: 
+    radial-gradient(ellipse at 50% 0%, rgba(0,128,255,0.08) 0%, transparent 60%),
+    radial-gradient(ellipse at 50% 100%, rgba(201,168,76,0.05) 0%, transparent 60%);
+  pointer-events:none;
+  z-index:0;
+}
+
+.app { position:relative; z-index:1; max-width:640px; margin:0 auto; padding:16px; }
+
+/* ── HEADER ── */
+.header {
+  padding: 20px 0 16px;
+  border-bottom: 1px solid var(--border);
+  margin-bottom: 16px;
+  position: relative;
+}
+
+.jarvis-logo {
+  font-family: 'Orbitron', sans-serif;
+  font-size: 1.8rem;
+  font-weight: 900;
+  letter-spacing: 0.3em;
+  color: var(--gold);
+  text-shadow: 0 0 20px rgba(201,168,76,0.4), 0 0 60px rgba(201,168,76,0.1);
+}
+
+.jarvis-sub {
+  font-size: 0.6rem;
+  color: var(--text-dim);
+  letter-spacing: 0.4em;
+  text-transform: uppercase;
+  margin-top: 4px;
+}
+
+.status-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-top: 12px;
+  flex-wrap: wrap;
+}
+
+.status-dot {
+  width: 8px; height: 8px;
+  border-radius: 50%;
+  background: var(--green);
+  box-shadow: 0 0 8px var(--green);
+  animation: pulse-dot 2s infinite;
+}
+
+@keyframes pulse-dot {
+  0%,100% { opacity:1; transform:scale(1); }
+  50% { opacity:0.5; transform:scale(0.8); }
+}
+
+.status-text {
+  font-size: 0.65rem;
+  color: var(--green);
+  letter-spacing: 0.15em;
+}
+
+.clock {
+  font-family: 'Orbitron', sans-serif;
+  font-size: 0.75rem;
+  color: var(--gold);
+  letter-spacing: 0.1em;
+  margin-left: auto;
+}
+
+/* ── SETUP PANEL ── */
+.setup-panel {
+  background: var(--bg2);
+  border: 1px solid var(--gold-border);
+  padding: 20px;
+  margin-bottom: 16px;
+  display: none;
+}
+
+.setup-panel.show { display: block; }
+
+.setup-title {
+  font-family: 'Orbitron', sans-serif;
+  font-size: 0.7rem;
+  color: var(--gold);
+  letter-spacing: 0.2em;
+  margin-bottom: 12px;
+}
+
+.setup-note {
+  font-size: 0.65rem;
+  color: var(--text-dim);
+  line-height: 1.6;
+  margin-bottom: 12px;
+}
+
+.api-input {
+  width: 100%;
+  background: var(--bg3);
+  border: 1px solid var(--border);
+  color: var(--text);
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 0.72rem;
+  padding: 10px 12px;
+  outline: none;
+  margin-bottom: 10px;
+}
+
+.api-input:focus { border-color: var(--gold-dim); }
+
+.btn {
+  background: transparent;
+  border: 1px solid var(--gold-dim);
+  color: var(--gold);
+  font-family: 'Orbitron', sans-serif;
+  font-size: 0.6rem;
+  font-weight: 700;
+  letter-spacing: 0.2em;
+  padding: 10px 18px;
+  cursor: pointer;
+  transition: all 0.2s;
+  text-transform: uppercase;
+}
+
+.btn:hover { background: var(--gold); color: var(--bg); border-color: var(--gold); }
+.btn.secondary { border-color: var(--border); color: var(--text-dim); font-size: 0.55rem; }
+.btn.secondary:hover { border-color: var(--text-dim); background: transparent; color: var(--text); }
+.btn.danger { border-color: var(--red); color: var(--red); }
+.btn.danger:hover { background: var(--red); color: var(--bg); }
+
+/* ── METRICS ── */
+.metrics {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1px;
+  background: var(--border);
+  border: 1px solid var(--border);
+  margin-bottom: 16px;
+}
+
+.metric {
+  background: var(--bg2);
+  padding: 12px 8px;
+  text-align: center;
+}
+
+.metric-val {
+  font-family: 'Orbitron', sans-serif;
+  font-size: 1.3rem;
+  font-weight: 700;
+  color: var(--gold);
+}
+
+.metric-val.green { color: var(--green); text-shadow: 0 0 10px rgba(0,255,128,0.3); }
+.metric-val.red { color: var(--red); }
+
+.metric-label {
+  font-size: 0.52rem;
+  color: var(--text-dim);
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  margin-top: 3px;
+}
+
+/* ── MISSION BOARD ── */
+.section {
+  margin-bottom: 16px;
+}
+
+.section-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 10px;
+}
+
+.section-label {
+  font-size: 0.58rem;
+  letter-spacing: 0.3em;
+  color: var(--text-dim);
+  text-transform: uppercase;
+  flex: 1;
+}
+
+.section-line {
+  flex: 1;
+  height: 1px;
+  background: var(--border);
+}
+
+.missions {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 6px;
+}
+
+.mission {
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  padding: 10px 12px;
+  cursor: pointer;
+  transition: all 0.15s;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  position: relative;
+  overflow: hidden;
+}
+
+.mission::before {
+  content: '';
+  position: absolute;
+  left: 0; top: 0; bottom: 0;
+  width: 2px;
+  background: var(--text-dim);
+  transition: background 0.2s;
+}
+
+.mission:hover { border-color: var(--gold-dim); }
+
+.mission.done {
+  border-color: rgba(0,255,128,0.2);
+  background: rgba(0,255,128,0.03);
+}
+
+.mission.done::before { background: var(--green); box-shadow: 0 0 8px var(--green); }
+
+.mission-icon { font-size: 1rem; flex-shrink: 0; }
+
+.mission-text {
+  font-size: 0.65rem;
+  color: var(--text);
+  line-height: 1.3;
+}
+
+.mission.done .mission-text { color: var(--text-dim); text-decoration: line-through; }
+
+/* ── STREAK ── */
+.streak-row {
+  display: flex;
+  gap: 4px;
+}
+
+.streak-pip {
+  flex: 1;
+  height: 24px;
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.5rem;
+  color: var(--text-dim);
+  font-family: 'Orbitron', sans-serif;
+  transition: all 0.2s;
+}
+
+.streak-pip.hot {
+  background: rgba(0,255,128,0.1);
+  border-color: var(--green);
+  color: var(--green);
+  box-shadow: 0 0 8px rgba(0,255,128,0.2);
+}
+
+.streak-pip.warm {
+  background: rgba(201,168,76,0.1);
+  border-color: var(--gold-dim);
+  color: var(--gold);
+}
+
+/* ── CHAT ── */
+.chat-container {
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  margin-bottom: 12px;
+}
+
+.chat-header {
+  padding: 10px 14px;
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.chat-header-dot {
+  width: 6px; height: 6px;
+  border-radius: 50%;
+  background: var(--gold);
+  animation: pulse-dot 1.5s infinite;
+}
+
+.chat-header-text {
+  font-family: 'Orbitron', sans-serif;
+  font-size: 0.58rem;
+  color: var(--gold);
+  letter-spacing: 0.2em;
+}
+
+.chat-mode {
+  margin-left: auto;
+  font-size: 0.52rem;
+  color: var(--text-dim);
+  letter-spacing: 0.1em;
+}
+
+.messages {
+  height: 300px;
+  overflow-y: auto;
+  padding: 16px;
+  scroll-behavior: smooth;
+}
+
+.messages::-webkit-scrollbar { width: 2px; }
+.messages::-webkit-scrollbar-thumb { background: var(--gold-dim); }
+
+.msg { margin-bottom: 16px; animation: msgIn 0.3s ease; }
+@keyframes msgIn { from { opacity:0; transform:translateY(8px); } to { opacity:1; transform:translateY(0); } }
+
+.msg-from {
+  font-size: 0.52rem;
+  letter-spacing: 0.25em;
+  text-transform: uppercase;
+  margin-bottom: 5px;
+}
+
+.msg.jarvis .msg-from { color: var(--gold-dim); }
+.msg.user .msg-from { color: var(--text-dim); }
+
+.msg-body {
+  font-size: 0.78rem;
+  line-height: 1.65;
+  white-space: pre-wrap;
+}
+
+.msg.jarvis .msg-body { color: var(--text); }
+.msg.user .msg-body { color: var(--text-dim); font-style: italic; }
+
+.typing {
+  display: none;
+  margin-bottom: 16px;
+}
+.typing.show { display: block; }
+.typing-inner {
+  display: inline-flex;
+  gap: 5px;
+  padding: 6px 0;
+}
+.typing-inner span {
+  width: 5px; height: 5px;
+  background: var(--gold-dim);
+  border-radius: 50%;
+  animation: blink 1.2s infinite;
+}
+.typing-inner span:nth-child(2) { animation-delay: 0.2s; }
+.typing-inner span:nth-child(3) { animation-delay: 0.4s; }
+@keyframes blink { 0%,60%,100%{opacity:0.2;transform:scale(0.8)} 30%{opacity:1;transform:scale(1)} }
+
+/* Quick commands */
+.cmds {
+  padding: 10px 14px;
+  border-top: 1px solid var(--border);
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
+.cmd {
+  background: transparent;
+  border: 1px solid var(--border);
+  color: var(--text-dim);
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 0.58rem;
+  padding: 4px 8px;
+  cursor: pointer;
+  transition: all 0.15s;
+  letter-spacing: 0.05em;
+}
+.cmd:hover { border-color: var(--gold-dim); color: var(--gold); }
+
+/* Input */
+.input-area {
+  display: flex;
+  gap: 6px;
+}
+
+textarea {
+  flex: 1;
+  background: var(--bg3);
+  border: 1px solid var(--border);
+  color: var(--text);
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 0.78rem;
+  padding: 10px 12px;
+  resize: none;
+  height: 70px;
+  outline: none;
+  line-height: 1.5;
+}
+
+textarea:focus { border-color: var(--gold-dim); }
+textarea::placeholder { color: var(--text-dim); font-size: 0.7rem; }
+
+.send-btn {
+  background: transparent;
+  border: 1px solid var(--gold-dim);
+  color: var(--gold);
+  font-family: 'Orbitron', sans-serif;
+  font-size: 0.55rem;
+  font-weight: 700;
+  letter-spacing: 0.15em;
+  padding: 0 16px;
+  cursor: pointer;
+  transition: all 0.2s;
+  min-width: 70px;
+}
+.send-btn:hover { background: var(--gold); color: var(--bg); }
+.send-btn:disabled { opacity: 0.3; cursor: not-allowed; }
+
+/* ── ALERTS ── */
+.alert-panel {
+  background: rgba(255,48,64,0.05);
+  border: 1px solid rgba(255,48,64,0.3);
+  padding: 12px 16px;
+  margin-bottom: 16px;
+  display: none;
+}
+.alert-panel.show { display: block; }
+.alert-text {
+  font-size: 0.7rem;
+  color: var(--red);
+  line-height: 1.6;
+}
+
+/* ── FOOTER ── */
+.footer {
+  display: flex;
+  gap: 8px;
+  margin-top: 20px;
+  padding-top: 16px;
+  border-top: 1px solid var(--border);
+  flex-wrap: wrap;
+}
+
+.notif-status {
+  font-size: 0.58rem;
+  color: var(--text-dim);
+  letter-spacing: 0.1em;
+  padding: 6px 0;
+  flex: 1;
+}
+
+.notif-status.on { color: var(--green); }
+
+/* ── SCAN ANIMATION ── */
+@keyframes scan {
+  0% { transform: translateY(-100%); }
+  100% { transform: translateY(100vh); }
+}
+
+.scan-line {
+  position: fixed;
+  left: 0; right: 0;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, rgba(0,128,255,0.1), rgba(0,128,255,0.3), rgba(0,128,255,0.1), transparent);
+  animation: scan 4s linear infinite;
+  pointer-events: none;
+  z-index: 999;
+}
+
+@media (max-width:480px) {
+  .missions { grid-template-columns: 1fr; }
+  .metrics { grid-template-columns: repeat(2,1fr); }
+  .jarvis-logo { font-size: 1.4rem; }
+}
+</style>
+</head>
+<body>
+<div class="scan-line"></div>
+
+<div class="app">
+
+  <!-- Header -->
+  <div class="header">
+    <div class="jarvis-logo">SS JARVIS</div>
+    <div class="jarvis-sub">Shankar Singh Command Intelligence · Active Since 29 Apr 2026</div>
+    <div class="status-row">
+      <div class="status-dot"></div>
+      <div class="status-text" id="status-text">SYSTEMS ONLINE</div>
+      <div class="clock" id="clock">--:--</div>
+    </div>
+  </div>
+
+  <!-- Setup / API Key -->
+  <div class="setup-panel" id="setup-panel">
+    <div class="setup-title">⚡ JARVIS INITIALIZATION</div>
+    <div class="setup-note">
+      To activate AI coaching, enter your Anthropic API key.<br>
+      Get it at: console.anthropic.com → API Keys<br>
+      Key is stored locally on your device only.
+    </div>
+    <input type="password" class="api-input" id="api-key-input" placeholder="sk-ant-api03-...">
+    <div style="display:flex;gap:8px;flex-wrap:wrap;">
+      <button class="btn" onclick="saveApiKey()">Activate JARVIS</button>
+      <button class="btn secondary" onclick="skipSetup()">Use Without AI (Basic Mode)</button>
+    </div>
+  </div>
+
+  <!-- Alert -->
+  <div class="alert-panel" id="alert-panel">
+    <div class="alert-text" id="alert-text"></div>
+  </div>
+
+  <!-- Metrics -->
+  <div class="metrics">
+    <div class="metric">
+      <div class="metric-val" id="m-streak">0</div>
+      <div class="metric-label">Streak</div>
+    </div>
+    <div class="metric">
+      <div class="metric-val" id="m-done">0%</div>
+      <div class="metric-label">Today</div>
+    </div>
+    <div class="metric">
+      <div class="metric-val" id="m-sessions">0</div>
+      <div class="metric-label">Sessions</div>
+    </div>
+    <div class="metric">
+      <div class="metric-val" id="m-days">0</div>
+      <div class="metric-label">Day</div>
+    </div>
+  </div>
+
+  <!-- Missions -->
+  <div class="section">
+    <div class="section-header">
+      <div class="section-label">Daily Missions</div>
+      <div class="section-line"></div>
+    </div>
+    <div class="missions" id="missions"></div>
+  </div>
+
+  <!-- 7-day streak -->
+  <div class="section">
+    <div class="section-header">
+      <div class="section-label">7-Day Consistency</div>
+      <div class="section-line"></div>
+    </div>
+    <div class="streak-row" id="streak-row"></div>
+  </div>
+
+  <!-- Chat -->
+  <div class="section">
+    <div class="section-header">
+      <div class="section-label" id="session-label">Active Session</div>
+      <div class="section-line"></div>
+    </div>
+    <div class="chat-container">
+      <div class="chat-header">
+        <div class="chat-header-dot"></div>
+        <div class="chat-header-text">JARVIS COACHING INTERFACE</div>
+        <div class="chat-mode" id="mode-label">LOADING</div>
+      </div>
+      <div class="messages" id="messages">
+        <div class="msg jarvis">
+          <div class="msg-from">JARVIS</div>
+          <div class="msg-body" id="boot-msg">Initializing...</div>
+        </div>
+        <div class="typing" id="typing">
+          <div class="msg-from" style="font-size:0.52rem;letter-spacing:0.25em;color:var(--gold-dim);margin-bottom:5px;">JARVIS</div>
+          <div class="typing-inner"><span></span><span></span><span></span></div>
+        </div>
+      </div>
+      <div class="cmds" id="cmds"></div>
+    </div>
+    <div class="input-area">
+      <textarea id="input" placeholder="Talk to JARVIS... (Enter to send)"></textarea>
+      <button class="send-btn" id="send-btn" onclick="send()">SEND</button>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <div class="footer">
+    <div class="notif-status" id="notif-status">● Notifications: checking...</div>
+    <button class="btn secondary" onclick="requestNotifications()">Enable Alerts</button>
+    <button class="btn secondary" onclick="testNotif()">Test Alert</button>
+    <button class="btn danger" onclick="resetAll()">Reset</button>
+  </div>
+
+</div>
+
+<script>
+// ── CONFIG ──────────────────────────────────────────────────────────────────
+const MISSIONS = [
+  { id: 'meditation', icon: '🧘', text: 'Morning Meditation' },
+  { id: 'market',     icon: '📊', text: 'Market Analysis' },
+  { id: 'equity',     icon: '💹', text: 'Equity Review' },
+  { id: 'law',        icon: '⚖️', text: 'Law / A&K Work' },
+  { id: 'command',    icon: '🖥️', text: 'SS Command Centre' },
+  { id: 'physical',   icon: '🏃', text: 'Physical Activity' },
+  { id: 'review',     icon: '🌙', text: 'Evening Review' }
+];
+
+const START_DATE = new Date('2026-04-29');
+
+const SYSTEM = `You are SS JARVIS — Shankar Singh's personal command intelligence. You are not a chatbot. You are a monitoring system with attitude.
+
+SHANKAR'S PROFILE:
+- CA, CS, LLB — lawyer + Finance/Compliance at Abercrombie & Kent India, Jamshedpur
+- Wakes 3:00 AM daily. Office 8 AM–7:30 PM weekdays. Off weekends.
+- Married to Priya. Sons: Avnish and Samarth.
+- Deep Advaita Vedanta practitioner. Goal: conscious Samadhi by 2050.
+- Intraday trader: Nifty/Sensex, 3-min charts, TradingView.
+- 5-bucket equity compounding system. ₹20 crore corpus target. 101 steps.
+- Lost ₹30 lakhs in markets. Tight budget currently.
+- Biggest battle: knows everything, does too little. Bridge that gap.
+
+DAILY MISSIONS TO TRACK:
+1. Morning Meditation (3–4 AM)
+2. Market Analysis (pre-market hypothesis)
+3. Equity Review (positions + journal)
+4. Law / A&K Work (at least one real task)
+5. SS Command Centre (update and use)
+6. Physical Activity (any movement)
+7. Evening Review (honest self-assessment)
+
+YOUR STYLE — JARVIS, NOT A CHEERLEADER:
+- Short. Sharp. Direct. No motivation speech. No flattery.
+- Reference what he told you previously. Hold him accountable.
+- If missions are incomplete, name them specifically.
+- If it's weekend and he's drifting — call it immediately.
+- Ask ONE focused question. Don't give speeches.
+- Under 120 words unless he asks for something detailed.
+- You are monitoring him. He knows this. Speak accordingly.
+- If he gets philosophical without having done his work — redirect: "Missions first. Philosophy after."`;
+
+// ── STATE ────────────────────────────────────────────────────────────────────
+let apiKey = '';
+let history = [];
+let todayDone = {};
+let busy = false;
+
+function today() { return new Date().toISOString().split('T')[0]; }
+
+function getMode() {
+  const h = new Date().getHours();
+  const d = new Date().getDay();
+  if (d === 0 || d === 6) return 'weekend';
+  if (h < 8) return 'early';
+  if (h < 13) return 'morning';
+  if (h < 19) return 'afternoon';
+  return 'evening';
+}
+
+function dayNumber() {
+  const diff = new Date() - START_DATE;
+  return Math.max(1, Math.floor(diff / 86400000) + 1);
+}
+
+function load() {
+  apiKey = localStorage.getItem('jarvis_key') || '';
+  const td = localStorage.getItem('jarvis_done_' + today());
+  todayDone = td ? JSON.parse(td) : {};
+  const h = localStorage.getItem('jarvis_history');
+  history = h ? JSON.parse(h) : [];
+}
+
+function saveDone() {
+  localStorage.setItem('jarvis_done_' + today(), JSON.stringify(todayDone));
+}
+
+function saveHistory() {
+  localStorage.setItem('jarvis_history', JSON.stringify(history.slice(-30)));
+}
+
+function saveApiKey() {
+  const val = document.getElementById('api-key-input').value.trim();
+  if (!val.startsWith('sk-')) {
+    showAlert('Invalid key format. Must start with sk-ant-api03-');
+    return;
+  }
+  localStorage.setItem('jarvis_key', val);
+  apiKey = val;
+  document.getElementById('setup-panel').classList.remove('show');
+  boot();
+}
+
+function skipSetup() {
+  localStorage.setItem('jarvis_key', 'BASIC');
+  apiKey = 'BASIC';
+  document.getElementById('setup-panel').classList.remove('show');
+  boot();
+}
+
+function getStats() {
+  let streak = 0;
+  for (let i = 0; i < 30; i++) {
+    const d = new Date();
+    d.setDate(d.getDate() - i);
+    const key = 'jarvis_done_' + d.toISOString().split('T')[0];
+    const data = localStorage.getItem(key);
+    if (data) {
+      const g = JSON.parse(data);
+      if (Object.values(g).some(Boolean)) {
+        if (i === streak) streak++;
+      } else break;
+    } else if (i > 0) break;
+  }
+  const sessions = parseInt(localStorage.getItem('jarvis_sessions') || '0');
+  const done = MISSIONS.filter(m => todayDone[m.id]).length;
+  const pct = Math.round((done / MISSIONS.length) * 100);
+  return { streak, sessions, pct };
+}
+
+function get7Day() {
+  const days = [];
+  const names = ['S','M','T','W','T','F','S'];
+  for (let i = 6; i >= 0; i--) {
+    const d = new Date();
+    d.setDate(d.getDate() - i);
+    const key = 'jarvis_done_' + d.toISOString().split('T')[0];
+    const data = localStorage.getItem(key);
+    let cls = '';
+    if (data) {
+      const g = JSON.parse(data);
+      const cnt = Object.values(g).filter(Boolean).length;
+      if (cnt >= 5) cls = 'hot';
+      else if (cnt > 0) cls = 'warm';
+    }
+    days.push({ label: names[d.getDay()], cls });
+  }
+  return days;
+}
+
+// ── RENDER ───────────────────────────────────────────────────────────────────
+function renderAll() {
+  renderClock();
+  renderMissions();
+  renderStreak();
+  renderMetrics();
+  renderMode();
+}
+
+function renderClock() {
+  const now = new Date();
+  const t = now.toLocaleTimeString('en-IN', { hour:'2-digit', minute:'2-digit', hour12:true });
+  document.getElementById('clock').textContent = t;
+}
+
+function renderMissions() {
+  document.getElementById('missions').innerHTML = MISSIONS.map(m => `
+    <div class="mission ${todayDone[m.id] ? 'done' : ''}" onclick="toggleMission('${m.id}')">
+      <span class="mission-icon">${m.icon}</span>
+      <span class="mission-text">${m.text}</span>
+    </div>
+  `).join('');
+}
+
+function renderStreak() {
+  const days = get7Day();
+  document.getElementById('streak-row').innerHTML = days.map(d => `
+    <div class="streak-pip ${d.cls}">${d.label}</div>
+  `).join('');
+}
+
+function renderMetrics() {
+  const s = getStats();
+  const dn = dayNumber();
+  document.getElementById('m-streak').textContent = s.streak;
+  document.getElementById('m-streak').className = 'metric-val ' + (s.streak >= 3 ? 'green' : s.streak === 0 ? 'red' : '');
+  document.getElementById('m-done').textContent = s.pct + '%';
+  document.getElementById('m-done').className = 'metric-val ' + (s.pct >= 70 ? 'green' : s.pct < 30 ? 'red' : '');
+  document.getElementById('m-sessions').textContent = s.sessions;
+  document.getElementById('m-days').textContent = dn;
+}
+
+function renderMode() {
+  const mode = getMode();
+  const labels = {
+    early: 'PRE-DAWN MODE',
+    morning: 'MORNING OPS',
+    afternoon: 'OFFICE MODE',
+    evening: 'EVENING REVIEW',
+    weekend: 'WEEKEND MODE'
+  };
+  document.getElementById('mode-label').textContent = labels[mode] || 'ACTIVE';
+}
+
+function renderCommands() {
+  const mode = getMode();
+  const cmds = {
+    early: ['Morning check-in', 'How did I sleep?', 'Today\'s top priority'],
+    morning: ['Morning check-in', 'Market hypothesis', 'What\'s pending?'],
+    afternoon: ['Midday report', 'What I\'ve done', 'I\'m losing focus'],
+    evening: ['Evening review', 'Honest assessment', 'Tomorrow\'s plan'],
+    weekend: ['Weekend check-in', 'I am drifting', 'What should I do now?']
+  };
+  const list = cmds[mode] || cmds.morning;
+  document.getElementById('cmds').innerHTML = list.map(c => `
+    <button class="cmd" onclick="useCmd('${c}')">${c}</button>
+  `).join('');
+}
+
+// ── BOOT MESSAGE ─────────────────────────────────────────────────────────────
+function boot() {
+  const mode = getMode();
+  const done = MISSIONS.filter(m => todayDone[m.id]).map(m => m.text);
+  const pending = MISSIONS.filter(m => !todayDone[m.id]).map(m => m.text);
+  const stats = getStats();
+
+  const boots = {
+    early: `JARVIS ONLINE. ${new Date().toLocaleTimeString('en-IN', {hour:'2-digit',minute:'2-digit'})} — You are awake before the world.\n\nMissions pending: ${pending.length}.\n\nStart with meditation. Everything else follows. Talk to me.`,
+    morning: `JARVIS ONLINE. Morning ops active.\n\n${done.length > 0 ? 'Completed: ' + done.join(', ') + '.\n' : 'Nothing completed yet today.\n'}\nPending: ${pending.join(', ')}.\n\nWhat is your market hypothesis for today before 9 AM?`,
+    afternoon: `JARVIS CHECKING IN.\n\nDay ${dayNumber()} · ${stats.pct}% missions done · Streak: ${stats.streak} days.\n\nYou have ${pending.length} missions still open: ${pending.join(', ')}.\n\nWhat are you working on right now? Be specific.`,
+    evening: `JARVIS EVENING REVIEW.\n\nMissions done: ${done.length}/${MISSIONS.length}.\n${pending.length > 0 ? 'Not done: ' + pending.join(', ') + '.\n' : 'Full mission day.\n'}\nBe honest — what actually happened today versus what you planned this morning?`,
+    weekend: `JARVIS WEEKEND MODE.\n\nLast weekend: self-reported sleeping and reading. That is your baseline.\n\nToday's missions done: ${done.length}/${MISSIONS.length}.\n\nWhat is the one thing that if done before Sunday night, will make this weekend count?`
+  };
+
+  document.getElementById('boot-msg').textContent = boots[mode] || boots.morning;
+  renderCommands();
+}
+
+// ── AI CALL ──────────────────────────────────────────────────────────────────
+async function callAI(userMsg) {
+  if (!apiKey || apiKey === 'BASIC') {
+    return basicResponse(userMsg);
+  }
+
+  const done = MISSIONS.filter(m => todayDone[m.id]).map(m => m.text);
+  const pending = MISSIONS.filter(m => !todayDone[m.id]).map(m => m.text);
+  const stats = getStats();
+  const ctx = `[${today()} | ${getMode()} | Day ${dayNumber()} | Done: ${done.join(', ') || 'none'} | Pending: ${pending.join(', ')} | Streak: ${stats.streak}d | Today: ${stats.pct}%]`;
+
+  history.push({ role: 'user', content: ctx + '\n\n' + userMsg });
+
+  const res = await fetch('https://api.anthropic.com/v1/messages', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', 'x-api-key': apiKey, 'anthropic-version': '2023-06-01' },
+    body: JSON.stringify({
+      model: 'claude-sonnet-4-6',
+      max_tokens: 1000,
+      system: SYSTEM,
+      messages: history
+    })
+  });
+
+  if (!res.ok) {
+    const err = await res.json();
+    throw new Error(err.error?.message || 'API error');
+  }
+
+  const data = await res.json();
+  const reply = data.content?.[0]?.text || 'No response.';
+  history.push({ role: 'assistant', content: reply });
+  saveHistory();
+
+  const n = parseInt(localStorage.getItem('jarvis_sessions') || '0') + 1;
+  localStorage.setItem('jarvis_sessions', n);
+  renderMetrics();
+
+  return reply;
+}
+
+function basicResponse(msg) {
+  const mode = getMode();
+  const pending = MISSIONS.filter(m => !todayDone[m.id]).map(m => m.text);
+  const pct = getStats().pct;
+
+  if (pct === 100) return `All missions complete. Exceptional. Rest and prepare for tomorrow. Same standard, every day.`;
+  if (pending.length > 0) return `JARVIS BASIC MODE — AI not connected.\n\nPending missions: ${pending.join(', ')}.\n\nEnable AI coaching by entering your Anthropic API key for real-time analysis.`;
+  return `JARVIS BASIC MODE — Connect your API key for full coaching.`;
+}
+
+// ── INTERACTIONS ─────────────────────────────────────────────────────────────
+function toggleMission(id) {
+  todayDone[id] = !todayDone[id];
+  saveDone();
+  renderMissions();
+  renderMetrics();
+  renderStreak();
+
+  // Auto notify JARVIS
+  const m = MISSIONS.find(x => x.id === id);
+  if (todayDone[id]) {
+    addMsg('jarvis', `Mission logged: ${m.text}.\n${checkAllDone()}`);
+  }
+}
+
+function checkAllDone() {
+  const done = MISSIONS.filter(m => todayDone[m.id]).length;
+  if (done === MISSIONS.length) return 'All 7 missions complete. Day logged. Strong.';
+  if (done >= 5) return `${done}/7 done. Keep going.`;
+  return '';
+}
+
+function useCmd(text) {
+  document.getElementById('input').value = text;
+  send();
+}
+
+function addMsg(role, text) {
+  const box = document.getElementById('messages');
+  const div = document.createElement('div');
+  div.className = 'msg ' + (role === 'jarvis' ? 'jarvis' : 'user');
+  div.innerHTML = `
+    <div class="msg-from">${role === 'jarvis' ? 'JARVIS' : 'SHANKAR'}</div>
+    <div class="msg-body">${text}</div>
+  `;
+  box.insertBefore(div, document.getElementById('typing'));
+  box.scrollTop = box.scrollHeight;
+}
+
+function showTyping(show) {
+  document.getElementById('typing').className = 'typing' + (show ? ' show' : '');
+  const box = document.getElementById('messages');
+  box.scrollTop = box.scrollHeight;
+}
+
+async function send() {
+  const inp = document.getElementById('input');
+  const text = inp.value.trim();
+  if (!text || busy) return;
+
+  inp.value = '';
+  busy = true;
+  document.getElementById('send-btn').disabled = true;
+
+  addMsg('user', text);
+  showTyping(true);
+
+  try {
+    const reply = await callAI(text);
+    showTyping(false);
+    addMsg('jarvis', reply);
+  } catch(err) {
+    showTyping(false);
+    if (err.message.includes('401') || err.message.includes('auth')) {
+      addMsg('jarvis', 'Authentication failed. Your API key appears invalid. Update it in setup.');
+      localStorage.removeItem('jarvis_key');
+      apiKey = '';
+      document.getElementById('setup-panel').classList.add('show');
+    } else {
+      addMsg('jarvis', 'Connection error: ' + err.message + '\n\nCheck your network or API key.');
+    }
+  }
+
+  busy = false;
+  document.getElementById('send-btn').disabled = false;
+}
+
+// ── NOTIFICATIONS ─────────────────────────────────────────────────────────────
+function updateNotifStatus() {
+  const el = document.getElementById('notif-status');
+  if (!('Notification' in window)) {
+    el.textContent = '● Notifications: not supported';
+    return;
+  }
+  if (Notification.permission === 'granted') {
+    el.textContent = '● Notifications: ACTIVE';
+    el.className = 'notif-status on';
+  } else {
+    el.textContent = '● Notifications: off';
+    el.className = 'notif-status';
+  }
+}
+
+async function requestNotifications() {
+  if (!('Notification' in window)) {
+    showAlert('Notifications not supported on this browser.');
+    return;
+  }
+  const perm = await Notification.requestPermission();
+  updateNotifStatus();
+  if (perm === 'granted') {
+    addMsg('jarvis', 'Notification access granted. JARVIS will alert you at:\n• 3:15 AM — Meditation check\n• 8:00 AM — Office mode activation\n• 1:00 PM — Midday review\n• 7:30 PM — Home arrival check\n• 10:00 PM — Pre-sleep review\n\nKeep this app open or installed on your home screen for alerts to work.');
+    scheduleNotifications();
+  } else {
+    addMsg('jarvis', 'Notifications blocked. You will not receive alerts. Open this app manually for check-ins.');
+  }
+}
+
+function scheduleNotifications() {
+  const now = new Date();
+  const schedule = [
+    { h: 3, m: 15, title: '⚡ JARVIS | 3:15 AM', body: 'Shankar. Meditation time. Your Shiva is waiting. Open JARVIS.' },
+    { h: 8, m: 0,  title: '⚡ JARVIS | Office Mode', body: 'Entering office hours. Top priority confirmed? Open JARVIS.' },
+    { h: 13, m: 0, title: '⚡ JARVIS | Midday', body: 'Half the day gone. What have you completed? Open JARVIS.' },
+    { h: 19, m: 30,title: '⚡ JARVIS | You Are Home', body: 'Office hours over. Evening review begins now. Open JARVIS.' },
+    { h: 22, m: 0, title: '⚡ JARVIS | Pre-Sleep', body: 'Did you do what you said this morning? Open JARVIS.' }
+  ];
+
+  schedule.forEach(s => {
+    const target = new Date();
+    target.setHours(s.h, s.m, 0, 0);
+    if (target < now) target.setDate(target.getDate() + 1);
+    const delay = target - now;
+    setTimeout(() => {
+      if (Notification.permission === 'granted') {
+        new Notification(s.title, {
+          body: s.body,
+          icon: '⚡',
+          requireInteraction: true,
+          vibrate: [200, 100, 200]
+        });
+      }
+      // Reschedule for next day
+      setTimeout(() => scheduleNotifications(), 1000);
+    }, delay);
+  });
+}
+
+function testNotif() {
+  if (Notification.permission !== 'granted') {
+    requestNotifications();
+    return;
+  }
+  new Notification('⚡ JARVIS TEST', {
+    body: 'Shankar. JARVIS alert system is working. You will be monitored.',
+    requireInteraction: false
+  });
+  addMsg('jarvis', 'Test alert sent. If you received it — notification system is working.');
+}
+
+function showAlert(msg) {
+  const el = document.getElementById('alert-panel');
+  document.getElementById('alert-text').textContent = msg;
+  el.classList.add('show');
+  setTimeout(() => el.classList.remove('show'), 5000);
+}
+
+function resetAll() {
+  if (!confirm('Reset all JARVIS data? Cannot be undone.')) return;
+  const keys = [];
+  for (let i = 0; i < localStorage.length; i++) {
+    const k = localStorage.key(i);
+    if (k && k.startsWith('jarvis')) keys.push(k);
+  }
+  keys.forEach(k => localStorage.removeItem(k));
+  location.reload();
+}
+
+// ── INIT ──────────────────────────────────────────────────────────────────────
+load();
+
+if (!apiKey) {
+  document.getElementById('setup-panel').classList.add('show');
+} else {
+  boot();
+}
+
+renderAll();
+renderCommands();
+updateNotifStatus();
+
+// Auto-schedule if already permitted
+if (Notification.permission === 'granted') {
+  scheduleNotifications();
+}
+
+// Enter to send
+document.getElementById('input').addEventListener('keydown', e => {
+  if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); send(); }
+});
+
+// Refresh clock and check for time-based alerts
+setInterval(() => {
+  renderClock();
+  const now = new Date();
+  const h = now.getHours(), m = now.getMinutes();
+  // If mode just changed — update UI
+  renderMode();
+  renderCommands();
+}, 60000);
+
+// Register service worker if on HTTPS
+if ('serviceWorker' in navigator && location.protocol === 'https:') {
+  navigator.serviceWorker.register('jarvis-sw.js')
+    .then(reg => console.log('JARVIS SW registered:', reg.scope))
+    .catch(err => console.log('SW registration failed:', err));
+}
+</script>
+</body>
+</html>
