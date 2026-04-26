@@ -256,7 +256,13 @@ function startClock(){const el=document.getElementById('clk');const t=()=>{el.te
 function renderHome(){renderM();renderMetrics();renderS7()}
 function renderM(){
   const am=activeMissions();
-  document.getElementById('mlist').innerHTML=am.map(m=>`<div class="mi ${done[m.id]?'done':''}" onclick="toggleM('${m.id}')"><div class="mchk">${done[m.id]?'✓':''}</div><span class="mico">${m.emoji}</span><span class="mname">${m.name}</span><span class="mfreq">${m.freq}</span></div>`).join('')||'<div style="color:var(--text-dim);font-size:0.68rem;padding:10px">No missions today. Add in Settings.</div>';
+  const amIds=new Set(am.map(m=>m.id));
+  document.getElementById('mlist').innerHTML=missions.map(m=>{
+    const active=amIds.has(m.id);
+    const dimStyle=active?'':'opacity:0.35;pointer-events:none;';
+    const tag=active?m.freq:'not today';
+    return`<div class="mi ${done[m.id]?'done':''}" style="${dimStyle}" onclick="toggleM('${m.id}')"><div class="mchk">${done[m.id]?'✓':''}</div><span class="mico">${m.emoji}</span><span class="mname">${m.name}</span><span class="mfreq">${tag}</span></div>`;
+  }).join('')||'<div style="color:var(--text-dim);font-size:0.68rem;padding:10px">No missions. Add in Settings.</div>';
 }
 function renderMetrics(){
   const s=stats();
