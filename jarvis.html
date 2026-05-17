@@ -1,393 +1,698 @@
 <!DOCTYPE html>
+
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
-<meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-title" content="SS JARVIS">
-<meta name="theme-color" content="#040408">
-<title>SS JARVIS</title>
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>SS JARVIS v2</title>
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Rajdhani:wght@400;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
-@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Share+Tech+Mono&display=swap');
-:root{--gold:#C9A84C;--gold-dim:#7A5F20;--bg:#040408;--bg2:#0A0A12;--bg3:#0F0F1A;--text:#C8D8E8;--text-dim:#506070;--red:#FF3040;--green:#00FF80;--border:rgba(0,128,255,0.15);--gborder:rgba(201,168,76,0.2)}
+:root{--bg:#04070f;--p:#0d1420;--p2:#121d2e;--p3:#1a2640;--bd:#1e3a5f;--bd2:#0a4080;--ac:#00d4ff;--ac2:#0099cc;--go:#f5c518;--go2:#c49a10;--gn:#00e676;--gn2:#00994d;--rd:#ff3b3b;--or:#ff8c00;--pu:#9b72cf;--tx:#ddeeff;--tx2:#7aaccf;--tx3:#3d6a8a;--gw:0 0 25px rgba(0,212,255,.25);--gg:0 0 25px rgba(245,197,24,.2)}
 *{margin:0;padding:0;box-sizing:border-box}
-body{background:var(--bg);color:var(--text);font-family:'Share Tech Mono',monospace;min-height:100vh;overflow-x:hidden}
-body::before{content:'';position:fixed;inset:0;background-image:linear-gradient(rgba(0,128,255,0.03) 1px,transparent 1px),linear-gradient(90deg,rgba(0,128,255,0.03) 1px,transparent 1px);background-size:40px 40px;pointer-events:none;z-index:0}
-.app{position:relative;z-index:1;max-width:640px;margin:0 auto;padding:14px}
-.header{padding:18px 0 14px;border-bottom:1px solid var(--border);margin-bottom:14px}
-.logo{font-family:'Orbitron',sans-serif;font-size:1.7rem;font-weight:900;letter-spacing:0.3em;color:var(--gold);text-shadow:0 0 20px rgba(201,168,76,0.4)}
-.sub{font-size:0.56rem;color:var(--text-dim);letter-spacing:0.35em;text-transform:uppercase;margin-top:4px}
-.status-row{display:flex;align-items:center;gap:10px;margin-top:10px}
-.dot{width:8px;height:8px;border-radius:50%;background:var(--green);box-shadow:0 0 8px var(--green);animation:pd 2s infinite}
-@keyframes pd{0%,100%{opacity:1;transform:scale(1)}50%{opacity:0.5;transform:scale(0.8)}}
-.stxt{font-size:0.6rem;color:var(--green);letter-spacing:0.15em}
-.clk{margin-left:auto;font-family:'Orbitron',sans-serif;font-size:0.78rem;color:var(--gold);letter-spacing:0.1em}
-.nav{display:flex;gap:1px;background:var(--border);border:1px solid var(--border);margin-bottom:14px}
-.ntab{flex:1;background:var(--bg2);border:none;color:var(--text-dim);font-family:'Orbitron',sans-serif;font-size:0.48rem;font-weight:700;letter-spacing:0.15em;padding:10px 4px;cursor:pointer;transition:all 0.2s;text-transform:uppercase}
-.ntab.active{background:rgba(201,168,76,0.1);color:var(--gold);border-bottom:2px solid var(--gold)}
-.panel{display:none}.panel.active{display:block}
-.metrics{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--border);border:1px solid var(--border);margin-bottom:14px}
-.metric{background:var(--bg2);padding:11px 8px;text-align:center}
-.mv{font-family:'Orbitron',sans-serif;font-size:1.2rem;font-weight:700;color:var(--gold)}
-.mv.g{color:var(--green);text-shadow:0 0 8px rgba(0,255,128,0.3)}.mv.r{color:var(--red)}
-.ml{font-size:0.48rem;color:var(--text-dim);letter-spacing:0.15em;text-transform:uppercase;margin-top:3px}
-.sec{margin-bottom:14px}
-.sechdr{display:flex;align-items:center;gap:8px;margin-bottom:9px}
-.seclbl{font-size:0.54rem;letter-spacing:0.28em;color:var(--text-dim);text-transform:uppercase;white-space:nowrap}
-.secline{flex:1;height:1px;background:var(--border)}
-.mlist{display:flex;flex-direction:column;gap:4px}
-.mi{background:var(--bg2);border:1px solid var(--border);padding:10px 12px;display:flex;align-items:center;gap:9px;cursor:pointer;transition:all 0.15s;position:relative;overflow:hidden}
-.mi::before{content:'';position:absolute;left:0;top:0;bottom:0;width:2px;background:var(--text-dim);transition:all 0.2s}
-.mi.done{border-color:rgba(0,255,128,0.2);background:rgba(0,255,128,0.03)}.mi.done::before{background:var(--green);box-shadow:0 0 8px var(--green)}
-.mchk{width:17px;height:17px;border:1px solid var(--text-dim);border-radius:2px;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:0.68rem;transition:all 0.15s}
-.mi.done .mchk{background:var(--green);border-color:var(--green);color:var(--bg)}
-.mico{font-size:0.95rem;flex-shrink:0}.mname{flex:1;font-size:0.68rem;color:var(--text)}
-.mi.done .mname{color:var(--text-dim);text-decoration:line-through}
-.mfreq{font-size:0.5rem;color:var(--text-dim);letter-spacing:0.08em}
-.spips{display:flex;gap:3px}
-.pip{flex:1;height:21px;background:var(--bg2);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:0.46rem;color:var(--text-dim);font-family:'Orbitron',sans-serif}
-.pip.hot{background:rgba(0,255,128,0.1);border-color:var(--green);color:var(--green)}
-.pip.warm{background:rgba(201,168,76,0.1);border-color:var(--gold-dim);color:var(--gold)}
-.chatbox{background:var(--bg2);border:1px solid var(--border);margin-bottom:9px}
-.chdr{padding:8px 13px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:8px}
-.chdot{width:6px;height:6px;border-radius:50%;background:var(--gold);animation:pd 1.5s infinite}
-.chtxt{font-family:'Orbitron',sans-serif;font-size:0.52rem;color:var(--gold);letter-spacing:0.2em}
-.cmode{margin-left:auto;font-size:0.48rem;color:var(--text-dim)}
-.msgs{height:250px;overflow-y:auto;padding:13px;scroll-behavior:smooth}
-.msgs::-webkit-scrollbar{width:2px}.msgs::-webkit-scrollbar-thumb{background:var(--gold-dim)}
-.msg{margin-bottom:13px;animation:mI 0.3s ease}
-@keyframes mI{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
-.mfrom{font-size:0.48rem;letter-spacing:0.25em;text-transform:uppercase;margin-bottom:4px}
-.msg.j .mfrom{color:var(--gold-dim)}.msg.u .mfrom{color:var(--text-dim)}
-.mbody{font-size:0.74rem;line-height:1.65;white-space:pre-wrap}
-.msg.j .mbody{color:var(--text)}.msg.u .mbody{color:var(--text-dim);font-style:italic}
-.typing{display:none;margin-bottom:13px}.typing.show{display:block}
-.tdots{display:inline-flex;gap:4px;padding:4px 0}
-.tdots span{width:5px;height:5px;background:var(--gold-dim);border-radius:50%;animation:bl 1.2s infinite}
-.tdots span:nth-child(2){animation-delay:0.2s}.tdots span:nth-child(3){animation-delay:0.4s}
-@keyframes bl{0%,60%,100%{opacity:0.2;transform:scale(0.8)}30%{opacity:1;transform:scale(1)}}
-.cmds{padding:7px 13px;border-top:1px solid var(--border);display:flex;gap:4px;flex-wrap:wrap}
-.cmd{background:transparent;border:1px solid var(--border);color:var(--text-dim);font-family:'Share Tech Mono',monospace;font-size:0.54rem;padding:4px 8px;cursor:pointer;transition:all 0.15s}
-.cmd:hover{border-color:var(--gold-dim);color:var(--gold)}
-.irow{display:flex;gap:5px}
-textarea{flex:1;background:var(--bg3);border:1px solid var(--border);color:var(--text);font-family:'Share Tech Mono',monospace;font-size:0.74rem;padding:9px 11px;resize:none;height:65px;outline:none;line-height:1.5}
-textarea:focus{border-color:var(--gold-dim)}
-textarea::placeholder{color:var(--text-dim);font-size:0.66rem}
-.sbtn{background:transparent;border:1px solid var(--gold-dim);color:var(--gold);font-family:'Orbitron',sans-serif;font-size:0.5rem;font-weight:700;letter-spacing:0.15em;padding:0 13px;cursor:pointer;transition:all 0.2s;min-width:60px}
-.sbtn:hover{background:var(--gold);color:var(--bg)}.sbtn:disabled{opacity:0.3;cursor:not-allowed}
-.stitle{font-family:'Orbitron',sans-serif;font-size:0.6rem;color:var(--gold);letter-spacing:0.2em;margin-bottom:11px;padding-bottom:7px;border-bottom:1px solid var(--gborder)}
-.ssec{margin-bottom:18px}
-.mei{background:var(--bg2);border:1px solid var(--border);padding:9px 11px;margin-bottom:5px;display:flex;align-items:center;gap:7px}
-.eico{width:34px;background:var(--bg3);border:1px solid var(--border);color:var(--text);font-size:0.95rem;padding:4px;text-align:center;outline:none}
-.enm{flex:1;background:var(--bg3);border:1px solid var(--border);color:var(--text);font-family:'Share Tech Mono',monospace;font-size:0.68rem;padding:6px 9px;outline:none}
-.enm:focus{border-color:var(--gold-dim)}
-.efrq{background:var(--bg3);border:1px solid var(--border);color:var(--text-dim);font-family:'Share Tech Mono',monospace;font-size:0.58rem;padding:6px 7px;outline:none;width:76px;cursor:pointer}
-.dbtn{background:transparent;border:1px solid rgba(255,48,64,0.3);color:var(--red);font-size:0.68rem;padding:4px 8px;cursor:pointer;transition:all 0.15s}
-.dbtn:hover{background:var(--red);color:var(--bg)}
-.addrow{display:flex;gap:5px;margin-top:9px;flex-wrap:wrap}
-.ai{width:46px;background:var(--bg3);border:1px solid var(--border);color:var(--text);font-size:0.95rem;padding:7px;text-align:center;outline:none}
-.an{flex:1;background:var(--bg3);border:1px solid var(--border);color:var(--text);font-family:'Share Tech Mono',monospace;font-size:0.68rem;padding:7px 11px;outline:none;min-width:110px}
-.an:focus,.ai:focus{border-color:var(--gold-dim)}
-.btn{background:transparent;border:1px solid var(--gold-dim);color:var(--gold);font-family:'Orbitron',sans-serif;font-size:0.52rem;font-weight:700;letter-spacing:0.15em;padding:8px 14px;cursor:pointer;transition:all 0.2s;text-transform:uppercase}
-.btn:hover{background:var(--gold);color:var(--bg);border-color:var(--gold)}
-.btn.sm{font-size:0.48rem;padding:7px 11px}.btn.sec{border-color:var(--border);color:var(--text-dim)}.btn.sec:hover{border-color:var(--text-dim);background:transparent;color:var(--text)}
-.btn.dng{border-color:rgba(255,48,64,0.4);color:var(--red)}.btn.dng:hover{background:var(--red);color:var(--bg);border-color:var(--red)}
-.atimes{display:grid;grid-template-columns:1fr 1fr;gap:5px;margin-top:9px}
-.ati{background:var(--bg2);border:1px solid var(--border);padding:9px 11px;display:flex;align-items:center;gap:7px}
-.atl{flex:1;font-size:0.6rem;color:var(--text-dim)}
-.tinp{background:var(--bg3);border:1px solid var(--border);color:var(--text);font-family:'Share Tech Mono',monospace;font-size:0.62rem;padding:4px 7px;outline:none;width:68px}
-.tinp:focus{border-color:var(--gold-dim)}
-.nbar{display:flex;align-items:center;gap:9px;flex-wrap:wrap;padding:10px 13px;background:var(--bg2);border:1px solid var(--border);margin-top:9px}
-.nstat{font-size:0.58rem;letter-spacing:0.1em;flex:1}
-.nstat.on{color:var(--green)}.nstat.off{color:var(--text-dim)}
-.astat{font-size:0.6rem;margin-bottom:9px;padding:7px 11px;border:1px solid var(--border)}
-.astat.ok{border-color:rgba(0,255,128,0.3);color:var(--green);background:rgba(0,255,128,0.05)}
-.astat.no{border-color:var(--border);color:var(--text-dim)}
-.ainp{width:100%;background:var(--bg3);border:1px solid var(--border);color:var(--text);font-family:'Share Tech Mono',monospace;font-size:0.68rem;padding:9px 11px;outline:none;margin-bottom:9px}
-.ainp:focus{border-color:var(--gold-dim)}
-.scan{position:fixed;left:0;right:0;height:2px;background:linear-gradient(90deg,transparent,rgba(0,128,255,0.06),rgba(0,128,255,0.2),rgba(0,128,255,0.06),transparent);animation:sc 5s linear infinite;pointer-events:none;z-index:999}
-@keyframes sc{0%{transform:translateY(-10px)}100%{transform:translateY(100vh)}}
-@media(max-width:480px){.metrics{grid-template-columns:repeat(2,1fr)}.logo{font-size:1.35rem}.atimes{grid-template-columns:1fr}}
+html,body{height:100%}
+body{font-family:'Rajdhani',sans-serif;background:var(--bg);color:var(--tx);overflow-x:hidden}
+body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellipse at 20% 50%,rgba(0,100,255,.05) 0%,transparent 60%),radial-gradient(ellipse at 80% 20%,rgba(0,212,255,.04) 0%,transparent 50%);pointer-events:none;z-index:0}
+/* LOGIN */
+#ls{position:fixed;inset:0;z-index:2000;display:flex;align-items:center;justify-content:center;background:var(--bg)}
+.lb{background:var(--p);border:1px solid var(--ac);border-radius:20px;padding:52px 44px;width:360px;text-align:center;box-shadow:var(--gw),0 0 80px rgba(0,212,255,.08),inset 0 1px 0 rgba(255,255,255,.05)}
+.lb-logo{font-family:'Orbitron',sans-serif;font-size:2.2rem;font-weight:900;color:var(--ac);letter-spacing:5px;margin-bottom:6px;text-shadow:var(--gw)}
+.lb-sub{font-size:.7rem;color:var(--tx3);letter-spacing:4px;text-transform:uppercase;margin-bottom:32px}
+.lb input{width:100%;padding:14px 18px;background:rgba(0,0,0,.4);border:1px solid var(--bd);border-radius:10px;color:var(--tx);font-family:'Rajdhani',sans-serif;font-size:1.1rem;letter-spacing:5px;text-align:center;outline:none;margin-bottom:14px;transition:all .3s}
+.lb input:focus{border-color:var(--ac);box-shadow:0 0 15px rgba(0,212,255,.2)}
+.lb-btn{width:100%;padding:14px;background:linear-gradient(135deg,var(--ac2),var(--ac));border:none;border-radius:10px;color:#000;font-family:'Orbitron',sans-serif;font-size:.85rem;font-weight:700;letter-spacing:3px;cursor:pointer;transition:all .3s}
+.lb-btn:hover{transform:translateY(-2px);box-shadow:var(--gw)}
+.lb-err{color:var(--rd);font-size:.82rem;margin-top:10px;display:none}
+/* APP */
+#app{display:none;position:relative;z-index:1;height:100vh}
+/* TOPBAR */
+.tb{position:fixed;top:0;left:0;right:0;z-index:200;height:54px;background:rgba(4,7,15,.95);border-bottom:1px solid var(--bd);display:flex;align-items:center;justify-content:space-between;padding:0 18px;backdrop-filter:blur(20px)}
+.tb-logo{font-family:'Orbitron',sans-serif;font-size:1.05rem;font-weight:900;color:var(--ac);letter-spacing:3px;text-shadow:var(--gw)}
+.tb-r{display:flex;gap:14px;align-items:center}
+.tb-time{font-family:'JetBrains Mono',monospace;font-size:.72rem;color:var(--tx2)}
+.tb-nw{font-family:'JetBrains Mono',monospace;font-size:.78rem;color:var(--go);font-weight:500}
+/* NAV */
+.nav{position:fixed;bottom:0;left:0;right:0;z-index:200;background:rgba(4,7,15,.97);border-top:1px solid var(--bd);display:flex;overflow-x:auto;backdrop-filter:blur(20px)}
+.nav::-webkit-scrollbar{display:none}
+.ni{flex:0 0 auto;padding:8px 12px;display:flex;flex-direction:column;align-items:center;gap:2px;cursor:pointer;border:none;background:none;color:var(--tx3);font-family:'Rajdhani',sans-serif;font-size:.58rem;letter-spacing:1px;text-transform:uppercase;min-width:58px;transition:all .2s;border-top:2px solid transparent}
+.ni.a{color:var(--ac);border-top-color:var(--ac)}
+.ni-ic{font-size:1.15rem}
+/* CONTENT */
+.ct{padding:64px 14px 76px;max-width:980px;margin:0 auto}
+.sc{display:none}.sc.a{display:block}
+/* CARDS */
+.card{background:var(--p);border:1px solid var(--bd);border-radius:14px;padding:18px;margin-bottom:12px;position:relative}
+.card-glow{border-color:var(--ac);box-shadow:var(--gw)}
+.card-gold{border-color:var(--go);box-shadow:var(--gg)}
+.ctitle{font-family:'Orbitron',sans-serif;font-size:.62rem;font-weight:700;color:var(--ac);letter-spacing:3px;text-transform:uppercase;margin-bottom:14px;display:flex;align-items:center;justify-content:space-between}
+/* QUOTE CARD */
+.qcard{background:linear-gradient(135deg,rgba(0,212,255,.06),rgba(155,114,207,.06));border:1px solid rgba(0,212,255,.25);border-radius:16px;padding:22px;margin-bottom:12px;text-align:center;position:relative;overflow:hidden}
+.qcard::before{content:'';position:absolute;top:-50%;left:-50%;width:200%;height:200%;background:radial-gradient(circle,rgba(0,212,255,.04) 0%,transparent 60%);pointer-events:none}
+.qtext{font-family:'Rajdhani',sans-serif;font-size:1.05rem;font-weight:500;color:var(--tx);line-height:1.6;font-style:italic}
+.qauthor{font-size:.72rem;color:var(--tx3);letter-spacing:2px;margin-top:8px}
+/* GRIDS */
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px}
+.g3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px}
+.g4{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:12px}
+/* KPI */
+.kpi{background:var(--p2);border:1px solid var(--bd);border-radius:12px;padding:14px;text-align:center;transition:all .2s}
+.kpi:hover{border-color:var(--ac);box-shadow:0 0 15px rgba(0,212,255,.1)}
+.kl{font-size:.58rem;color:var(--tx3);letter-spacing:2px;text-transform:uppercase;margin-bottom:6px}
+.kv{font-family:'JetBrains Mono',monospace;font-size:1.15rem;font-weight:500}
+.kv.go{color:var(--go)}.kv.gn{color:var(--gn)}.kv.rd{color:var(--rd)}.kv.ac{color:var(--ac)}.kv.or{color:var(--or)}.kv.pu{color:var(--pu)}
+/* PROGRESS */
+.pb{height:6px;background:rgba(0,0,0,.4);border-radius:3px;overflow:hidden;margin-top:6px}
+.pf{height:100%;border-radius:3px;background:linear-gradient(90deg,var(--ac2),var(--ac));transition:width .6s cubic-bezier(.4,0,.2,1)}
+.pf.w{background:linear-gradient(90deg,var(--or),#ffcc00)}.pf.d{background:linear-gradient(90deg,#990000,var(--rd))}
+.pf.gn{background:linear-gradient(90deg,var(--gn2),var(--gn))}
+/* FORMS */
+label{font-size:.68rem;color:var(--tx3);letter-spacing:1px;text-transform:uppercase;display:block;margin-bottom:4px}
+input,select,textarea{width:100%;padding:9px 12px;background:rgba(0,0,0,.35);border:1px solid var(--bd);border-radius:8px;color:var(--tx);font-family:'Rajdhani',sans-serif;font-size:.9rem;outline:none;transition:all .2s}
+input:focus,select:focus,textarea:focus{border-color:var(--ac);box-shadow:0 0 10px rgba(0,212,255,.15)}
+select option{background:var(--p2)}
+.fr{display:grid;gap:8px;margin-bottom:10px}
+.fr.c2{grid-template-columns:1fr 1fr}.fr.c3{grid-template-columns:1fr 1fr 1fr}
+/* BUTTONS */
+.btn{padding:9px 18px;border-radius:9px;border:none;font-family:'Rajdhani',sans-serif;font-weight:600;font-size:.85rem;letter-spacing:1px;cursor:pointer;transition:all .25s;white-space:nowrap}
+.bp{background:linear-gradient(135deg,var(--ac2),var(--ac));color:#000}
+.bp:hover{transform:translateY(-1px);box-shadow:var(--gw)}
+.bs2{background:linear-gradient(135deg,var(--gn2),var(--gn));color:#000}
+.bd2{background:var(--rd);color:#fff}
+.bd2:hover{background:#cc2222}
+.bg2{background:transparent;border:1px solid var(--bd);color:var(--tx2)}
+.bg2:hover{border-color:var(--ac);color:var(--ac)}
+.bgd{background:linear-gradient(135deg,var(--go2),var(--go));color:#000}
+.bor{background:var(--or);color:#000}
+.bsm{padding:5px 11px;font-size:.75rem}.bxs{padding:3px 8px;font-size:.68rem}
+/* TABLES */
+.tbl{width:100%;border-collapse:collapse;font-size:.8rem}
+.tbl th{padding:8px 8px;text-align:left;font-family:'Orbitron',sans-serif;font-size:.52rem;color:var(--tx3);letter-spacing:2px;border-bottom:1px solid var(--bd);white-space:nowrap}
+.tbl td{padding:9px 8px;border-bottom:1px solid rgba(30,58,95,.35);vertical-align:middle}
+.tbl tr:hover td{background:rgba(0,212,255,.025)}
+/* TEXT */
+.mono{font-family:'JetBrains Mono',monospace}
+.tg{color:var(--gn)}.tr2c{color:var(--rd)}.to{color:var(--or)}.ta{color:var(--ac)}.tgo{color:var(--go)}.tp{color:var(--pu)}
+.txs{font-size:.8rem;color:var(--tx3)}.txm{font-size:.9rem}
+.tar{text-align:right}.tac{text-align:center}
+/* BADGES */
+.badge{display:inline-block;padding:2px 8px;border-radius:20px;font-size:.62rem;font-weight:700;letter-spacing:.5px}
+.b-gn{background:rgba(0,230,118,.15);color:var(--gn)}.b-rd{background:rgba(255,59,59,.15);color:var(--rd)}
+.b-or{background:rgba(255,140,0,.15);color:var(--or)}.b-ac{background:rgba(0,212,255,.15);color:var(--ac)}
+.b-go{background:rgba(245,197,24,.15);color:var(--go)}.b-pu{background:rgba(155,114,207,.15);color:var(--pu)}
+/* LAYOUT */
+.fb{display:flex;align-items:center;gap:8px}.fbt{display:flex;align-items:center;justify-content:space-between}
+.mt8{margin-top:8px}.mt12{margin-top:12px}.mb8{margin-bottom:8px}.mb12{margin-bottom:12px}.wf{width:100%}
+.shdr{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px}
+.shdr h2{font-family:'Orbitron',sans-serif;font-size:.78rem;color:var(--ac);letter-spacing:3px}
+/* TABS */
+.tabs{display:flex;gap:4px;margin-bottom:14px;overflow-x:auto;padding-bottom:2px}
+.tabs::-webkit-scrollbar{display:none}
+.tab{padding:7px 15px;border-radius:7px;border:none;background:var(--p2);color:var(--tx3);font-family:'Rajdhani',sans-serif;font-weight:600;font-size:.75rem;cursor:pointer;white-space:nowrap;transition:all .2s}
+.tab.a{background:rgba(0,212,255,.12);color:var(--ac);border:1px solid rgba(0,212,255,.3)}
+/* NET WORTH HERO */
+.nw-hero{background:linear-gradient(135deg,rgba(245,197,24,.08),rgba(0,212,255,.06));border:1px solid rgba(245,197,24,.3);border-radius:16px;padding:20px;text-align:center;margin-bottom:12px;position:relative;overflow:hidden}
+.nw-hero::after{content:'NET WORTH';position:absolute;right:18px;bottom:10px;font-family:'Orbitron',sans-serif;font-size:4rem;font-weight:900;color:rgba(245,197,24,.04);letter-spacing:2px}
+.nw-label{font-size:.6rem;color:var(--tx3);letter-spacing:4px;margin-bottom:6px}
+.nw-val{font-family:'JetBrains Mono',monospace;font-size:2.2rem;font-weight:500;color:var(--go)}
+/* BALANCE SHEET */
+.bs-row{display:flex;align-items:center;gap:8px;padding:8px 0;border-bottom:1px solid rgba(30,58,95,.35)}
+.bs-row:last-child{border-bottom:none}
+.bs-tot{display:flex;justify-content:space-between;padding:10px 0;font-weight:700;font-family:'JetBrains Mono',monospace;border-top:1px solid var(--bd)}
+/* TIMELINE */
+.tl{position:relative;padding-left:30px}
+.tl::before{content:'';position:absolute;left:9px;top:0;bottom:0;width:2px;background:linear-gradient(to bottom,var(--ac),var(--pu),var(--go))}
+.tli{position:relative;margin-bottom:14px}
+.tld{position:absolute;left:-23px;top:8px;width:12px;height:12px;border-radius:50%;border:2px solid var(--ac);background:var(--bg);transition:all .3s}
+.tld.dn{background:var(--gn);border-color:var(--gn);box-shadow:0 0 10px rgba(0,230,118,.4)}
+.tld.ip{background:var(--ac);border-color:var(--ac);box-shadow:var(--gw)}
+/* MILESTONE */
+.ms-item{display:flex;align-items:center;gap:10px;padding:6px 0;border-bottom:1px solid rgba(30,58,95,.25)}
+.ms-item:last-child{border-bottom:none}
+.ms-check{width:18px;height:18px;border-radius:4px;border:1px solid var(--bd2);display:flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0;transition:all .2s}
+.ms-check.done{background:var(--gn);border-color:var(--gn)}
+/* MODAL */
+.mo{position:fixed;inset:0;z-index:1000;background:rgba(0,0,0,.85);backdrop-filter:blur(8px);display:none;align-items:center;justify-content:center;padding:16px}
+.mo.o{display:flex}
+.md{background:var(--p);border:1px solid var(--ac);border-radius:16px;padding:24px;width:100%;max-width:540px;max-height:88vh;overflow-y:auto;box-shadow:var(--gw)}
+.md-t{font-family:'Orbitron',sans-serif;font-size:.72rem;color:var(--ac);letter-spacing:3px;margin-bottom:18px}
+.md-f{display:flex;gap:8px;margin-top:18px;justify-content:flex-end}
+/* NOTIF */
+.notif{position:fixed;top:64px;right:14px;z-index:1500;background:var(--p);border:1px solid var(--gn);border-radius:10px;padding:11px 16px;font-size:.82rem;color:var(--gn);transform:translateX(130%);transition:transform .35s cubic-bezier(.4,0,.2,1)}
+.notif.sh{transform:translateX(0)}.notif.er{border-color:var(--rd);color:var(--rd)}
+/* MISC */
+::-webkit-scrollbar{width:4px;height:4px}::-webkit-scrollbar-track{background:var(--bg)}::-webkit-scrollbar-thumb{background:var(--bd);border-radius:2px}
+.htog{width:44px;height:24px;border-radius:12px;border:1px solid var(--bd);background:rgba(0,0,0,.4);position:relative;cursor:pointer;transition:all .3s}
+.htog.on{background:var(--gn2);border-color:var(--gn)}
+.htog::after{content:'';position:absolute;top:3px;left:3px;width:16px;height:16px;border-radius:50%;background:#fff;transition:transform .3s;box-shadow:0 1px 4px rgba(0,0,0,.4)}
+.htog.on::after{transform:translateX(20px)}
+.inp-sm{padding:4px 7px;font-size:.78rem;width:90px;text-align:right}
+.empty{text-align:center;padding:28px;color:var(--tx3);font-size:.85rem}
+.crow{display:flex;justify-content:space-between;align-items:center;padding:9px 0;border-bottom:1px solid rgba(30,58,95,.3)}
+.crow:last-child{border-bottom:none}
+.goal-card{background:var(--p2);border:1px solid var(--bd);border-radius:12px;padding:14px;transition:all .2s}
+.goal-card:hover{border-color:var(--bd2)}
+.dcard{background:var(--p2);border:1px solid var(--bd);border-radius:10px;padding:14px}
+.loan-card{background:var(--p2);border:1px solid var(--bd);border-radius:12px;padding:16px;margin-bottom:10px}
+.sparkline{display:flex;align-items:flex-end;gap:3px;height:32px}
+.spark-bar{border-radius:2px 2px 0 0;min-width:8px;transition:all .3s}
+.rating-stars{display:flex;gap:4px}
+.star{font-size:1.2rem;cursor:pointer;transition:all .2s}
+.view-all-btn{display:block;text-align:center;padding:8px;color:var(--ac);font-size:.78rem;letter-spacing:1px;cursor:pointer;border-top:1px solid var(--bd);margin-top:8px;transition:all .2s}
+.view-all-btn:hover{background:rgba(0,212,255,.05)}
+.alert-banner{background:rgba(255,140,0,.08);border:1px solid var(--or);border-radius:10px;padding:10px 14px;margin-bottom:8px;display:flex;align-items:center;gap:10px;font-size:.82rem}
+@media(max-width:500px){.g4{grid-template-columns:1fr 1fr}.fr.c3{grid-template-columns:1fr 1fr}}
+.sep{height:1px;background:var(--bd);margin:14px 0}
+.step-hero{background:linear-gradient(135deg,rgba(0,212,255,.06),rgba(155,114,207,.04));border:1px solid rgba(0,212,255,.2);border-radius:14px;padding:18px;margin-bottom:12px}
+.idx-hero{background:linear-gradient(135deg,rgba(155,114,207,.08),rgba(0,212,255,.05));border:1px solid rgba(155,114,207,.3);border-radius:14px;padding:16px;margin-bottom:12px}
+.sm-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px}
+.smk{background:var(--p2);border:1px solid var(--bd);border-radius:12px;padding:14px;text-align:center}
+.smk-l{font-size:.58rem;color:var(--tx3);letter-spacing:2px;text-transform:uppercase;margin-bottom:5px}
+.smk-v{font-family:'JetBrains Mono',monospace;font-size:1.25rem}
+.cal-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:4px;margin-top:10px}
+.cal-day{aspect-ratio:1;border-radius:4px;display:flex;align-items:center;justify-content:center;font-size:.65rem;font-family:'JetBrains Mono',monospace}
+.cal-day.good{background:rgba(0,230,118,.25);color:var(--gn)}
+.cal-day.bad{background:rgba(255,59,59,.15);color:var(--rd)}
+.cal-day.na{background:rgba(255,255,255,.03);color:var(--tx3)}
 </style>
 </head>
 <body>
-<div class="scan"></div>
-<div class="app">
-<div class="header">
-  <div class="logo">SS JARVIS</div>
-  <div class="sub">Shankar Singh Command Intelligence · Est. 29 Apr 2026</div>
-  <div class="status-row">
-    <div class="dot"></div>
-    <div class="stxt">SYSTEMS ONLINE</div>
-    <div class="clk" id="clk">--:--:--</div>
-  </div>
+<div id="ls"><div class="lb"><div class="lb-logo">SS JARVIS</div><div class="lb-sub">Personal Life OS v2.0</div><input type="password" id="pi" placeholder="Password" onkeydown="if(event.key==='Enter')login()"><button class="lb-btn" onclick="login()">INITIALIZE JARVIS</button><div class="lb-err" id="le">Access Denied — Wrong Password</div></div></div>
+<div class="notif" id="notif"></div>
+<div id="app">
+<div class="tb"><div class="tb-logo">SS JARVIS</div><div class="tb-r"><div class="tb-time" id="ttime"></div><div class="tb-nw" id="tnw">NW: ₹0</div></div></div>
+<div class="ct">
+<div id="sc-dash" class="sc a"></div>
+<div id="sc-goals" class="sc"></div>
+<div id="sc-commit" class="sc"></div>
+<div id="sc-steps" class="sc"></div>
+<div id="sc-track" class="sc"></div>
+<div id="sc-budget" class="sc"></div>
+<div id="sc-loans" class="sc"></div>
+<div id="sc-pl" class="sc"></div>
+<div id="sc-bs" class="sc"></div>
+<div id="sc-set" class="sc"></div>
 </div>
 <div class="nav">
-  <button class="ntab active" onclick="showTab('home',this)">HOME</button>
-  <button class="ntab" onclick="showTab('coach',this)">COACH</button>
-  <button class="ntab" onclick="showTab('settings',this)">SETTINGS</button>
-</div>
-
-<!-- HOME -->
-<div class="panel active" id="tab-home">
-  <div class="metrics">
-    <div class="metric"><div class="mv" id="mstreak">0</div><div class="ml">Streak</div></div>
-    <div class="metric"><div class="mv" id="mdone">0%</div><div class="ml">Today</div></div>
-    <div class="metric"><div class="mv" id="msess">0</div><div class="ml">Sessions</div></div>
-    <div class="metric"><div class="mv" id="mday">1</div><div class="ml">Day</div></div>
-  </div>
-  <div class="sec">
-    <div class="sechdr"><div class="seclbl">Daily Missions</div><div class="secline"></div><div style="font-size:0.5rem;color:var(--text-dim);white-space:nowrap">Tap to complete</div></div>
-    <div class="mlist" id="mlist"></div>
-  </div>
-  <div class="sec">
-    <div class="sechdr"><div class="seclbl">7-Day Consistency</div><div class="secline"></div></div>
-    <div class="spips" id="spips"></div>
-  </div>
-</div>
-
-<!-- COACH -->
-<div class="panel" id="tab-coach">
-  <div class="chatbox">
-    <div class="chdr"><div class="chdot"></div><div class="chtxt">JARVIS COACHING</div><div class="cmode" id="cmode">LOADING</div></div>
-    <div class="msgs" id="msgs">
-      <div class="msg j"><div class="mfrom">JARVIS</div><div class="mbody" id="bootmsg">Initializing...</div></div>
-      <div class="typing" id="typing">
-        <div class="mfrom" style="font-size:0.48rem;letter-spacing:0.25em;color:var(--gold-dim);margin-bottom:4px">JARVIS</div>
-        <div class="tdots"><span></span><span></span><span></span></div>
-      </div>
-    </div>
-    <div class="cmds" id="cmds"></div>
-  </div>
-  <div class="irow">
-    <textarea id="inp" placeholder="Talk to JARVIS... (Enter to send)"></textarea>
-    <button class="sbtn" id="sbtn" onclick="send()">SEND</button>
-  </div>
-</div>
-
-<!-- SETTINGS -->
-<div class="panel" id="tab-settings">
-  <div class="ssec">
-    <div class="stitle">⚙ Mission Manager — Add / Edit / Delete</div>
-    <div id="meditor"></div>
-    <div class="addrow">
-      <input class="ai" id="nei" placeholder="🎯" maxlength="2">
-      <input class="an" id="nen" placeholder="New mission name...">
-      <select class="efrq" id="nef"><option value="daily">Daily</option><option value="weekday">Weekday</option><option value="weekend">Weekend</option></select>
-      <button class="btn sm" onclick="addMission()">+ Add</button>
-    </div>
-  </div>
-  <div class="ssec">
-    <div class="stitle">🔔 Alert Schedule — Edit Times</div>
-    <div class="atimes" id="atimes"></div>
-    <div style="margin-top:9px;display:flex;gap:7px;flex-wrap:wrap">
-      <button class="btn sm" onclick="saveAlertTimes()">Save Times</button>
-      <button class="btn sm sec" onclick="reqNotif()">Enable Alerts</button>
-      <button class="btn sm sec" onclick="testNotif()">Test Alert</button>
-    </div>
-    <div class="nbar"><div class="nstat off" id="nstat">● Alerts: checking...</div></div>
-  </div>
-  <div class="ssec">
-    <div class="stitle">🤖 AI Coach — Anthropic API Key</div>
-    <div style="font-size:0.6rem;color:var(--text-dim);line-height:1.7;margin-bottom:10px">Get key: console.anthropic.com → API Keys<br>Cost: ~₹400 per $5 credit. Lasts 3–4 weeks.<br>Key stored only on this device.</div>
-    <div class="astat no" id="astatbox">Not connected — Basic Mode</div>
-    <input type="password" class="ainp" id="akinp" placeholder="sk-ant-api03-...">
-    <div style="display:flex;gap:7px;flex-wrap:wrap">
-      <button class="btn sm" onclick="saveKey()">Connect AI</button>
-      <button class="btn sm dng" onclick="removeKey()">Remove Key</button>
-    </div>
-  </div>
-  <div class="ssec">
-    <div class="stitle">⚠ System Reset</div>
-    <button class="btn dng sm" onclick="resetAll()">Reset All Data</button>
-  </div>
+<button class="ni a" onclick="go('dash',this)"><span class="ni-ic">⚡</span>DASH</button>
+<button class="ni" onclick="go('goals',this)"><span class="ni-ic">🌟</span>GOALS</button>
+<button class="ni" onclick="go('commit',this)"><span class="ni-ic">📅</span>COMMIT</button>
+<button class="ni" onclick="go('steps',this)"><span class="ni-ic">🎯</span>101</button>
+<button class="ni" onclick="go('track',this)"><span class="ni-ic">📝</span>TRACK</button>
+<button class="ni" onclick="go('budget',this)"><span class="ni-ic">📊</span>BUDGET</button>
+<button class="ni" onclick="go('loans',this)"><span class="ni-ic">💳</span>LOANS</button>
+<button class="ni" onclick="go('pl',this)"><span class="ni-ic">📈</span>P&L</button>
+<button class="ni" onclick="go('bs',this)"><span class="ni-ic">⚖️</span>B/S</button>
+<button class="ni" onclick="go('set',this)"><span class="ni-ic">⚙️</span>SET</button>
 </div>
 </div>
-
+<div class="mo" id="mo"><div class="md"><div class="md-t" id="mo-t"></div><div id="mo-b"></div><div class="md-f"><button class="btn bg2" onclick="cmo()">Cancel</button><button class="btn bp" id="mo-ok">Confirm</button></div></div></div>
 <script>
-const DEF_M=[
-  {id:'m1',emoji:'🧘',name:'Morning Meditation',freq:'daily'},
-  {id:'m2',emoji:'📊',name:'Market Analysis',freq:'weekday'},
-  {id:'m3',emoji:'💹',name:'Equity Review',freq:'daily'},
-  {id:'m4',emoji:'⚖️',name:'Law / A&K Work',freq:'weekday'},
-  {id:'m5',emoji:'🖥️',name:'SS Command Centre',freq:'daily'},
-  {id:'m6',emoji:'🏃',name:'Physical Activity',freq:'daily'},
-  {id:'m7',emoji:'🌙',name:'Evening Review',freq:'daily'}
-];
-const DEF_A=[
-  {label:'Pre-Dawn',time:'03:15',msg:'Shankar. Meditation time. Your Shiva is waiting.'},
-  {label:'Office Start',time:'08:00',msg:'Entering office hours. Top priority confirmed?'},
-  {label:'Midday',time:'13:00',msg:'Half the day gone. What have you completed?'},
-  {label:'Home Arrival',time:'19:30',msg:'Office hours over. Evening review begins now.'},
-  {label:'Pre-Sleep',time:'22:00',msg:'Did you do what you said this morning?'}
-];
-const SYS=`You are SS JARVIS — Shankar Singh's personal command intelligence. Not a chatbot. A monitoring system.
-Profile: CA/CS/LLB, lawyer + Finance at Abercrombie & Kent India, Jamshedpur. Wakes 3AM. Office 8AM-7:30PM weekdays. Wife Priya. Sons Avnish and Samarth. Advaita Vedanta practitioner, Samadhi goal 2050. Intraday Nifty/Sensex trader, lost 30 lakhs, still going. 5-bucket equity compounding, 20cr target, 101 steps. Tight budget.
-Style: Short. Sharp. No flattery. Name incomplete missions. Weekend drift: call immediately. ONE question per response. Under 120 words. If philosophical without missions done: say "Missions first. Philosophy after."`;
-
-let missions=[],done={},hist=[],alerts=[],busy=false;
+const uid=()=>Date.now().toString(36)+Math.random().toString(36).substr(2,5);
+const fmt=n=>{if(!n&&n!==0)return'₹0';const a=Math.abs(Math.round(n));return(n<0?'−':'')+'₹'+a.toLocaleString('en-IN')};
+const fmtN=n=>Math.round(n||0).toLocaleString('en-IN');
 const td=()=>new Date().toISOString().split('T')[0];
-const mode=()=>{const h=new Date().getHours(),d=new Date().getDay();if(d==0||d==6)return'weekend';if(h<8)return'early';if(h<13)return'morning';if(h<19)return'afternoon';return'evening'};
-const dayN=()=>Math.max(1,Math.floor((new Date()-new Date('2026-04-29'))/86400000)+1);
-const getKey=()=>localStorage.getItem('j_key')||'';
-
-function load(){
-  missions=JSON.parse(localStorage.getItem('j_ms')||'null')||DEF_M;
-  done=JSON.parse(localStorage.getItem('j_d_'+td())||'{}');
-  hist=JSON.parse(localStorage.getItem('j_h')||'[]');
-  alerts=JSON.parse(localStorage.getItem('j_al')||'null')||DEF_A;
+const cm=()=>new Date().toISOString().slice(0,7);
+const ge=id=>document.getElementById(id);
+const notify=(m,e=false)=>{const el=ge('notif');el.textContent=m;el.className='notif'+(e?' er':'')+' sh';setTimeout(()=>el.classList.remove('sh'),3200)};
+const DEF={
+profile:{name:'Shankar Singh',dob:'1986-08-29',fyStart:4},
+accounts:[{id:'ac1',n:'Cash in Hand',type:'Cash',ob:0},{id:'ac2',n:'HDFC Savings',type:'Savings',ob:0},{id:'ac3',n:'SBI Savings',type:'Savings',ob:0}],
+pwd:'jarvis2026',
+quotes:[
+'The market is not mine to conquer. It is Shiva to witness.',
+'9:15 — He breathes in. 3:30 — He breathes out. I simply flow.',
+'Formless. Unpredictable. Pure. The market and I are the same.',
+'Shivoham. I am not the trader. I am That which watches the trader.',
+'Step by step. Not to become rich. But to become free.',
+'Every commitment I keep today is a prayer. Every rupee I save is an offering.',
+'The body trades. The mind plans. The Self watches. All three must serve the fourth — Silence.'
+],
+inc:['Salary','101 Steps Withdrawal','Index Trading Income','Advocacy Fees — Shankar & Associates','Interest Income','Other'],
+exp:['Dry Grocery','Spices & Masala','Oils','Dry Fruits','Dairy & Fresh','Household Cleaning','Personal Care','Rent','Society Maintenance','Electricity','Internet','Gas','Mobile Recharges','Petrol','Car Fund','Car Insurance','Medical Insurance','Life Insurance','Avnish — School Fees','Avnish — Karate','Avnish — Pocket Money','Avnish — SIP','Samarth — Fees','Samarth — Pocket Money','Samarth — SIP','Priya — Pocket Money','Priya — SIP','Priya — Cloth','Shankar — Medical','Shankar — Pocket Money','Shankar — Cloth','Parents Support','Sisters Support','Festival & Puja','Professional Expenses','Membership Fees','Subscriptions','EMI Payments','Emergency Fund','RO AMC','Domestic Help','Miscellaneous'],
+tx:[],bfc:{},
+assets:[{id:'a1',n:'Property',cat:'Property',v:0},{id:'a2',n:'Gold',cat:'Gold',v:0},{id:'a3',n:'Jewellery (Priya)',cat:'Jewellery',v:0},{id:'a4',n:'PF Balance',cat:'PF',v:0},{id:'a5',n:'e-NPS',cat:'e-NPS',v:0},{id:'a6',n:'FD Total',cat:'FD',v:0}],
+loans:[{id:'ln1',n:'HDFC Personal Loan',type:'formal',out:0,emi:0,dd:5,rate:0,notes:''},{id:'ln2',n:'Kuldeep PL',type:'informal',out:0,emi:0,dd:0,rate:0,notes:'No interest'},{id:'ln3',n:'RBL CC Loan',type:'formal',out:0,emi:0,dd:5,rate:0,notes:''},{id:'ln4',n:'CRED Loan',type:'formal',out:0,emi:0,dd:5,rate:0,notes:''},{id:'ln5',n:'Sangeeta Didi',type:'informal',out:0,emi:0,dd:0,rate:0,notes:'No interest'},{id:'ln6',n:'Bhaavan Pasricha',type:'informal',out:0,emi:0,dd:0,rate:0,notes:'No interest'}],
+loansGiven:[],
+commits:[{id:'c1',n:'Rent',amt:0,dd:7,type:'Rent',acId:'',pd:[]},{id:'c2',n:'HDFC EMI',amt:0,dd:5,type:'EMI',acId:'',pd:[],loanId:'ln1'}],
+goals:[{id:'g1',title:'Law Chamber — Shankar & Associates',yr:2026,cat:'Professional',st:'In Progress',ms:[{text:'Office at Supreme Tower Noida',done:false},{text:'Bar Council active',done:true},{text:'First 10 clients',done:false}],notes:''},{id:'g2',title:'101 Steps — ₹278 Cr Portfolio',yr:2050,cat:'Financial',st:'In Progress',ms:[{text:'Complete Step 10',done:false},{text:'Complete Step 25',done:false},{text:'Complete Step 50',done:false},{text:'Complete Step 101',done:false}],notes:''},{id:'g3',title:'Conscious Samadhi',yr:2050,cat:'Spiritual',st:'Not Started',ms:[{text:'Deep daily sadhana',done:false},{text:'Complete surrender',done:false}],notes:'Date arrived with sense of authority'}],
+tasks:[{id:'t1',text:'Morning Sadhana',freq:'daily',day:null,done:false,lastDone:''},{id:'t2',text:'Market Analysis',freq:'daily',day:null,done:false,lastDone:''},{id:'t3',text:'Legal Practice Work',freq:'daily',day:null,done:false,lastDone:''},{id:'t4',text:'Evening Reflection',freq:'daily',day:null,done:false,lastDone:''},{id:'t5',text:'Weekly Review',freq:'weekly',day:0,done:false,lastDone:''}],
+habits:[{id:'h1',n:'Wake at 3:00 AM',streak:0,done:false},{id:'h2',n:'Morning Meditation',streak:0,done:false},{id:'h3',n:'Read / Study',streak:0,done:false},{id:'h4',n:'Physical Exercise',streak:0,done:false},{id:'h5',n:'No Social Media before 8 AM',streak:0,done:false}],
+reviews:{},intention:'',lastReset:'',
+s101:{cap:100000,mult:12.5,cur:1,gtax:0,idxCap:25000,steps:[]},
+logs:{D1:[],D2:[],D3:[],D4:[]},
+idx:{cap:25000,log:[]},wl:[]
+};
+let D={};
+const sv=()=>localStorage.setItem('ssjv3',JSON.stringify(D));
+function ld(){
+try{const s=localStorage.getItem('ssjv3');D=s?JSON.parse(s):JSON.parse(JSON.stringify(DEF));}
+catch{D=JSON.parse(JSON.stringify(DEF));}
+if(!D.s101?.steps?.length)genSteps();
+if(!D.logs)D.logs={D1:[],D2:[],D3:[],D4:[]};
+if(!D.idx)D.idx={cap:25000,log:[]};
+if(!D.wl)D.wl=[];
+if(!D.loansGiven)D.loansGiven=[];
+if(!D.accounts)D.accounts=DEF.accounts;
+if(!D.tasks)D.tasks=DEF.tasks;
+if(!D.reviews)D.reviews={};
+if(!D.quotes)D.quotes=DEF.quotes;
+if(!D.profile)D.profile=DEF.profile;
+resetTasksIfNewDay();
+resetHabitsIfNewDay();
 }
-function sv(){localStorage.setItem('j_ms',JSON.stringify(missions))}
-function svd(){localStorage.setItem('j_d_'+td(),JSON.stringify(done))}
-function svh(){localStorage.setItem('j_h',JSON.stringify(hist.slice(-30)))}
-function sval(){localStorage.setItem('j_al',JSON.stringify(alerts))}
-
-function stats(){
-  let streak=0;
-  for(let i=0;i<60;i++){const d2=new Date();d2.setDate(d2.getDate()-i);const dt=localStorage.getItem('j_d_'+d2.toISOString().split('T')[0]);if(dt&&Object.values(JSON.parse(dt)).some(Boolean)){if(i===streak)streak++;}else if(i>0)break;}
-  const am=activeMissions();const dn=am.filter(m=>done[m.id]).length;
-  return{streak,pct:am.length?Math.round(dn/am.length*100):0,sessions:parseInt(localStorage.getItem('j_sess')||'0')};
+function resetTasksIfNewDay(){const t=td();(D.tasks||[]).forEach(task=>{if(task.freq==='daily'&&task.lastDone!==t)task.done=false;if(task.freq==='weekly'){const dow=new Date().getDay();if(parseInt(task.day||0)===dow&&task.lastDone!==t)task.done=false;else if(parseInt(task.day||0)!==dow)task.done=false;}if(task.freq==='monthly'){const dom=new Date().getDate();if(parseInt(task.day||1)===dom&&task.lastDone!==t)task.done=false;else if(parseInt(task.day||1)!==dom)task.done=false;}});}
+function resetHabitsIfNewDay(){const t=new Date().toDateString();if(D.lastReset!==t){(D.habits||[]).forEach(h=>h.done=false);D.lastReset=t;sv();}}
+function genSteps(){
+const old=D.s101.steps||[];const steps=[];
+let cap=D.s101.cap||100000;const mult=(D.s101.mult||12.5)/100;
+for(let i=1;i<=101;i++){
+const o=old.find(s=>s.i===i)||{};
+const tp=Math.round(cap*mult);const pre=cap+tp;
+const tr=o.tr!==undefined?o.tr:(D.s101.gtax||0);
+const ta=Math.round(tp*(tr/100));const at=pre-ta;
+const wd=o.wd||0;const nb=at-wd;
+steps.push({i,sc:Math.round(cap),tp,pre,tr,ta,at,wd,nb,p1:o.p1||0,p2:o.p2||0,p3:o.p3||0,p4:o.p4||0,st:o.st||'Pending',notes:o.notes||''});
+cap=nb>0?nb:at;
 }
-function activeMissions(){const d=new Date().getDay(),iw=d==0||d==6;return missions.filter(m=>m.freq==='daily'||(m.freq==='weekday'&&!iw)||(m.freq==='weekend'&&iw))}
-function s7(){const n=['S','M','T','W','T','F','S'];return Array.from({length:7},(_,i)=>{const d=new Date();d.setDate(d.getDate()-(6-i));const dt=localStorage.getItem('j_d_'+d.toISOString().split('T')[0]);let c='';if(dt){const cnt=Object.values(JSON.parse(dt)).filter(Boolean).length;c=cnt>=5?'hot':cnt>0?'warm':'';}return{l:n[d.getDay()],c}})}
-
-function startClock(){const el=document.getElementById('clk');const t=()=>{el.textContent=new Date().toLocaleTimeString('en-IN',{hour:'2-digit',minute:'2-digit',second:'2-digit',hour12:true})};t();setInterval(t,1000)}
-
-function renderHome(){renderM();renderMetrics();renderS7()}
-function renderM(){
-  const am=activeMissions();
-  const amIds=new Set(am.map(m=>m.id));
-  document.getElementById('mlist').innerHTML=missions.map(m=>{
-    const active=amIds.has(m.id);
-    const dimStyle=active?'':'opacity:0.35;pointer-events:none;';
-    const tag=active?m.freq:'not today';
-    return`<div class="mi ${done[m.id]?'done':''}" style="${dimStyle}" onclick="toggleM('${m.id}')"><div class="mchk">${done[m.id]?'✓':''}</div><span class="mico">${m.emoji}</span><span class="mname">${m.name}</span><span class="mfreq">${tag}</span></div>`;
-  }).join('')||'<div style="color:var(--text-dim);font-size:0.68rem;padding:10px">No missions. Add in Settings.</div>';
+D.s101.steps=steps;
 }
-function renderMetrics(){
-  const s=stats();
-  const el=(id,v,c)=>{const e=document.getElementById(id);e.textContent=v;e.className='mv'+(c?' '+c:'')};
-  el('mstreak',s.streak,s.streak>=3?'g':s.streak===0?'r':'');
-  el('mdone',s.pct+'%',s.pct>=70?'g':s.pct<30?'r':'');
-  el('msess',s.sessions,'');el('mday',dayN(),'');
+function regenFromStep(startSi){
+const mult=(D.s101.mult||12.5)/100;
+let cap;
+if(startSi<=1){genSteps();return;}
+const prev=D.s101.steps[startSi-2];
+if(!prev)return;
+cap=prev.nb>0?prev.nb:prev.at;
+for(let i=startSi;i<=101;i++){
+const s=D.s101.steps[i-1];if(!s)break;
+s.sc=Math.round(cap);s.tp=Math.round(cap*mult);s.pre=s.sc+s.tp;
+s.ta=Math.round(s.tp*(s.tr/100));s.at=s.pre-s.ta;
+s.nb=s.at-(s.wd||0);
+cap=s.nb>0?s.nb:s.at;
 }
-function renderS7(){document.getElementById('spips').innerHTML=s7().map(d=>`<div class="pip ${d.c}">${d.l}</div>`).join('')}
-function renderCmode(){const m={early:'PRE-DAWN',morning:'MORNING OPS',afternoon:'OFFICE MODE',evening:'EVENING REVIEW',weekend:'WEEKEND MODE'};document.getElementById('cmode').textContent=m[mode()]||'ACTIVE'}
-function renderCmds(){const m=mode();const mp={early:['Morning check-in',"Today's priority",'Meditation done'],morning:['Morning check-in','Market hypothesis',"What's pending?"],afternoon:['Midday report','I\'m losing focus','What I\'ve done'],evening:['Evening review','Honest assessment',"Tomorrow's plan"],weekend:['Weekend check-in','I am drifting','What to do now?']};document.getElementById('cmds').innerHTML=(mp[m]||mp.morning).map(c=>`<button class="cmd" onclick="useCmd('${c}')">${c}</button>`).join('')}
-
-function renderSM(){
-  document.getElementById('meditor').innerHTML=missions.map((m,i)=>`<div class="mei"><input class="eico" value="${m.emoji}" onchange="missions[${i}].emoji=this.value;sv();renderHome()" maxlength="2"><input class="enm" value="${m.name}" onchange="missions[${i}].name=this.value;sv();renderHome()"><select class="efrq" onchange="missions[${i}].freq=this.value;sv();renderHome()"><option value="daily" ${m.freq==='daily'?'selected':''}>Daily</option><option value="weekday" ${m.freq==='weekday'?'selected':''}>Weekday</option><option value="weekend" ${m.freq==='weekend'?'selected':''}>Weekend</option></select><button class="dbtn" onclick="delM('${m.id}')">✕</button></div>`).join('');
 }
-function renderAT(){document.getElementById('atimes').innerHTML=alerts.map((a,i)=>`<div class="ati"><div class="atl">${a.label}</div><input type="time" class="tinp" value="${a.time}" onchange="alerts[${i}].time=this.value"></div>`).join('')}
-function renderAKey(){const k=getKey(),b=document.getElementById('astatbox');if(k&&k!=='BASIC'){b.textContent='✓ AI Connected — Full coaching active';b.className='astat ok';}else{b.textContent='✗ Not connected — Basic Mode';b.className='astat no'}}
-function renderNS(){const el=document.getElementById('nstat');if(!('Notification'in window)){el.textContent='● Alerts: Not supported';return}if(Notification.permission==='granted'){el.textContent='● Alerts: ACTIVE';el.className='nstat on';}else{el.textContent='● Alerts: Off — tap Enable Alerts';el.className='nstat off'}}
-
-function showTab(tab,btn){
-  document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
-  document.querySelectorAll('.ntab').forEach(t=>t.classList.remove('active'));
-  document.getElementById('tab-'+tab).classList.add('active');
-  btn.classList.add('active');
-  if(tab==='settings'){renderSM();renderAT();renderAKey();renderNS()}
-  if(tab==='coach'){renderCmode();renderCmds()}
+const stp=s=>(s.p1||0)+(s.p2||0)+(s.p3||0)+(s.p4||0);
+const spct=s=>s.tp>0?Math.round(stp(s)/s.tp*100):0;
+function syncStepProfits(){
+D.s101.steps.forEach(s=>{s.p1=0;s.p2=0;s.p3=0;s.p4=0;});
+['D1','D2','D3','D4'].forEach((dk,di)=>{(D.logs[dk]||[]).forEach(t=>{if(t.step&&t.pb){const s=D.s101.steps[t.step-1];if(s){const f='p'+(di+1);s[f]=(s[f]||0)+t.pb;}}});});
 }
-
-function toggleM(id){
-  done[id]=!done[id];svd();renderHome();
-  if(done[id]){const m=missions.find(x=>x.id===id);const am=activeMissions();const dc=am.filter(x=>done[x.id]).length;let msg=`Mission logged: ${m?.name}.\n${dc===am.length?'\nAll missions complete. Day logged. Strong.':dc+'/'+am.length+' done.'}`;addMsg('j',msg);}
+function calcDemat(){const initCap=(D.s101.cap||100000)*4;let booked=0;Object.values(D.logs).forEach(lg=>lg.forEach(t=>booked+=(t.pb||0)));const wds=D.s101.steps.reduce((s,st)=>s+(st.wd||0),0);return initCap+booked-wds;}
+function calcIdxFund(){const idx=D.idx||{cap:25000,log:[]};const log=idx.log||[];return(idx.cap||25000)+log.reduce((s,e)=>s+(e.pl||0),0)-log.reduce((s,e)=>s+(e.w||0),0);}
+function calcLoansGivenTotal(){return(D.loansGiven||[]).reduce((s,l)=>s+(l.out||0),0);}
+function getAccountBalance(acId){const ac=(D.accounts||[]).find(a=>a.id===acId);if(!ac)return 0;let bal=ac.ob||0;(D.tx||[]).forEach(t=>{if(t.type==='transfer'){if(t.fromAc===acId)bal-=t.amt;if(t.toAc===acId)bal+=t.amt;}else if(t.acId===acId){if(t.type==='i')bal+=t.amt;else bal-=t.amt;}});return bal;}
+function calcTotalBankCash(){return(D.accounts||[]).reduce((s,a)=>s+getAccountBalance(a.id),0);}
+function syncLinks(){
+syncStepProfits();
+const demat=calcDemat();const idxFund=calcIdxFund();
+const bankCash=calcTotalBankCash();const lgTotal=calcLoansGivenTotal();
+const totalLoanOut=D.loans.reduce((s,l)=>s+(l.out||0),0);
+D._synced={demat,idxFund,bankCash,lgTotal,totalLoanOut};
 }
-function addMission(){
-  const e=document.getElementById('nei').value.trim()||'🎯';
-  const n=document.getElementById('nen').value.trim();
-  const f=document.getElementById('nef').value;
-  if(!n){alert('Enter a mission name.');return}
-  missions.push({id:'m'+Date.now(),emoji:e,name:n,freq:f});sv();
-  document.getElementById('nei').value='';document.getElementById('nen').value='';
-  renderSM();renderHome();
+function getTotalAssets(){
+const manual=D.assets.reduce((s,a)=>s+(a.v||0),0);
+const {demat,idxFund,bankCash,lgTotal}=D._synced||{demat:0,idxFund:0,bankCash:0,lgTotal:0};
+return manual+demat+idxFund+bankCash+lgTotal;
 }
-function delM(id){if(!confirm('Delete this mission?'))return;missions=missions.filter(m=>m.id!==id);sv();renderSM();renderHome()}
-
-function boot(){
-  const md=mode();const am=activeMissions();
-  const dn=am.filter(m=>done[m.id]).map(m=>m.name);
-  const pd=am.filter(m=>!done[m.id]).map(m=>m.name);
-  const s=stats();
-  const msgs={
-    early:`JARVIS ONLINE.\n\n${pd.length} missions pending.\nStart with meditation. Everything else follows.`,
-    morning:`JARVIS ONLINE. Morning ops.\n\n${dn.length>0?'Done: '+dn.join(', ')+'.\n':'Nothing completed yet.\n'}Pending: ${pd.join(', ')||'all clear'}.\n\nMarket opens soon. Your hypothesis?`,
-    afternoon:`JARVIS CHECK-IN.\n\nDay ${dayN()} · ${s.pct}% complete · Streak: ${s.streak} days.\n\nStill open: ${pd.join(', ')||'nothing — good'}.\n\nWhat are you working on right now?`,
-    evening:`JARVIS EVENING REVIEW.\n\n${dn.length}/${am.length} missions done.\n${pd.length>0?'Missed: '+pd.join(', ')+'.\n':''}\nBe honest — what happened today?`,
-    weekend:`JARVIS WEEKEND.\n\nLast weekend was reported as wasted. This one starts now.\n\n${dn.length}/${am.length} done.\n\nONE thing that will make this weekend count?`
-  };
-  document.getElementById('bootmsg').textContent=msgs[md]||msgs.morning;
+function getTotalLiabs(){return D.loans.reduce((s,l)=>s+(l.out||0),0);}
+function getNetWorth(){return getTotalAssets()-getTotalLiabs();}
+function ndd(dd){const n=new Date();n.setHours(0,0,0,0);const t=new Date(n.getFullYear(),n.getMonth(),dd);return t>=n?t:new Date(n.getFullYear(),n.getMonth()+1,dd);}
+const du=dd=>{const n=new Date();n.setHours(0,0,0,0);return Math.round((ndd(dd)-n)/86400000)};
+function isPaid(c){const n=new Date();const k=`${n.getFullYear()}-${String(n.getMonth()+1).padStart(2,'0')}`;return(c.pd||[]).includes(k);}
+function togPaid(id,fromLoans=false){
+let c=D.commits.find(c=>c.id===id);
+if(!c&&fromLoans){const l=D.loans.find(l=>l.id===id);if(l){c={id:l.id,pd:l._pd||(l._pd=[])};l._pd=c.pd;}}
+if(!c)return;
+const n=new Date();const k=`${n.getFullYear()}-${String(n.getMonth()+1).padStart(2,'0')}`;
+if(!c.pd)c.pd=[];const i=c.pd.indexOf(k);if(i>=0)c.pd.splice(i,1);else c.pd.push(k);
+sv();rDash();rCommit();
 }
-
-function addMsg(r,txt){
-  const box=document.getElementById('msgs');
-  const d=document.createElement('div');d.className='msg '+(r==='j'?'j':'u');
-  d.innerHTML=`<div class="mfrom">${r==='j'?'JARVIS':'SHANKAR'}</div><div class="mbody">${txt}</div>`;
-  box.insertBefore(d,document.getElementById('typing'));box.scrollTop=99999;
+function getDueSoon(){
+const items=[];
+D.commits.forEach(c=>{const d=du(c.dd);if(d<=7&&!isPaid(c))items.push({...c,days:d,src:'commit'});});
+D.loans.filter(l=>l.out>0&&l.emi>0&&l.dd>0).forEach(l=>{const d=du(l.dd);if(d<=7)items.push({id:l.id,n:l.n+' EMI',amt:l.emi,days:d,src:'loan'});});
+D.loansGiven.filter(l=>l.out>0&&l.retDate).forEach(l=>{const d=Math.round((new Date(l.retDate)-new Date())/86400000);if(d>=0&&d<=7)items.push({id:l.id,n:'Receive from '+l.n,amt:l.out,days:d,src:'given'});});
+return items.sort((a,b)=>a.days-b.days);
 }
-function showT(s){document.getElementById('typing').className='typing'+(s?' show':'');document.getElementById('msgs').scrollTop=99999}
-function useCmd(t){document.getElementById('inp').value=t;send()}
-
-async function send(){
-  const inp=document.getElementById('inp');const txt=inp.value.trim();
-  if(!txt||busy)return;inp.value='';busy=true;document.getElementById('sbtn').disabled=true;
-  addMsg('u',txt);
-  const key=getKey();
-  if(!key||key==='BASIC'){
-    const am=activeMissions();const pd=am.filter(m=>!done[m.id]).map(m=>m.name);
-    addMsg('j',`BASIC MODE — AI not connected.\n\nPending: ${pd.join(', ')||'All clear'}.\n\nGo to Settings → Connect AI for full coaching.`);
-    busy=false;document.getElementById('sbtn').disabled=false;return;
-  }
-  const am=activeMissions();
-  const dn=am.filter(m=>done[m.id]).map(m=>m.name);
-  const pd=am.filter(m=>!done[m.id]).map(m=>m.name);
-  const s=stats();
-  const ctx=`[${td()} | ${mode()} | Day ${dayN()} | Done:${dn.join(',')||'none'} | Pending:${pd.join(',')} | Streak:${s.streak}d | ${s.pct}%]`;
-  hist.push({role:'user',content:ctx+'\n\n'+txt});showT(true);
-  try{
-    const res=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',headers:{'Content-Type':'application/json','x-api-key':key,'anthropic-version':'2023-06-01'},body:JSON.stringify({model:'claude-sonnet-4-6',max_tokens:500,system:SYS,messages:hist})});
-    if(!res.ok){const e=await res.json();throw new Error(e.error?.message||'API error '+res.status)}
-    const data=await res.json();const reply=data.content?.[0]?.text||'No response.';
-    hist.push({role:'assistant',content:reply});svh();
-    const n=parseInt(localStorage.getItem('j_sess')||'0')+1;localStorage.setItem('j_sess',''+n);renderMetrics();
-    showT(false);addMsg('j',reply);
-  }catch(err){
-    showT(false);
-    if(err.message.includes('401')||err.message.includes('auth')){localStorage.removeItem('j_key');addMsg('j','API key rejected. Go to Settings → Connect AI.');}
-    else addMsg('j','Error: '+err.message);
-  }
-  busy=false;document.getElementById('sbtn').disabled=false;
+function getTodayTasks(){
+const n=new Date();const dow=n.getDay();const dom=n.getDate();const t=td();
+return(D.tasks||[]).filter(task=>{
+if(task.freq==='daily')return true;
+if(task.freq==='weekly')return parseInt(task.day||0)===dow;
+if(task.freq==='monthly')return parseInt(task.day||1)===dom;
+if(task.freq==='once')return task.day===t;
+return false;
+});
 }
-
-function saveKey(){const v=document.getElementById('akinp').value.trim();if(!v)return alert('Enter key.');if(!v.startsWith('sk-'))return alert('Key must start with sk-');localStorage.setItem('j_key',v);document.getElementById('akinp').value='';renderAKey();alert('AI Connected. Go to Coach tab.')}
-function removeKey(){if(!confirm('Remove API key?'))return;localStorage.removeItem('j_key');renderAKey()}
-function saveAlertTimes(){sval();if(Notification.permission==='granted')schedAlerts();alert('Alert times saved.')}
-
-async function reqNotif(){
-  if(!('Notification'in window))return alert('Not supported on this browser.');
-  const p=await Notification.requestPermission();renderNS();
-  if(p==='granted'){schedAlerts();alert('Alerts enabled! JARVIS will monitor you at scheduled times.');}
-  else alert('Alerts blocked. Enable in phone Settings → Browser notifications.');
+function moOpts(cur=true){let h='';let d=new Date(2026,4,1);const c=cm();while(d.getFullYear()<=2050){const k=d.toISOString().slice(0,7);h+=`<option value="${k}"${cur&&k===c?' selected':''}>${d.toLocaleDateString('en-IN',{month:'short',year:'numeric'})}</option>`;d.setMonth(d.getMonth()+1);}return h;}
+function acOpts(sel=''){return(D.accounts||[]).map(a=>`<option value="${a.id}"${a.id===sel?' selected':''}>${a.n}</option>`).join('');}
+function omo(title,body,onOk,okLbl='Confirm'){ge('mo-t').textContent=title;ge('mo-b').innerHTML=body;ge('mo-ok').textContent=okLbl;ge('mo-ok').onclick=onOk;ge('mo').classList.add('o');}
+function cmo(){ge('mo').classList.remove('o');}
+ge('mo').addEventListener('click',function(e){if(e.target===this)cmo();});
+function login(){const p=ge('pi').value;if(p===(D.pwd||'jarvis2026')){ge('ls').style.display='none';ge('app').style.display='block';initApp();}else{ge('le').style.display='block';ge('pi').value='';}}
+function tick(){const n=new Date();ge('ttime').textContent=n.toLocaleTimeString('en-IN',{hour:'2-digit',minute:'2-digit'})+' | '+n.toLocaleDateString('en-IN',{day:'2-digit',month:'short',year:'2-digit'});}
+function go(name,el){document.querySelectorAll('.sc').forEach(s=>s.classList.remove('a'));document.querySelectorAll('.ni').forEach(n=>n.classList.remove('a'));ge('sc-'+name).classList.add('a');el.classList.add('a');syncLinks();renderScreen(name);}
+function renderScreen(name){const fns={dash:rDash,goals:rGoals,commit:rCommit,steps:rSteps,track:rTrack,budget:rBudget,loans:rLoans,pl:rPL,bs:rBS,set:rSet};if(fns[name])fns[name]();}
+function initApp(){tick();setInterval(tick,1000);syncLinks();['dash','goals','commit','steps','track','budget','loans','pl','bs','set'].forEach(renderScreen);}
+// ── DASHBOARD ──
+function rDash(){
+syncLinks();
+const nw=getNetWorth();const ta=getTotalAssets();const tl=getTotalLiabs();
+const mk=cm();const txs=D.tx.filter(t=>t.date?.slice(0,7)===mk);
+const inc=txs.filter(t=>t.type==='i').reduce((s,t)=>s+t.amt,0);
+const exp=txs.filter(t=>t.type==='e').reduce((s,t)=>s+t.amt,0);
+const pl=inc-exp;
+const fc=D.bfc[mk]||{};const tfc=Object.values(fc).reduce((s,v)=>s+(v||0),0);
+const budPct=tfc>0?Math.min(Math.round(exp/tfc*100),999):0;
+const savRate=inc>0?Math.round((inc-exp)/inc*100):0;
+const cs=D.s101.cur||1;const step=D.s101.steps[cs-1];
+const done=D.s101.steps.filter(s=>s.st==='Closed').length;
+const openp=Object.values(D.logs).reduce((s,lg)=>s+lg.filter(t=>(t.eq||0)-(t.sq||0)>0).length,0);
+const tp=D.s101.steps.reduce((s,st)=>s+stp(st),0);
+const due=getDueSoon();const todayT=getTodayTasks();
+const debtRatio=ta>0?Math.round(tl/ta*100):0;
+const liq=(D.accounts||[]).filter(a=>a.type==='Cash'||a.type==='Savings').reduce((s,a)=>s+getAccountBalance(a.id),0);
+const q=D.quotes||DEF.quotes;const qi=Math.floor(new Date().getDate()%(q.length||1));
+let stepProg='';
+if(step){const ach=stp(step);const sp=spct(step);const cls=sp>=90?'d':sp>=70?'w':'';
+stepProg=`<div class="fbt mb8 txs"><span>Step ${cs} Target: <b class="tgo">${fmt(step.tp)}</b></span><span class="mono tgo">${fmt(ach)} (${sp}%)</span></div><div class="pb"><div class="pf ${cls}" style="width:${Math.min(sp,100)}%"></div></div><div class="fbt mt8 txs"><span style="color:var(--tx3)">Remaining: <span class="mono to">${fmt(Math.max(0,step.tp-ach))}</span></span><span style="color:var(--tx3)">Next corpus: <span class="mono tgo">${fmt(step.nb||step.at)}</span></span></div>`;}
+const budWarn=tfc>0&&budPct>=95?`<div class="alert-banner"><span class="to">⚠</span> Budget at ${budPct}% — review expenses immediately</div>`:'';
+const dueHTML=due.slice(0,5).map(c=>`<div class="crow"><div><div class="txm">${c.n}</div><div class="txs ${c.days===0?'tr2c':c.days<=2?'to':'ta'}">${c.days===0?'DUE TODAY':c.days===1?'TOMORROW':'In '+c.days+' days — '+ndd(c.dd||1).toLocaleDateString('en-IN',{day:'2-digit',month:'short'})}</div></div><span class="mono tgo">${fmt(c.amt)}</span></div>`).join('')+(due.length>5?`<div class="view-all-btn" onclick="go('commit',document.querySelectorAll('.ni')[2])">View All ${due.length} items →</div>`:'')+(due.length===0?'<div class="empty txs">No payments due in next 7 days</div>':'');
+const taskHTML=todayT.slice(0,5).map(t=>`<div class="crow"><div class="fb"><div onclick="togTask('${t.id}')" style="width:20px;height:20px;border-radius:5px;border:1px solid var(--ac);cursor:pointer;display:flex;align-items:center;justify-content:center;background:${t.done?'var(--ac)':'transparent'};flex-shrink:0;font-size:.8rem">${t.done?'✓':''}</div><span style="${t.done?'text-decoration:line-through;color:var(--tx3)':''}"> ${t.text}</span></div><span class="badge b-ac txs">${t.freq}</span></div>`).join('')+(todayT.length>5?`<div class="view-all-btn" onclick="go('goals',document.querySelectorAll('.ni')[1])">View All →</div>`:'')+(todayT.length===0?'<div class="empty txs">No tasks today — add in Goals tab</div>':'');
+ge('sc-dash').innerHTML=`
+<div class="qcard mb12"><div class="qtext">"${q[qi]||q[0]}"</div><div class="qauthor">— SS JARVIS Daily</div></div>
+${budWarn}
+<div class="nw-hero mb12"><div class="nw-label">NET WORTH — LIVE</div><div class="nw-val">${fmt(nw)}</div><div class="g3 mt12"><div><div class="txs" style="color:var(--tx3);margin-bottom:4px">Total Assets</div><div class="mono tg">${fmt(ta)}</div></div><div style="text-align:center"><div class="txs" style="color:var(--tx3);margin-bottom:4px">Liquid Cash</div><div class="mono ta">${fmt(liq)}</div></div><div style="text-align:right"><div class="txs" style="color:var(--tx3);margin-bottom:4px">Total Liabilities</div><div class="mono tr2c">${fmt(tl)}</div></div></div></div>
+<div class="g2 mb12">
+<div class="card"><div class="ctitle" style="margin-bottom:10px">THIS MONTH</div><div class="fbt mb8 txs"><span>Income</span><span class="mono tg">${fmt(inc)}</span></div><div class="fbt mb8 txs"><span>Expenses</span><span class="mono tr2c">${fmt(exp)}</span></div><div class="pb mb8"><div class="pf ${budPct>=95?'d':budPct>=70?'w':''}" style="width:${Math.min(budPct,100)}%"></div></div><div class="fbt txs"><span>Budget: ${budPct}% used | Savings: ${savRate}%</span><span class="mono ${pl>=0?'tg':'tr2c'}">${fmt(pl)}</span></div></div>
+<div class="card"><div class="ctitle" style="margin-bottom:10px">DEBT POSITION</div><div class="fbt mb8 txs"><span>Total Outstanding</span><span class="mono tr2c">${fmt(tl)}</span></div><div class="fbt mb8 txs"><span>Debt / Asset Ratio</span><span class="mono ${debtRatio<=30?'tg':debtRatio<=60?'to':'tr2c'}">${debtRatio}%</span></div><div class="fbt txs"><span>Active Loans</span><span class="mono ta">${D.loans.filter(l=>l.out>0).length}</span></div></div>
+</div>
+<div class="step-hero mb12"><div class="ctitle" style="margin-bottom:10px">101 STEPS — LIVE</div><div class="g4 mb12"><div class="kpi"><div class="kl">Active Step</div><div class="kv ac">STEP ${cs}</div></div><div class="kpi"><div class="kl">Completed</div><div class="kv gn">${done}</div></div><div class="kpi"><div class="kl">Open Positions</div><div class="kv or">${openp}</div></div><div class="kpi"><div class="kl">Total Profit</div><div class="kv go">${fmt(tp)}</div></div></div>${stepProg}</div>
+<div class="card mb12"><div class="ctitle">DUE TODAY <span class="badge b-ac">${todayT.length}</span></div>${taskHTML}</div>
+<div class="card"><div class="ctitle">UPCOMING 7 DAYS <span class="badge b-or">${due.length}</span></div>${dueHTML}</div>`;
+ge('tnw').textContent='NW: '+fmt(nw);
 }
-function schedAlerts(){
-  alerts.forEach(a=>{
-    const[h,m]=a.time.split(':').map(Number);const now=new Date();const t=new Date();t.setHours(h,m,0,0);
-    if(t<=now)t.setDate(t.getDate()+1);
-    setTimeout(()=>{fire('⚡ JARVIS | '+a.label,a.msg);setInterval(()=>fire('⚡ JARVIS | '+a.label,a.msg),86400000)},t-now);
-  });
+function togTask(id){const t=(D.tasks||[]).find(t=>t.id===id);if(!t)return;t.done=!t.done;if(t.done)t.lastDone=td();sv();rDash();}
+// ── GOALS ──
+function rGoals(){
+ge('sc-goals').innerHTML=`<div class="tabs" id="gtabs"><button class="tab a" onclick="gTab('road',this)">Roadmap</button><button class="tab" onclick="gTab('tasks',this)">Tasks</button><button class="tab" onclick="gTab('habits',this)">Habits</button><button class="tab" onclick="gTab('coach',this)">Coach</button><button class="tab" onclick="gTab('review',this)">Daily Review</button></div>
+<div id="gt-road">${rRoadmap()}</div>
+<div id="gt-tasks" style="display:none">${rTasks()}</div>
+<div id="gt-habits" style="display:none">${rHabits()}</div>
+<div id="gt-coach" style="display:none">${rCoach()}</div>
+<div id="gt-review" style="display:none">${rReview()}</div>`;
 }
-function fire(title,body){if(Notification.permission==='granted')new Notification(title,{body,requireInteraction:true,vibrate:[200,100,200]})}
-function testNotif(){if(Notification.permission!=='granted'){reqNotif();return}fire('⚡ JARVIS TEST','Shankar. Alert system working. You are being monitored.')}
-function resetAll(){if(!confirm('Reset ALL data?'))return;const ks=[];for(let i=0;i<localStorage.length;i++){const k=localStorage.key(i);if(k&&k.startsWith('j_'))ks.push(k)}ks.forEach(k=>localStorage.removeItem(k));location.reload()}
-
-document.getElementById('inp').addEventListener('keydown',e=>{if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();send()}});
-
-load();startClock();renderHome();renderCmode();renderCmds();boot();
-if(Notification.permission==='granted')schedAlerts();
-setInterval(()=>{renderCmode();renderCmds();renderHome()},60000);
-if('serviceWorker'in navigator&&location.protocol==='https:')navigator.serviceWorker.register('jarvis-sw.js').catch(()=>{});
+function gTab(t,el){document.querySelectorAll('#gtabs .tab').forEach(x=>x.classList.remove('a'));el.classList.add('a');['road','tasks','habits','coach','review'].forEach(x=>{const d=ge('gt-'+x);if(d)d.style.display=x===t?'':'none';});if(t==='review')ge('gt-review').innerHTML=rReview();}
+function rRoadmap(){
+const catCls={Financial:'b-go',Professional:'b-ac',Spiritual:'b-pu',Personal:'b-gn'};
+const stCls={'In Progress':'b-or','Achieved':'b-gn','Not Started':'b-rd'};
+return`<div class="shdr"><h2>LIFE ROADMAP 2026 → 2050</h2><button class="btn bg2 bsm" onclick="addGoal()">+ Goal</button></div>
+<div class="tl">${[...D.goals].sort((a,b)=>a.yr-b.yr).map(g=>{
+const msDone=g.ms.filter(m=>m.done).length;const msTot=g.ms.length;const pct=msTot>0?Math.round(msDone/msTot*100):0;
+return`<div class="tli"><div class="tld ${g.st==='Achieved'?'dn':g.st==='In Progress'?'ip':''}"></div>
+<div class="goal-card mb8"><div class="fbt mb8"><div style="font-weight:700;font-size:.95rem">${g.title}</div><span class="mono txs">${g.yr}</span></div>
+<div class="fb mb8"><span class="badge ${catCls[g.cat]||'b-ac'}">${g.cat}</span><span class="badge ${stCls[g.st]||'b-or'}">${g.st}</span></div>
+<div class="pb mb8"><div class="pf gn" style="width:${pct}%"></div></div>
+<div class="txs mb8">${msDone} of ${msTot} milestones — ${pct}% complete</div>
+${g.ms.map((m,mi)=>`<div class="ms-item"><div class="ms-check ${m.done?'done':''}" onclick="togMs('${g.id}',${mi})">${m.done?'✓':''}</div><span style="${m.done?'text-decoration:line-through;color:var(--tx3)':''}" class="txm">${m.text}</span></div>`).join('')}
+${g.notes?`<div class="txs mt8" style="font-style:italic;color:var(--tx3)">${g.notes}</div>`:''}
+<div class="fb mt8"><button class="btn bsm bg2" onclick="editGoal('${g.id}')">Edit</button><button class="btn bsm bd2" onclick="delGoal('${g.id}')">Delete</button></div>
+</div></div>`;}).join('')||'<div class="empty">No goals yet — add your first goal</div>'}</div>`;
+}
+function togMs(gid,mi){const g=D.goals.find(g=>g.id===gid);if(!g||!g.ms[mi])return;g.ms[mi].done=!g.ms[mi].done;sv();ge('gt-road').innerHTML=rRoadmap();}
+function addGoal(){omo('ADD LIFE GOAL',`<div class="fr"><div><label>Goal Title</label><input id="gt"></div></div><div class="fr c2"><div><label>Target Year</label><input type="number" id="gyr" value="2030" min="2026" max="2050"></div><div><label>Category</label><select id="gc"><option>Financial</option><option>Professional</option><option>Spiritual</option><option>Personal</option></select></div></div><div class="fr c2"><div><label>Status</label><select id="gst"><option>Not Started</option><option>In Progress</option><option>Achieved</option></select></div></div><div class="fr"><div><label>Milestones (comma separated)</label><input id="gms" placeholder="Milestone 1, Milestone 2"></div></div><div class="fr"><div><label>Notes</label><input id="gn"></div></div>`,()=>{const title=ge('gt').value.trim();if(!title)return notify('Enter goal title',true);D.goals.push({id:uid(),title,yr:parseInt(ge('gyr').value)||2030,cat:ge('gc').value,st:ge('gst').value,ms:ge('gms').value.split(',').map(m=>({text:m.trim(),done:false})).filter(m=>m.text),notes:ge('gn').value});sv();ge('gt-road').innerHTML=rRoadmap();cmo();notify('Goal added');});}
+function editGoal(id){const g=D.goals.find(g=>g.id===id);if(!g)return;omo('EDIT GOAL',`<div class="fr"><div><label>Title</label><input id="gt" value="${g.title}"></div></div><div class="fr c2"><div><label>Year</label><input type="number" id="gyr" value="${g.yr}"></div><div><label>Category</label><select id="gc">${['Financial','Professional','Spiritual','Personal'].map(c=>`<option ${c===g.cat?'selected':''}>${c}</option>`).join('')}</select></div></div><div class="fr c2"><div><label>Status</label><select id="gst">${['Not Started','In Progress','Achieved'].map(s=>`<option ${s===g.st?'selected':''}>${s}</option>`).join('')}</select></div></div><div class="fr"><div><label>Notes</label><input id="gn" value="${g.notes||''}"></div></div>`,()=>{g.title=ge('gt').value.trim();g.yr=parseInt(ge('gyr').value)||2030;g.cat=ge('gc').value;g.st=ge('gst').value;g.notes=ge('gn').value;sv();ge('gt-road').innerHTML=rRoadmap();cmo();notify('Updated');});}
+function delGoal(id){if(!confirm('Delete goal?'))return;D.goals=D.goals.filter(g=>g.id!==id);sv();ge('gt-road').innerHTML=rRoadmap();}
+function rTasks(){return`<div class="shdr"><h2>SCHEDULED TASKS</h2><button class="btn bg2 bsm" onclick="addTask()">+ Task</button></div>
+<div class="card">${D.tasks.length?D.tasks.map(t=>`<div class="crow"><div><div class="txm">${t.text}</div><div class="txs"><span class="badge b-ac">${t.freq}</span>${t.day!==null&&t.day!==''?' — '+getTaskDayLabel(t):''}${t.done?' <span class="badge b-gn">Done Today</span>':''}</div></div><div class="fb"><button class="btn bxs bg2" onclick="editTask('${t.id}')">Edit</button><button class="btn bxs bd2" onclick="delTask('${t.id}')">×</button></div></div>`).join(''):'<div class="empty">No tasks — add daily, weekly or monthly tasks</div>'}</div>`;}
+function getTaskDayLabel(t){if(t.freq==='weekly'){const days=['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];return days[parseInt(t.day||0)];}if(t.freq==='monthly')return 'Day '+t.day;if(t.freq==='once')return t.day;return '';}
+function addTask(){omo('ADD TASK',`<div class="fr"><div><label>Task Name</label><input id="tn"></div></div><div class="fr c2"><div><label>Frequency</label><select id="tf" onchange="showTaskDay()"><option value="daily">Daily</option><option value="weekly">Weekly</option><option value="monthly">Monthly</option><option value="once">One Time</option></select></div><div id="td-wrap" style="display:none"><label id="td-lbl">Day</label><input id="td"></div></div>`,()=>{const n=ge('tn').value.trim();if(!n)return;D.tasks.push({id:uid(),text:n,freq:ge('tf').value,day:ge('td').value||null,done:false,lastDone:''});sv();ge('gt-tasks').innerHTML=rTasks();cmo();notify('Task added');});}
+function showTaskDay(){const f=ge('tf').value;const wrap=ge('td-wrap');const lbl=ge('td-lbl');if(!wrap)return;if(f==='daily'){wrap.style.display='none';}else{wrap.style.display='';lbl.textContent=f==='weekly'?'Day (0=Sun,1=Mon...)':f==='monthly'?'Day of Month (1-31)':'Date (YYYY-MM-DD)';}}
+function editTask(id){const t=D.tasks.find(t=>t.id===id);if(!t)return;omo('EDIT TASK',`<div class="fr"><div><label>Task Name</label><input id="tn" value="${t.text}"></div></div><div class="fr c2"><div><label>Frequency</label><select id="tf"><option value="daily" ${t.freq==='daily'?'selected':''}>Daily</option><option value="weekly" ${t.freq==='weekly'?'selected':''}>Weekly</option><option value="monthly" ${t.freq==='monthly'?'selected':''}>Monthly</option><option value="once" ${t.freq==='once'?'selected':''}>One Time</option></select></div><div><label>Day/Date</label><input id="td" value="${t.day||''}"></div></div>`,()=>{t.text=ge('tn').value.trim();t.freq=ge('tf').value;t.day=ge('td').value||null;sv();ge('gt-tasks').innerHTML=rTasks();cmo();notify('Updated');});}
+function delTask(id){D.tasks=D.tasks.filter(t=>t.id!==id);sv();ge('gt-tasks').innerHTML=rTasks();}
+function rHabits(){return`<div class="shdr"><h2>DAILY HABITS</h2><button class="btn bg2 bsm" onclick="addHabit()">+ Habit</button></div>
+<div class="card">${D.habits.map(h=>`<div class="crow"><div><div class="txm">${h.n}</div><div class="txs">🔥 ${h.streak||0} day streak</div></div><div class="fb"><div class="htog ${h.done?'on':''}" onclick="togHabit('${h.id}')"></div><button class="btn bxs bg2" onclick="editHabit('${h.id}')">Edit</button><button class="btn bxs bd2" onclick="delHabit('${h.id}')">×</button></div></div>`).join('')||'<div class="empty">No habits</div>'}</div>`;}
+function togHabit(id){const h=D.habits.find(h=>h.id===id);if(!h)return;h.done=!h.done;h.streak=h.done?(h.streak||0)+1:Math.max(0,(h.streak||0)-1);sv();ge('gt-habits').innerHTML=rHabits();}
+function addHabit(){omo('ADD HABIT','<div class="fr"><div><label>Habit Name</label><input id="hn"></div></div>',()=>{const n=ge('hn').value.trim();if(!n)return;D.habits.push({id:uid(),n,streak:0,done:false});sv();ge('gt-habits').innerHTML=rHabits();cmo();notify('Added');});}
+function editHabit(id){const h=D.habits.find(h=>h.id===id);if(!h)return;omo('EDIT HABIT',`<div class="fr"><div><label>Name</label><input id="hn" value="${h.n}"></div></div><div class="fr"><div><label>Streak (days)</label><input type="number" id="hs" value="${h.streak||0}"></div></div>`,()=>{h.n=ge('hn').value.trim();h.streak=parseInt(ge('hs').value)||0;sv();ge('gt-habits').innerHTML=rHabits();cmo();notify('Updated');});}
+function delHabit(id){D.habits=D.habits.filter(h=>h.id!==id);sv();ge('gt-habits').innerHTML=rHabits();}
+function rCoach(){const int=D.intention||'';return`<div class="card mb12"><div class="ctitle">MORNING INTENTION</div><textarea id="itxt" rows="3" style="resize:none" placeholder="Your intention for today...">${int}</textarea><button class="btn bp wf mt8" onclick="saveInt()">Save Intention</button></div>
+<div class="card mb12"><div class="ctitle">STREAK TRACKER</div><div class="fbt"><span>Best Current Streak</span><span class="mono tgo" style="font-size:1.4rem">🔥 ${Math.max(...D.habits.map(h=>h.streak||0),0)} days</span></div></div>
+<div class="card"><div class="ctitle">SCHEDULED REMINDERS</div>
+<div class="crow"><span>🌅 Morning Sadhana</span><span class="mono ta">3:15 AM</span></div>
+<div class="crow"><span>☀️ Morning Review</span><span class="mono ta">8:00 AM</span></div>
+<div class="crow"><span>📊 Midday Check</span><span class="mono ta">1:00 PM</span></div>
+<div class="crow"><span>🌆 Evening Review</span><span class="mono ta">7:30 PM</span></div>
+<div class="crow"><span>🌙 Night Reflection</span><span class="mono ta">10:00 PM</span></div></div>`;}
+function saveInt(){D.intention=ge('itxt')?.value||'';sv();notify('Intention saved 🙏');}
+function rReview(){
+const t=td();const rev=D.reviews[t]||{q1:'',q2:'',q3:'',q4:'',rating:0};
+const last7=[];for(let i=6;i>=0;i--){const d=new Date();d.setDate(d.getDate()-i);const k=d.toISOString().split('T')[0];last7.push({k,r:(D.reviews[k]||{}).rating||0,d:d.getDate()});}
+const maxR=Math.max(...last7.map(x=>x.r),1);
+const spark=last7.map(x=>`<div style="display:flex;flex-direction:column;align-items:center;gap:2px"><div style="height:${x.r>0?Math.round(x.r/maxR*28)+4:4}px;width:18px;background:${x.r>=7?'var(--gn)':x.r>=4?'var(--or)':x.r>0?'var(--rd)':'var(--bd)'};border-radius:3px 3px 0 0"></div><div class="txs" style="font-size:.6rem">${x.d}</div></div>`).join('');
+const streak=calcReviewStreak();
+return`<div class="card mb12"><div class="ctitle">TODAY'S REVIEW — ${t}</div>
+<div class="fr"><div><label>What did I achieve today toward my goals?</label><textarea id="rq1" rows="2" style="resize:none" placeholder="...">${rev.q1}</textarea></div></div>
+<div class="fr"><div><label>What did I learn today?</label><textarea id="rq2" rows="2" style="resize:none" placeholder="...">${rev.q2}</textarea></div></div>
+<div class="fr"><div><label>Did I waste time? Where?</label><textarea id="rq3" rows="2" style="resize:none" placeholder="...">${rev.q3}</textarea></div></div>
+<div class="fr"><div><label>One thing I will do better tomorrow</label><textarea id="rq4" rows="2" style="resize:none" placeholder="...">${rev.q4}</textarea></div></div>
+<div class="fr"><div><label>Day Rating (1-10)</label><div class="fb mt8">${[1,2,3,4,5,6,7,8,9,10].map(n=>`<div onclick="setRating(${n})" style="width:28px;height:28px;border-radius:6px;border:1px solid ${rev.rating>=n?'var(--ac)':'var(--bd)'};background:${rev.rating>=n?'rgba(0,212,255,.2)':'transparent'};cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:.8rem;transition:all .2s">${n}</div>`).join('')}</div></div></div>
+<button class="btn bp wf mt8" onclick="saveReview()">Save Review</button></div>
+<div class="card mb12"><div class="ctitle">LAST 7 DAYS</div><div class="fb" style="align-items:flex-end;gap:6px;justify-content:center;padding:8px 0">${spark}</div><div class="fbt txs mt8"><span>Review Streak: <b class="tgo">🔥 ${streak} days</b></span><span>${last7.filter(x=>x.r>0).length}/7 days reviewed</span></div></div>`;}
+function setRating(n){const t=td();if(!D.reviews[t])D.reviews[t]={q1:'',q2:'',q3:'',q4:'',rating:0};D.reviews[t].rating=n;ge('gt-review').innerHTML=rReview();}
+function saveReview(){const t=td();if(!D.reviews[t])D.reviews[t]={q1:'',q2:'',q3:'',q4:'',rating:0};const r=D.reviews[t];r.q1=ge('rq1')?.value||'';r.q2=ge('rq2')?.value||'';r.q3=ge('rq3')?.value||'';r.q4=ge('rq4')?.value||'';sv();notify('Review saved ✓');}
+function calcReviewStreak(){let streak=0;const n=new Date();for(let i=0;i<365;i++){const d=new Date(n);d.setDate(n.getDate()-i);const k=d.toISOString().split('T')[0];if((D.reviews[k]||{}).rating>0)streak++;else break;}return streak;}
+// ── COMMIT ──
+function rCommit(){
+const allCommits=getAllCommits();
+ge('sc-commit').innerHTML=`<div class="shdr"><h2>COMMITMENTS</h2><button class="btn bg2 bsm" onclick="addCommit()">+ Add</button></div>
+${allCommits.length?allCommits.map(c=>{const days=du(c.dd);const paid=isPaid(c);const cls=days<=1?'b-rd':days<=3?'b-or':'b-ac';
+return`<div class="card mb8"><div class="fbt mb8"><div><div style="font-weight:700">${c.n}</div><div class="txs">Due ${c.dd}th — Next: ${ndd(c.dd).toLocaleDateString('en-IN',{day:'2-digit',month:'short',year:'numeric'})}</div>${c.fromLoan?'<span class="badge b-pu txs">Auto from Loans</span>':''}</div><div class="tar"><div class="mono tgo">${fmt(c.amt)}</div><span class="badge ${cls}">${days===0?'TODAY':days===1?'TOMORROW':'In '+days+'d'}</span></div></div>
+<div class="fb">${paid?`<button class="btn bsm bs2" onclick="togPaid('${c.id}')">✓ PAID</button>`:`<button class="btn bsm bg2" onclick="togPaid('${c.id}')">Mark Paid</button>`}${!c.fromLoan?`<button class="btn bsm bg2" onclick="editCommit('${c.id}')">Edit</button><button class="btn bsm bd2" onclick="delCommit('${c.id}')">×</button>`:''}</div></div>`;
+}).join(''):'<div class="empty">No commitments — add your fixed monthly obligations</div>'}`;
+}
+function getAllCommits(){
+const list=[...D.commits];
+D.loans.filter(l=>l.out>0&&l.emi>0&&l.dd>0).forEach(l=>{if(!list.find(c=>c.loanId===l.id))list.push({id:'loan_'+l.id,n:l.n+' EMI',amt:l.emi,dd:l.dd,type:'EMI',pd:l._pd||[],fromLoan:true});});
+return list.sort((a,b)=>a.dd-b.dd);
+}
+function addCommit(){omo('ADD COMMITMENT',`<div class="fr"><div><label>Name</label><input id="cn"></div></div><div class="fr c2"><div><label>Amount (₹)</label><input type="number" id="ca"></div><div><label>Due Day (1-31)</label><input type="number" id="cdd" min="1" max="31" value="5"></div></div><div class="fr c2"><div><label>Type</label><select id="ctype"><option>Rent</option><option>EMI</option><option>Personal Loan Repayment</option><option>Subscription</option><option>Insurance Premium</option><option>Credit Card Bill</option><option>Promise to Pay</option><option>Other</option></select></div><div><label>Pay From Account</label><select id="cac">${acOpts()}</select></div></div>`,()=>{const n=ge('cn').value.trim();if(!n)return notify('Enter name',true);D.commits.push({id:uid(),n,amt:parseFloat(ge('ca').value)||0,dd:parseInt(ge('cdd').value)||5,type:ge('ctype').value,acId:ge('cac').value,pd:[]});sv();rCommit();rDash();cmo();notify('Added');});}
+function editCommit(id){const c=D.commits.find(c=>c.id===id);if(!c)return;omo('EDIT COMMITMENT',`<div class="fr"><div><label>Name</label><input id="cn" value="${c.n}"></div></div><div class="fr c2"><div><label>Amount</label><input type="number" id="ca" value="${c.amt}"></div><div><label>Due Day</label><input type="number" id="cdd" value="${c.dd}"></div></div>`,()=>{c.n=ge('cn').value.trim();c.amt=parseFloat(ge('ca').value)||0;c.dd=parseInt(ge('cdd').value)||5;sv();rCommit();rDash();cmo();notify('Updated');});}
+function delCommit(id){if(!confirm('Delete?'))return;D.commits=D.commits.filter(c=>c.id!==id);sv();rCommit();rDash();}
+// ── 101 STEPS ──
+function rSteps(){
+ge('sc-steps').innerHTML=`<div class="tabs" id="stabs"><button class="tab a" onclick="sTab('master',this)">Master Dash</button><button class="tab" onclick="sTab('chain',this)">Steps Chain</button><button class="tab" onclick="sTab('d1',this)">Demat-1</button><button class="tab" onclick="sTab('d2',this)">Demat-2</button><button class="tab" onclick="sTab('d3',this)">Demat-3</button><button class="tab" onclick="sTab('d4',this)">Demat-4</button><button class="tab" onclick="sTab('open',this)">Open Positions</button><button class="tab" onclick="sTab('idx',this)">Index Trading</button><button class="tab" onclick="sTab('wl',this)">Watchlist</button></div>
+<div id="st-master"></div><div id="st-chain" style="display:none"></div><div id="st-d1" style="display:none"></div><div id="st-d2" style="display:none"></div><div id="st-d3" style="display:none"></div><div id="st-d4" style="display:none"></div><div id="st-open" style="display:none"></div><div id="st-idx" style="display:none"></div><div id="st-wl" style="display:none"></div>`;
+rSMaster();
+}
+function sTab(t,el){document.querySelectorAll('#stabs .tab').forEach(x=>x.classList.remove('a'));el.classList.add('a');['master','chain','d1','d2','d3','d4','open','idx','wl'].forEach(x=>{const d=ge('st-'+x);if(d)d.style.display=x===t?'':'none';});const fns={master:rSMaster,chain:rChain,d1:()=>rDemat('D1'),d2:()=>rDemat('D2'),d3:()=>rDemat('D3'),d4:()=>rDemat('D4'),open:rOpenPos,idx:rIdx,wl:rWL};if(fns[t])fns[t]();}
+function rSMaster(){
+syncLinks();syncStepProfits();
+const cs=D.s101.cur||1;const steps=D.s101.steps;
+const done=steps.filter(s=>s.st==='Closed').length;const inp=steps.filter(s=>s.st==='In Progress').length;
+const tp=steps.reduce((s,st)=>s+stp(st),0);
+const openp=Object.values(D.logs).reduce((s,lg)=>s+lg.filter(t=>(t.eq||0)-(t.sq||0)>0).length,0);
+const last=steps[100];
+const dstats=['D1','D2','D3','D4'].map((dk,i)=>{const logs=D.logs[dk]||[];const open=logs.filter(t=>(t.eq||0)-(t.sq||0)>0);const cs2=steps.filter(s=>s['p'+(i+1)]>0).length>0?Math.max(...logs.filter(t=>t.step).map(t=>t.step)):'-';return{tot:logs.length,open:open.length,closed:logs.filter(t=>(t.eq||0)>0&&(t.eq||0)===(t.sq||0)).length,curStep:cs2,cap:fmt((D.s101.cap||100000)+logs.reduce((s,t)=>s+(t.pb||0),0))};});
+const last10=steps.slice(Math.max(0,cs-6),cs+5);
+ge('st-master').innerHTML=`
+<div class="sm-grid"><div class="smk"><div class="smk-l">ACTIVE STEP</div><div class="smk-v ac">${cs}</div></div><div class="smk"><div class="smk-l">COMPLETED</div><div class="smk-v tg">${done}</div></div><div class="smk"><div class="smk-l">PENDING</div><div class="smk-v to">${101-done-inp}</div></div><div class="smk"><div class="smk-l">TOTAL PROFIT</div><div class="smk-v tgo">${fmt(tp)}</div></div></div>
+<div class="sm-grid"><div class="smk"><div class="smk-l">INITIAL CAPITAL/DEMAT</div><div class="smk-v ac">${fmt(D.s101.cap||100000)}</div></div><div class="smk"><div class="smk-l">TARGET CORPUS (101 STEPS)</div><div class="smk-v tgo">${last?fmt(last.nb||last.at):'—'}</div></div><div class="smk"><div class="smk-l">OPEN POSITIONS</div><div class="smk-v or">${openp}</div></div><div class="smk"><div class="smk-l">IN PROGRESS</div><div class="smk-v ac">${inp}</div></div></div>
+<div class="card mb12"><div class="ctitle">DEMAT-WISE PERFORMANCE <button class="btn bg2 bsm" onclick="openStepSettings()">⚙ Settings</button></div><div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">${dstats.map((s,i)=>`<div class="dcard"><div style="font-family:Orbitron,sans-serif;font-size:.6rem;color:${['var(--ac)','var(--go)','var(--gn)','var(--pu)'][i]};letter-spacing:2px;margin-bottom:10px">DEMAT-${i+1}</div><div class="fbt txs mb6"><span>Total Trades</span><span class="mono">${s.tot}</span></div><div class="fbt txs mb6"><span>Open Positions</span><span class="mono to">${s.open}</span></div><div class="fbt txs mb6"><span>Closed Trades</span><span class="mono tg">${s.closed}</span></div><div class="fbt txs"><span>Capital Deployed</span><span class="mono tgo">${s.cap}</span></div></div>`).join('')}</div></div>
+<div class="card"><div class="ctitle">STEPS OVERVIEW (CURRENT ± 5)</div><div style="overflow-x:auto"><table class="tbl"><tr><th>#</th><th class="tar">Start Capital</th><th class="tar">Target (12.5%)</th><th class="tar">Actual Profit</th><th class="tar">Achievement</th><th class="tar">Net Balance</th><th>Status</th></tr>${last10.map(s=>{const tp2=stp(s);const ap=spct(s);return`<tr style="${s.i===cs?'background:rgba(0,212,255,.06);':''}"><td class="mono ta">${s.i}${s.i===cs?' ◄':''}</td><td class="tar mono">${fmt(s.sc)}</td><td class="tar mono tgo">${fmt(s.tp)}</td><td class="tar mono tgo">${fmt(tp2)}</td><td class="tar mono ${ap>=100?'tg':ap>0?'to':'tr2c'}">${ap}%</td><td class="tar mono tgo">${fmt(s.nb||s.at)}</td><td><span class="badge ${s.st==='Closed'?'b-gn':s.st==='In Progress'?'b-or':'b-rd'}">${s.st}</span></td></tr>`;}).join('')}</table></div></div>`;
+}
+function openStepSettings(){omo('101 STEPS SETTINGS',`<div class="fr c2"><div><label>Start Capital per Demat (₹)</label><input type="number" id="ssc" value="${D.s101.cap||100000}"></div><div><label>Multiplier % (e.g. 12.5)</label><input type="number" id="ssm" step="0.1" value="${D.s101.mult||12.5}"></div></div><div class="fr c2"><div><label>Global Tax Rate % (per step overridable)</label><input type="number" id="sst" step="0.1" value="${D.s101.gtax||0}"></div><div><label>Current Active Step</label><input type="number" id="sss" min="1" max="101" value="${D.s101.cur||1}"></div></div>`,()=>{D.s101.cap=parseFloat(ge('ssc').value)||100000;D.s101.mult=parseFloat(ge('ssm').value)||12.5;D.s101.gtax=parseFloat(ge('sst').value)||0;D.s101.cur=parseInt(ge('sss').value)||1;genSteps();sv();syncLinks();cmo();rSteps();notify('Steps regenerated');});}
+function rChain(){
+syncStepProfits();const cs=D.s101.cur||1;
+ge('st-chain').innerHTML=`<div class="card"><div class="ctitle">101 STEPS CHAIN <span class="txs" style="font-size:.6rem">Tax % editable per step</span></div><div style="overflow-x:auto"><table class="tbl"><thead><tr><th>#</th><th class="tar">Start Capital</th><th class="tar">Target Profit</th><th class="tar">Pre-Tax Corpus</th><th class="tac">Tax%</th><th class="tar">Tax Amt</th><th class="tar">Corpus After Tax</th><th class="tar">Withdrawal</th><th class="tar">Net Balance</th><th class="tar">Actual Profit</th><th class="tar">Achievement</th><th>Status</th><th>Notes</th></tr></thead><tbody>
+${D.s101.steps.map(s=>{const tp2=stp(s);const ap=spct(s);return`<tr style="${s.i===cs?'background:rgba(0,212,255,.05)':''}">
+<td class="mono ta" style="font-weight:700">${s.i}${s.i===cs?' ◄':''}</td>
+<td class="tar mono">${fmt(s.sc)}</td><td class="tar mono tgo">${fmt(s.tp)}</td><td class="tar mono">${fmt(s.pre)}</td>
+<td class="tac"><input type="number" value="${s.tr||0}" class="inp-sm" onchange="updStepTax(${s.i},this.value)">%</td>
+<td class="tar mono to">${fmt(s.ta)}</td><td class="tar mono tgo">${fmt(s.at)}</td>
+<td class="tar mono or">${fmt(s.wd||0)}</td><td class="tar mono tgo" style="font-weight:600">${fmt(s.nb||s.at)}</td>
+<td class="tar mono ${ap>=100?'tg':ap>0?'to':'tr2c'}">${fmt(tp2)}</td>
+<td class="tar mono ${ap>=100?'tg':ap>0?'to':'tr2c'}">${ap}%</td>
+<td><select onchange="updStepSt(${s.i},this.value)" style="width:105px;padding:3px 6px;font-size:.72rem"><option ${s.st==='Pending'?'selected':''}>Pending</option><option ${s.st==='In Progress'?'selected':''}>In Progress</option><option ${s.st==='Closed'?'selected':''}>Closed</option></select></td>
+<td><input type="text" value="${s.notes||''}" placeholder="Notes" style="width:90px;padding:3px 6px;font-size:.72rem" onchange="D.s101.steps[${s.i-1}].notes=this.value;sv()"></td>
+</tr>`;}).join('')}</tbody></table></div></div>`;
+}
+function updStepTax(si,v){const s=D.s101.steps[si-1];if(!s)return;s.tr=parseFloat(v)||0;s.ta=Math.round(s.tp*(s.tr/100));s.at=s.pre-s.ta;s.nb=s.at-(s.wd||0);sv();}
+function updStepSt(si,v){
+const s=D.s101.steps[si-1];if(!s)return;
+if(v==='Closed'&&s.st!=='Closed'){
+omo(`STEP ${si} CLOSED — WITHDRAWAL`,`<div class="card-glow card mb12"><div class="fbt"><span class="txs">Corpus After Tax</span><span class="mono tgo" style="font-size:1.3rem">${fmt(s.at)}</span></div></div><div class="fr"><div><label>Withdrawal Amount ₹ (0 = reinvest everything)</label><input type="number" id="wda" value="0" min="0"></div></div><div class="fr"><div><label>Credit Withdrawal To Account</label><select id="wdac">${acOpts()}</select></div></div><div class="txs mt8" style="color:var(--tx3)">Net Balance = Corpus After Tax − Withdrawal → becomes Step ${si+1} Start Capital</div>`,()=>{
+const wd=parseFloat(ge('wda').value)||0;const acId=ge('wdac').value;
+s.wd=wd;s.nb=s.at-wd;s.st='Closed';
+if(wd>0){D.tx.push({id:uid(),type:'i',date:td(),cat:'101 Steps Withdrawal',acId,amt:wd,note:`Step ${si} withdrawal`});}
+regenFromStep(si+1);
+if(si<101){const nx=D.s101.steps[si];if(nx&&nx.st==='Pending')nx.st='In Progress';}
+D.s101.cur=Math.min(si+1,101);
+syncLinks();sv();rSteps();rDash();cmo();notify(`Step ${si} closed${wd>0?' — '+fmt(wd)+' withdrawal recorded':'— full corpus rolled forward'}`);
+});
+}else{s.st=v;sv();rSMaster();}
+}
+function rDemat(dk){
+const dn=dk[1];const el=ge('st-d'+dn.toLowerCase());if(!el)return;
+const logs=D.logs[dk]||[];const open=logs.filter(t=>(t.eq||0)-(t.sq||0)>0);
+const closed=logs.filter(t=>(t.eq||0)>0&&(t.eq||0)===(t.sq||0));
+const pnl=logs.reduce((s,t)=>s+(t.pb||0),0);
+el.innerHTML=`<div class="g4 mb12"><div class="kpi"><div class="kl">Total Trades</div><div class="kv ac">${logs.length}</div></div><div class="kpi"><div class="kl">Open Positions</div><div class="kv or">${open.length}</div></div><div class="kpi"><div class="kl">Closed</div><div class="kv gn">${closed.length}</div></div><div class="kpi"><div class="kl">Booked P&L</div><div class="kv go">${fmt(pnl)}</div></div></div>
+<div class="card mb12"><div class="ctitle">ADD TRADE</div>
+<div class="fr c3"><div><label>Step #</label><input type="number" id="${dk}s" min="1" max="101"></div><div><label>Share Name</label><input id="${dk}sn" placeholder="RELIANCE"></div><div><label>Date</label><input type="date" id="${dk}dt" value="${td()}" min="2026-05-01"></div></div>
+<div class="fr c3"><div><label>Entry Qty</label><input type="number" id="${dk}eq"></div><div><label>Entry Rate ₹</label><input type="number" id="${dk}er" step="0.01"></div><div><label>LTP / CMP ₹</label><input type="number" id="${dk}lp" step="0.01"></div></div>
+<div class="fr c3"><div><label>Sell Qty (0=holding)</label><input type="number" id="${dk}sq" value="0"></div><div><label>Sell Rate ₹</label><input type="number" id="${dk}sr" step="0.01"></div><div><label>Target Status</label><select id="${dk}ts"><option value="Pending">Pending</option><option value="Target Hit">Target Hit</option><option value="Sold Below Target">Sold Below Target</option></select></div></div>
+<div class="fr"><div><label>Notes</label><input id="${dk}nt"></div></div>
+<button class="btn bp wf" onclick="addTrade('${dk}')">ADD TRADE</button></div>
+<div class="card"><div class="ctitle">TRADE LOG — ${dk}</div><div style="overflow-x:auto">${rTradeTable(dk)}</div></div>`;
+}
+function rTradeTable(dk){const logs=D.logs[dk]||[];if(!logs.length)return'<div class="empty">No trades yet</div>';return`<table class="tbl"><tr><th>Step</th><th>Share</th><th>Date</th><th class="tar">E.Qty</th><th class="tar">E.Rate</th><th class="tar">S.Qty</th><th class="tar">S.Rate</th><th class="tar">Bal.Qty</th><th class="tar">LTP</th><th class="tar">Booked P&L</th><th class="tar">Unreal P&L</th><th>Target</th><th>Pos</th><th></th></tr>${logs.map(t=>{const bq=(t.eq||0)-(t.sq||0);const upl=bq>0?bq*((t.ltp||t.er||0)-(t.er||0)):0;return`<tr><td class="mono ta">${t.step||'—'}</td><td style="font-weight:600">${t.sn}</td><td class="mono txs">${(t.dt||'').slice(5)}</td><td class="tar mono">${t.eq||0}</td><td class="tar mono">${fmtN(t.er)}</td><td class="tar mono">${t.sq||0}</td><td class="tar mono">${t.sr?fmtN(t.sr):'—'}</td><td class="tar mono ${bq>0?'to':''}">${bq}</td><td class="tar"><input type="number" value="${t.ltp||''}" class="inp-sm" step="0.01" onchange="updLTP('${dk}','${t.id}',this.value)"></td><td class="tar mono ${(t.pb||0)>=0?'tg':'tr2c'}">${fmt(t.pb||0)}</td><td class="tar mono ${upl>=0?'tg':'tr2c'}">${fmt(upl)}</td><td class="txs">${t.ts||'—'}</td><td><span class="badge ${bq>0?'b-or':'b-gn'}">${bq>0?'OPEN':'CLOSED'}</span></td><td class="fb"><button class="btn bxs bg2" onclick="editTrade('${dk}','${t.id}')">Edit</button><button class="btn bxs bd2" onclick="delTrade('${dk}','${t.id}')">×</button></td></tr>`;}).join('')}</table>`;}
+function addTrade(dk){const step=parseInt(ge(dk+'s').value)||null;const sn=ge(dk+'sn').value.trim().toUpperCase();const dt=ge(dk+'dt').value;const eq=parseFloat(ge(dk+'eq').value)||0;const er=parseFloat(ge(dk+'er').value)||0;const lp=parseFloat(ge(dk+'lp').value)||0;const sq=parseFloat(ge(dk+'sq').value)||0;const sr=parseFloat(ge(dk+'sr').value)||0;const ts=ge(dk+'ts').value;const nt=ge(dk+'nt').value;if(!sn)return notify('Enter share name',true);if(!dt||dt<'2026-05-01')return notify('Date must be May 2026+',true);if(eq<=0||er<=0)return notify('Enter entry qty and rate',true);const pb=sq>0?((sq*sr)-(sq*er)):0;if(!D.logs[dk])D.logs[dk]=[];D.logs[dk].push({id:uid(),step,sn,dt,eq,er,lp:lp||er,sq,sr,pb,ts,notes:nt});syncStepProfits();syncLinks();sv();rDemat(dk);rSMaster();ge(dk+'sn').value='';ge(dk+'eq').value='';ge(dk+'er').value='';ge(dk+'sq').value='0';ge(dk+'sr').value='';ge(dk+'lp').value='';ge(dk+'nt').value='';notify('Trade added');}
+function editTrade(dk,id){const t=(D.logs[dk]||[]).find(t=>t.id===id);if(!t)return;omo(`EDIT TRADE — ${dk}`,`<div class="fr c3"><div><label>Step #</label><input type="number" id="es" value="${t.step||''}"></div><div><label>Share</label><input id="esn" value="${t.sn}"></div><div><label>Date</label><input type="date" id="edt" value="${t.dt}"></div></div><div class="fr c3"><div><label>Entry Qty</label><input type="number" id="eeq" value="${t.eq}"></div><div><label>Entry Rate</label><input type="number" id="eer" value="${t.er}" step="0.01"></div><div><label>LTP</label><input type="number" id="elp" value="${t.ltp||''}" step="0.01"></div></div><div class="fr c3"><div><label>Sell Qty</label><input type="number" id="esq" value="${t.sq||0}"></div><div><label>Sell Rate</label><input type="number" id="esr" value="${t.sr||0}" step="0.01"></div><div><label>Target Status</label><select id="ets"><option ${t.ts==='Pending'?'selected':''}>Pending</option><option value="Target Hit" ${t.ts==='Target Hit'?'selected':''}>Target Hit</option><option value="Sold Below Target" ${t.ts==='Sold Below Target'?'selected':''}>Sold Below Target</option></select></div></div>`,()=>{t.step=parseInt(ge('es').value)||null;t.sn=ge('esn').value.trim().toUpperCase();t.dt=ge('edt').value;t.eq=parseFloat(ge('eeq').value)||0;t.er=parseFloat(ge('eer').value)||0;t.ltp=parseFloat(ge('elp').value)||0;t.sq=parseFloat(ge('esq').value)||0;t.sr=parseFloat(ge('esr').value)||0;t.pb=t.sq>0?((t.sq*t.sr)-(t.sq*t.er)):0;t.ts=ge('ets').value;syncStepProfits();syncLinks();sv();rDemat(dk);rSMaster();cmo();notify('Updated');});}
+function updLTP(dk,id,v){const t=(D.logs[dk]||[]).find(t=>t.id===id);if(!t)return;t.ltp=parseFloat(v)||0;sv();}
+function delTrade(dk,id){if(!confirm('Delete trade?'))return;D.logs[dk]=(D.logs[dk]||[]).filter(t=>t.id!==id);syncStepProfits();syncLinks();sv();rDemat(dk);rSMaster();}
+function rOpenPos(){const el=ge('st-open');if(!el)return;const pos=[];['D1','D2','D3','D4'].forEach(d=>{(D.logs[d]||[]).forEach(t=>{const bq=(t.eq||0)-(t.sq||0);if(bq>0)pos.push({...t,dm:d,bq});});});if(!pos.length){el.innerHTML='<div class="card"><div class="ctitle">OPEN POSITIONS — ALL DEMAT</div><div class="empty">No open positions</div></div>';return;}const ti=pos.reduce((s,p)=>s+(p.bq*(p.er||0)),0);const tc=pos.reduce((s,p)=>s+(p.bq*(p.ltp||p.er||0)),0);const upl=tc-ti;el.innerHTML=`<div class="g3 mb12"><div class="kpi"><div class="kl">Open Positions</div><div class="kv or">${pos.length}</div></div><div class="kpi"><div class="kl">Current Value</div><div class="kv go">${fmt(tc)}</div></div><div class="kpi"><div class="kl">Unrealised P&L</div><div class="kv ${upl>=0?'gn':'rd'}">${fmt(upl)}</div></div></div><div class="txs mb12" style="color:var(--tx3);font-style:italic">Note: Unrealised P&L is for information only — not included in Net Worth or Balance Sheet</div><div class="card"><div class="ctitle">ALL OPEN POSITIONS</div><div style="overflow-x:auto"><table class="tbl"><tr><th>Demat</th><th>Step</th><th>Share</th><th>Date</th><th class="tar">Bal Qty</th><th class="tar">Avg Cost</th><th class="tar">LTP</th><th class="tar">Invested</th><th class="tar">Curr Value</th><th class="tar">Unreal P&L</th></tr>${pos.map(p=>{const inv=p.bq*(p.er||0);const cur=p.bq*(p.ltp||p.er||0);const u=cur-inv;return`<tr><td><span class="badge b-ac">${p.dm}</span></td><td class="mono ta">${p.step||'—'}</td><td style="font-weight:600">${p.sn}</td><td class="mono txs">${(p.dt||'').slice(5)}</td><td class="tar mono to">${p.bq}</td><td class="tar mono">${fmtN(p.er)}</td><td class="tar mono ta">${fmtN(p.ltp||p.er)}</td><td class="tar mono">${fmt(inv)}</td><td class="tar mono tgo">${fmt(cur)}</td><td class="tar mono ${u>=0?'tg':'tr2c'}">${fmt(u)}</td></tr>`;}).join('')}</table></div></div>`;}
+function rIdx(){const idx=D.idx||{cap:25000,log:[]};const log=idx.log||[];const tpl=log.reduce((s,e)=>s+(e.pl||0),0);const tw=log.reduce((s,e)=>s+(e.w||0),0);const cf=(idx.cap||25000)+tpl-tw;const el=ge('st-idx');if(!el)return;el.innerHTML=`<div class="idx-hero"><div style="display:grid;grid-template-columns:repeat(4,1fr);gap:8px"><div class="kpi" style="border-color:var(--pu)"><div class="kl">Initial Capital</div><div class="kv pu">${fmt(idx.cap||25000)}</div></div><div class="kpi" style="border-color:var(--pu)"><div class="kl">Current Fund</div><div class="kv pu">${fmt(cf)}</div></div><div class="kpi"><div class="kl">Total P&L</div><div class="kv ${tpl>=0?'gn':'rd'}">${fmt(tpl)}</div></div><div class="kpi"><div class="kl">Total Withdrawal</div><div class="kv or">${fmt(tw)}</div></div></div></div>
+<div class="card mb12"><div class="ctitle">ADD ENTRY <button class="btn bg2 bsm" onclick="editIdxCap()">Edit Capital</button></div>
+<div class="fr c3"><div><label>Date</label><input type="date" id="idt" value="${td()}" min="2026-05-01"></div><div><label>P&L ₹ (+ profit / − loss)</label><input type="number" id="ipl"></div><div><label>Withdrawal ₹</label><input type="number" id="iw" value="0"></div></div>
+<div class="fr"><div><label>Notes (Index name, trade details)</label><input id="int2" placeholder="Nifty CE, Sensex..."></div></div>
+<button class="btn bp wf" onclick="addIdxEntry()">ADD ENTRY</button></div>
+<div class="card"><div class="ctitle">INDEX TRADING LOG</div>${log.length?`<div style="overflow-x:auto"><table class="tbl"><tr><th>Date</th><th class="tar">Opening Capital</th><th class="tar">P&L</th><th class="tar">Balance</th><th class="tar">Withdrawal</th><th class="tar">Net Fund</th><th>Notes</th><th></th></tr>${log.map(e=>{const bal=e.oc+(e.pl||0);const nf=bal-(e.w||0);return`<tr><td class="mono txs">${e.dt||''}</td><td class="tar mono">${fmt(e.oc)}</td><td class="tar mono ${(e.pl||0)>=0?'tg':'tr2c'}">${fmt(e.pl||0)}</td><td class="tar mono">${fmt(bal)}</td><td class="tar mono to">${fmt(e.w||0)}</td><td class="tar mono tgo">${fmt(nf)}</td><td class="txs">${e.notes||'—'}</td><td class="fb"><button class="btn bxs bg2" onclick="editIdxEntry('${e.id}')">Edit</button><button class="btn bxs bd2" onclick="delIdxEntry('${e.id}')">×</button></td></tr>`;}).join('')}</table></div>`:'<div class="empty">No entries yet</div>'}</div>`;}
+function addIdxEntry(){const dt=ge('idt').value;const pl=parseFloat(ge('ipl').value)||0;const w=parseFloat(ge('iw').value)||0;const notes=ge('int2').value;if(!dt||dt<'2026-05-01')return notify('Date must be May 2026+',true);const idx=D.idx||{cap:25000,log:[]};const log=idx.log||[];const prev=log[log.length-1];const oc=prev?((prev.oc+(prev.pl||0))-(prev.w||0)):(idx.cap||25000);log.push({id:uid(),dt,oc,pl,w,notes});D.idx=idx;if(pl!==0){D.tx.push({id:uid(),type:'i',date:dt,cat:'Index Trading Income',acId:'',amt:pl,note:'Index Trading: '+notes});}syncLinks();sv();rIdx();notify('Entry added');}
+function editIdxEntry(id){const e=D.idx.log.find(e=>e.id===id);if(!e)return;omo('EDIT INDEX ENTRY',`<div class="fr c2"><div><label>Date</label><input type="date" id="idt2" value="${e.dt}"></div><div><label>P&L ₹</label><input type="number" id="ipl2" value="${e.pl||0}"></div></div><div class="fr c2"><div><label>Withdrawal ₹</label><input type="number" id="iw2" value="${e.w||0}"></div><div><label>Notes</label><input id="int3" value="${e.notes||''}"></div></div>`,()=>{e.dt=ge('idt2').value;e.pl=parseFloat(ge('ipl2').value)||0;e.w=parseFloat(ge('iw2').value)||0;e.notes=ge('int3').value;syncLinks();sv();rIdx();cmo();notify('Updated');});}
+function delIdxEntry(id){if(!confirm('Delete?'))return;D.idx.log=D.idx.log.filter(e=>e.id!==id);syncLinks();sv();rIdx();}
+function editIdxCap(){omo('EDIT INDEX CAPITAL',`<div class="fr"><div><label>Initial Capital ₹</label><input type="number" id="ic2" value="${D.idx?.cap||25000}"></div></div>`,()=>{if(!D.idx)D.idx={cap:25000,log:[]};D.idx.cap=parseFloat(ge('ic2').value)||25000;syncLinks();sv();rIdx();cmo();notify('Updated');});}
+function rWL(){const el=ge('st-wl');if(!el)return;el.innerHTML=`<div class="card"><div class="ctitle">WATCHLIST <button class="btn bg2 bsm" onclick="addWL()">+ Stock</button></div><div class="txs mb12" style="color:var(--tx3)">Parking lot — stocks you are monitoring. No score. No target. Just watch.</div>${D.wl.length?`<div style="overflow-x:auto"><table class="tbl"><tr><th>Symbol</th><th class="tar">CMP ₹</th><th>Notes</th><th>Date Added</th><th></th></tr>${D.wl.map(w=>`<tr><td style="font-weight:700">${w.sym}</td><td class="tar"><input type="number" value="${w.cmp||''}" class="inp-sm" step="0.01" onchange="D.wl.find(x=>x.id==='${w.id}').cmp=parseFloat(this.value)||0;sv()"></td><td class="txs">${w.notes||'—'}</td><td class="mono txs">${w.dt||'—'}</td><td class="fb"><button class="btn bxs bg2" onclick="editWL('${w.id}')">Edit</button><button class="btn bxs bd2" onclick="delWL('${w.id}')">×</button></td></tr>`).join('')}</table></div>`:'<div class="empty">No stocks in watchlist</div>'}</div>`;}
+function addWL(){omo('ADD TO WATCHLIST','<div class="fr c2"><div><label>Symbol</label><input id="ws"></div><div><label>CMP ₹</label><input type="number" id="wcmp" step="0.01"></div></div><div class="fr"><div><label>Notes (why watching)</label><input id="wn"></div></div>',()=>{const sym=ge('ws').value.trim().toUpperCase();if(!sym)return notify('Enter symbol',true);D.wl.push({id:uid(),sym,cmp:parseFloat(ge('wcmp').value)||0,notes:ge('wn').value,dt:td()});sv();rWL();cmo();notify('Added');});}
+function editWL(id){const w=D.wl.find(w=>w.id===id);if(!w)return;omo('EDIT WATCHLIST',`<div class="fr c2"><div><label>Symbol</label><input id="ws" value="${w.sym}"></div><div><label>CMP ₹</label><input type="number" id="wcmp" value="${w.cmp||0}" step="0.01"></div></div><div class="fr"><div><label>Notes</label><input id="wn" value="${w.notes||''}"></div></div>`,()=>{w.sym=ge('ws').value.trim().toUpperCase();w.cmp=parseFloat(ge('wcmp').value)||0;w.notes=ge('wn').value;sv();rWL();cmo();notify('Updated');});}
+function delWL(id){if(!confirm('Delete?'))return;D.wl=D.wl.filter(w=>w.id!==id);sv();rWL();}
+// ── TRACK ──
+function rTrack(){
+ge('sc-track').innerHTML=`<div class="card mb12"><div class="ctitle">RECORD TRANSACTION</div>
+<div class="fr c2"><div><label>Type</label><select id="ttype" onchange="updTxForm()"><option value="e">Expense</option><option value="i">Income</option><option value="transfer">Transfer</option></select></div><div><label>Date (May 2026+)</label><input type="date" id="tdate" min="2026-05-01" value="${td()}"></div></div>
+<div id="tx-cat-row" class="fr c2"><div><label>Category</label><select id="tcat"></select></div><div><label>Account</label><select id="tac">${acOpts()}</select></div></div>
+<div id="tx-transfer-row" class="fr c2" style="display:none"><div><label>From Account</label><select id="tfrom">${acOpts()}</select></div><div><label>To Account</label><select id="tto">${acOpts()}</select></div></div>
+<div class="fr c2"><div><label>Amount ₹</label><input type="number" id="tamt"></div><div><label>Note</label><input id="tnote"></div></div>
+<button class="btn bp wf" onclick="addTx()">RECORD</button></div>
+<div class="card"><div class="shdr" style="margin-bottom:10px"><div class="ctitle" style="margin:0">TRANSACTIONS</div><select id="tfm" onchange="rTxList()" style="width:auto;padding:6px 10px;font-size:.78rem">${moOpts()}</select></div><div id="txlist"></div></div>`;
+updTxForm();rTxList();
+}
+function updTxForm(){const t=ge('ttype')?.value;const cr=ge('tx-cat-row');const tr=ge('tx-transfer-row');const cat=ge('tcat');if(!cr||!tr||!cat)return;if(t==='transfer'){cr.style.display='none';tr.style.display='';}else{cr.style.display='';tr.style.display='none';cat.innerHTML=(t==='i'?D.inc:D.exp).map(c=>`<option>${c}</option>`).join('');}}
+function addTx(){const type=ge('ttype').value;const date=ge('tdate').value;if(!date||date<'2026-05-01')return notify('Date must be May 2026+',true);const amt=parseFloat(ge('tamt').value);if(!amt||amt<=0)return notify('Enter amount',true);const note=ge('tnote').value;if(type==='transfer'){const from=ge('tfrom').value;const to=ge('tto').value;if(from===to)return notify('From and To account must be different',true);D.tx.push({id:uid(),type:'transfer',date,fromAc:from,toAc:to,amt,note});}else{const cat=ge('tcat').value;const acId=ge('tac').value;D.tx.push({id:uid(),type,date,cat,acId,amt,note});}syncLinks();sv();ge('tamt').value='';ge('tnote').value='';notify('Recorded');rTxList();rDash();}
+function rTxList(){const mk=ge('tfm')?.value||cm();const txs=D.tx.filter(t=>t.date?.slice(0,7)===mk).sort((a,b)=>b.date.localeCompare(a.date));const el=ge('txlist');if(!el)return;if(!txs.length){el.innerHTML='<div class="empty">No transactions this month</div>';return;}let runBal={};txs.slice().reverse().forEach(t=>{if(t.type==='transfer'){if(!runBal[t.fromAc])runBal[t.fromAc]=getAccountBalance(t.fromAc);if(!runBal[t.toAc])runBal[t.toAc]=getAccountBalance(t.toAc);}else{if(!runBal[t.acId])runBal[t.acId]=getAccountBalance(t.acId);}});el.innerHTML=`<div style="overflow-x:auto"><table class="tbl"><tr><th>Date</th><th>Type</th><th>Category / Details</th><th>Account</th><th class="tar">Amount</th><th></th></tr>${txs.map(t=>{const ac=(D.accounts||[]).find(a=>a.id===t.acId||a.id===t.fromAc);return`<tr><td class="mono txs">${t.date.slice(5)}</td><td><span class="badge ${t.type==='i'?'b-gn':t.type==='transfer'?'b-ac':'b-rd'}">${t.type==='i'?'IN':t.type==='transfer'?'XFER':'OUT'}</span></td><td class="txm">${t.type==='transfer'?`${(D.accounts||[]).find(a=>a.id===t.fromAc)?.n||'?'} → ${(D.accounts||[]).find(a=>a.id===t.toAc)?.n||'?'}`:t.cat}${t.note?` <span class="txs">(${t.note})</span>`:''}</td><td class="txs">${ac?.n||'—'}</td><td class="tar mono ${t.type==='i'?'tg':t.type==='transfer'?'ta':'tr2c'}">${t.type==='i'?'+':t.type==='transfer'?'↔':'−'}${fmt(t.amt)}</td><td class="fb"><button class="btn bxs bd2" onclick="delTx('${t.id}')">×</button></td></tr>`;}).join('')}</table></div>`;}
+function delTx(id){if(!confirm('Delete?'))return;D.tx=D.tx.filter(t=>t.id!==id);syncLinks();sv();rTxList();rDash();}
+// ── BUDGET ──
+function rBudget(){
+ge('sc-budget').innerHTML=`<div class="tabs" id="btabs"><button class="tab a" onclick="bTab('monthly',this)">Monthly</button><button class="tab" onclick="bTab('weekly',this)">Weekly</button><button class="tab" onclick="bTab('annual',this)">Annual</button></div>
+<div id="bt-monthly"><div class="card"><div class="ctitle">MONTHLY FORECAST <button class="btn bg2 bsm" onclick="addExpCatInline()">+ Category</button></div><div class="shdr" style="margin-bottom:10px"><select id="bmon" onchange="rBFc()" style="width:auto;padding:6px 10px;font-size:.8rem">${moOpts()}</select><button class="btn bp bsm" onclick="saveBFC()">Save</button></div><div id="bfc-table"></div></div></div>
+<div id="bt-weekly" style="display:none"><div class="card"><div class="ctitle">WEEKLY CASH FLOW</div><select id="wkmon" onchange="rWK()" style="width:auto;padding:6px 10px;font-size:.8rem;margin-bottom:14px">${moOpts()}</select><div id="wktbl"></div></div></div>
+<div id="bt-annual" style="display:none"><div class="card"><div class="ctitle">ANNUAL P&L</div><select id="anyr" onchange="rAnnual()" style="width:auto;padding:6px 10px;font-size:.8rem;margin-bottom:14px">${[...Array(25)].map((_,i)=>`<option ${i+2026===new Date().getFullYear()?'selected':''}>${i+2026}</option>`).join('')}</select><div id="antbl"></div></div></div>`;
+rBFc();
+}
+function bTab(t,el){document.querySelectorAll('#btabs .tab').forEach(x=>x.classList.remove('a'));el.classList.add('a');['monthly','weekly','annual'].forEach(x=>{const d=ge('bt-'+x);if(d)d.style.display=x===t?'':'none';});if(t==='weekly')rWK();if(t==='annual')rAnnual();}
+function rBFc(){const mk=ge('bmon')?.value||cm();const fc=D.bfc[mk]||{};const txs=D.tx.filter(t=>t.date?.slice(0,7)===mk&&t.type==='e');const el=ge('bfc-table');if(!el)return;let tot=0;let actTot=0;el.innerHTML=D.exp.map(cat=>{const f=fc[cat]||0;const a=txs.filter(t=>t.cat===cat).reduce((s,t)=>s+t.amt,0);const p=f>0?Math.min(Math.round(a/f*100),999):0;const cls=p>=95?'d':p>=70?'w':'';tot+=f;actTot+=a;if(p>=95)setTimeout(()=>notify(`⚠ ${cat} at ${p}% budget!`),100);return`<div class="mb8"><div class="fbt txs mb4"><span>${cat}</span><div class="fb"><span class="mono ${p>=95?'tr2c':p>=70?'to':'tg'}">${fmt(a)}/${fmt(f)}</span><span class="txs" style="margin-left:8px">${f>0?p+'%':''}</span></div></div><div class="fr c2" style="gap:6px;margin:0"><input type="number" value="${f||''}" placeholder="Budget" style="text-align:right;padding:5px 8px;font-size:.8rem" onchange="updFC('${mk}','${cat}',this.value)"><div class="pb" style="margin:0;align-self:center"><div class="pf ${cls}" style="width:${Math.min(p,100)}%"></div></div></div></div>`;}).join('')+`<div class="bs-tot mt8"><span class="ta">Total Budget</span><span class="mono tgo">${fmt(tot)}</span></div><div class="bs-tot"><span class="ta">Total Actual</span><span class="mono ${actTot>tot?'tr2c':'tg'}">${fmt(actTot)}</span></div>`;}
+function updFC(m,cat,v){if(!D.bfc[m])D.bfc[m]={};D.bfc[m][cat]=parseFloat(v)||0;}
+function saveBFC(){sv();notify('Budget saved');rDash();}
+function addExpCatInline(){omo('ADD EXPENSE CATEGORY','<div class="fr"><div><label>Category Name</label><input id="nc"></div></div>',()=>{const n=ge('nc').value.trim();if(!n)return;if(!D.exp.includes(n)){D.exp.push(n);sv();rBFc();updTxForm();}cmo();notify('Added');});}
+function rWK(){const mk=ge('wkmon')?.value||cm();const txs=D.tx.filter(t=>t.date?.slice(0,7)===mk);const d=[{i:0,o:0},{i:0,o:0},{i:0,o:0},{i:0,o:0}];txs.forEach(t=>{const dy=parseInt(t.date.slice(8));const w=dy<=7?0:dy<=14?1:dy<=21?2:3;if(t.type==='i')d[w].i+=t.amt;else if(t.type==='e')d[w].o+=t.amt;});const el=ge('wktbl');if(!el)return;el.innerHTML=`<table class="tbl"><tr><th>Week</th><th class="tar">Inflow</th><th class="tar">Outflow</th><th class="tar">Net</th></tr>${d.map((x,i)=>`<tr><td>${['W1 (1-7)','W2 (8-14)','W3 (15-21)','W4 (22-31)'][i]}</td><td class="tar mono tg">${fmt(x.i)}</td><td class="tar mono tr2c">${fmt(x.o)}</td><td class="tar mono ${x.i-x.o>=0?'tg':'tr2c'}">${fmt(x.i-x.o)}</td></tr>`).join('')}<tr style="font-weight:700"><td>Total</td><td class="tar mono tg">${fmt(d.reduce((s,x)=>s+x.i,0))}</td><td class="tar mono tr2c">${fmt(d.reduce((s,x)=>s+x.o,0))}</td><td class="tar mono">${fmt(d.reduce((s,x)=>s+(x.i-x.o),0))}</td></tr></table>`;}
+function rAnnual(){const yr=ge('anyr')?.value||new Date().getFullYear();const el=ge('antbl');if(!el)return;const months=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];let rows='';let totI=0;let totE=0;months.forEach((m,i)=>{const mk=`${yr}-${String(i+1).padStart(2,'0')}`;if(mk<'2026-05')return;const txs=D.tx.filter(t=>t.date?.slice(0,7)===mk);const inc=txs.filter(t=>t.type==='i').reduce((s,t)=>s+t.amt,0);const exp=txs.filter(t=>t.type==='e').reduce((s,t)=>s+t.amt,0);totI+=inc;totE+=exp;rows+=`<tr><td>${m}</td><td class="tar mono tg">${fmt(inc)}</td><td class="tar mono tr2c">${fmt(exp)}</td><td class="tar mono ${inc-exp>=0?'tg':'tr2c'}">${fmt(inc-exp)}</td></tr>`;});el.innerHTML=`<table class="tbl"><tr><th>Month</th><th class="tar">Income</th><th class="tar">Expense</th><th class="tar">Net</th></tr>${rows}<tr style="font-weight:700"><td>TOTAL ${yr}</td><td class="tar mono tg">${fmt(totI)}</td><td class="tar mono tr2c">${fmt(totE)}</td><td class="tar mono ${totI-totE>=0?'tg':'tr2c'}">${fmt(totI-totE)}</td></tr></table>`;}
+// ── LOANS ──
+function rLoans(){
+const tot=D.loans.reduce((s,l)=>s+(l.out||0),0);const emi=D.loans.reduce((s,l)=>s+(l.emi||0),0);const lgTot=(D.loansGiven||[]).reduce((s,l)=>s+(l.out||0),0);
+ge('sc-loans').innerHTML=`<div class="tabs" id="ltabs"><button class="tab a" onclick="lTab('taken',this)">Loans Taken</button><button class="tab" onclick="lTab('given',this)">Loans Given</button></div>
+<div id="lt-taken"><div class="g2 mb12"><div class="kpi"><div class="kl">Total Outstanding</div><div class="kv rd">${fmt(tot)}</div></div><div class="kpi"><div class="kl">Monthly EMI Burden</div><div class="kv or">${fmt(emi)}</div></div></div><div class="shdr"><h2>LOANS TAKEN</h2><button class="btn bg2 bsm" onclick="addLoan()">+ Loan</button></div>${D.loans.map(l=>`<div class="loan-card"><div class="fbt mb10"><div><div style="font-family:Orbitron,sans-serif;font-size:.68rem;letter-spacing:2px;color:var(--tx2)">${l.n}</div><div class="fb mt4"><span class="badge ${l.type==='formal'?'b-ac':'b-or'}">${l.type}</span>${l.dd>0?`<span class="txs">Due: ${l.dd}th — <b class="${du(l.dd)<=3?'tr2c':du(l.dd)<=7?'to':'tg'}">${du(l.dd)}d</b></span>`:''}</div></div><div class="fb"><button class="btn bxs bg2" onclick="editLoan('${l.id}')">Edit</button><button class="btn bxs bd2" onclick="delLoan('${l.id}')">×</button></div></div><div class="g3"><div><label>Outstanding ₹</label><input type="number" value="${l.out||''}" placeholder="0" style="padding:6px 8px" onchange="updLoan('${l.id}','out',this.value)"></div><div><label>EMI ₹</label><input type="number" value="${l.emi||''}" placeholder="0" style="padding:6px 8px" onchange="updLoan('${l.id}','emi',this.value)"></div><div><label>Due Day</label><input type="number" value="${l.dd||''}" placeholder="5" style="padding:6px 8px" onchange="updLoan('${l.id}','dd',this.value)"></div></div><input type="text" value="${l.notes||''}" placeholder="Notes..." style="margin-top:8px;padding:6px 8px;font-size:.8rem" onchange="updLoan('${l.id}','notes',this.value)"></div>`).join('')+(!D.loans.length?'<div class="empty">No loans taken</div>':'')}</div>
+<div id="lt-given" style="display:none"><div class="kpi mb12"><div class="kl">Total Receivable</div><div class="kv gn">${fmt(lgTot)}</div></div><div class="shdr"><h2>LOANS GIVEN</h2><button class="btn bg2 bsm" onclick="addLoanGiven()">+ Add</button></div>${(D.loansGiven||[]).map(l=>`<div class="loan-card"><div class="fbt mb10"><div><div style="font-family:Orbitron,sans-serif;font-size:.68rem;letter-spacing:2px;color:var(--gn)">${l.n}</div>${l.retDate?`<div class="txs">Expected return: <b class="${du_date(l.retDate)<=7?'to':'tg'}">${l.retDate}</b> (${du_date(l.retDate)} days)</div>`:''}</div><div class="fb"><button class="btn bxs bg2" onclick="editLoanGiven('${l.id}')">Edit</button><button class="btn bxs bg2" onclick="recvLoan('${l.id}')">Received</button><button class="btn bxs bd2" onclick="delLoanGiven('${l.id}')">×</button></div></div><div class="g2"><div><label>Outstanding ₹</label><div class="mono tg" style="padding:8px 0;font-size:1.1rem">${fmt(l.out)}</div></div><div><label>Notes</label><div class="txs">${l.notes||'—'}</div></div></div></div>`).join('')+(!D.loansGiven?.length?'<div class="empty">No loans given — all friends and family settled</div>':'')}</div>`;
+}
+function lTab(t,el){document.querySelectorAll('#ltabs .tab').forEach(x=>x.classList.remove('a'));el.classList.add('a');['taken','given'].forEach(x=>{const d=ge('lt-'+x);if(d)d.style.display=x===t?'':'none';});}
+function du_date(dateStr){if(!dateStr)return 999;const d=new Date(dateStr);const n=new Date();n.setHours(0,0,0,0);return Math.round((d-n)/86400000);}
+function updLoan(id,f,v){const l=D.loans.find(l=>l.id===id);if(!l)return;l[f]=f==='notes'?v:(parseFloat(v)||0);syncLinks();sv();}
+function addLoan(){omo('ADD LOAN TAKEN',`<div class="fr c2"><div><label>Lender Name</label><input id="lln"></div><div><label>Type</label><select id="llt"><option value="formal">Formal</option><option value="informal">Informal</option></select></div></div><div class="fr c3"><div><label>Outstanding ₹</label><input type="number" id="llo"></div><div><label>EMI ₹</label><input type="number" id="lle"></div><div><label>Due Day</label><input type="number" id="lldd"></div></div><div class="fr c2"><div><label>Interest Rate %</label><input type="number" id="llr" step="0.1"></div><div><label>Notes</label><input id="lln2"></div></div>`,()=>{const n=ge('lln').value.trim();if(!n)return;D.loans.push({id:uid(),n,type:ge('llt').value,out:parseFloat(ge('llo').value)||0,emi:parseFloat(ge('lle').value)||0,dd:parseInt(ge('lldd').value)||0,rate:parseFloat(ge('llr').value)||0,notes:ge('lln2').value});syncLinks();sv();rLoans();cmo();notify('Loan added');});}
+function editLoan(id){const l=D.loans.find(l=>l.id===id);if(!l)return;omo('EDIT LOAN',`<div class="fr c2"><div><label>Name</label><input id="lln" value="${l.n}"></div><div><label>Type</label><select id="llt"><option value="formal" ${l.type==='formal'?'selected':''}>Formal</option><option value="informal" ${l.type==='informal'?'selected':''}>Informal</option></select></div></div><div class="fr c3"><div><label>Outstanding</label><input type="number" id="llo" value="${l.out}"></div><div><label>EMI</label><input type="number" id="lle" value="${l.emi}"></div><div><label>Due Day</label><input type="number" id="lldd" value="${l.dd}"></div></div><div class="fr c2"><div><label>Interest %</label><input type="number" id="llr" value="${l.rate||0}" step="0.1"></div><div><label>Notes</label><input id="lln2" value="${l.notes||''}"></div></div>`,()=>{l.n=ge('lln').value.trim();l.type=ge('llt').value;l.out=parseFloat(ge('llo').value)||0;l.emi=parseFloat(ge('lle').value)||0;l.dd=parseInt(ge('lldd').value)||0;l.rate=parseFloat(ge('llr').value)||0;l.notes=ge('lln2').value;syncLinks();sv();rLoans();cmo();notify('Updated');});}
+function delLoan(id){if(!confirm('Delete?'))return;D.loans=D.loans.filter(l=>l.id!==id);syncLinks();sv();rLoans();}
+function addLoanGiven(){omo('ADD LOAN GIVEN',`<div class="fr c2"><div><label>Borrower Name</label><input id="lbn"></div><div><label>Amount Given ₹</label><input type="number" id="lbo"></div></div><div class="fr c2"><div><label>Date Given</label><input type="date" id="lbd" value="${td()}"></div><div><label>Expected Return Date</label><input type="date" id="lbr"></div></div><div class="fr"><div><label>Notes</label><input id="lbnotes" placeholder="Friends and family — no interest"></div></div>`,()=>{const n=ge('lbn').value.trim();if(!n)return;if(!D.loansGiven)D.loansGiven=[];D.loansGiven.push({id:uid(),n,out:parseFloat(ge('lbo').value)||0,dt:ge('lbd').value,retDate:ge('lbr').value,notes:ge('lbnotes').value});syncLinks();sv();rLoans();cmo();notify('Added');});}
+function editLoanGiven(id){const l=(D.loansGiven||[]).find(l=>l.id===id);if(!l)return;omo('EDIT LOAN GIVEN',`<div class="fr c2"><div><label>Name</label><input id="lbn" value="${l.n}"></div><div><label>Outstanding ₹</label><input type="number" id="lbo" value="${l.out}"></div></div><div class="fr c2"><div><label>Date Given</label><input type="date" id="lbd" value="${l.dt||''}"></div><div><label>Expected Return</label><input type="date" id="lbr" value="${l.retDate||''}"></div></div><div class="fr"><div><label>Notes</label><input id="lbnotes" value="${l.notes||''}"></div></div>`,()=>{l.n=ge('lbn').value.trim();l.out=parseFloat(ge('lbo').value)||0;l.dt=ge('lbd').value;l.retDate=ge('lbr').value;l.notes=ge('lbnotes').value;syncLinks();sv();rLoans();cmo();notify('Updated');});}
+function recvLoan(id){const l=(D.loansGiven||[]).find(l=>l.id===id);if(!l)return;omo(`MARK RECEIVED — ${l.n}`,`<div class="card mb12"><div class="fbt"><span>Outstanding</span><span class="mono tg">${fmt(l.out)}</span></div></div><div class="fr"><div><label>Amount Received ₹</label><input type="number" id="recv" value="${l.out}"></div></div><div class="txs mt8" style="color:var(--tx3)">This reduces the Receivable in Balance Sheet. Not treated as income.</div>`,()=>{const amt=parseFloat(ge('recv').value)||0;l.out=Math.max(0,l.out-amt);if(l.out===0)D.loansGiven=D.loansGiven.filter(x=>x.id!==id);syncLinks();sv();rLoans();cmo();notify('Receivable reduced — B/S updated');});}
+function delLoanGiven(id){if(!confirm('Delete?'))return;D.loansGiven=(D.loansGiven||[]).filter(l=>l.id!==id);syncLinks();sv();rLoans();}
+// ── P&L ──
+function rPL(){
+const now=new Date();let yo='';for(let y=2026;y<=2050;y++)yo+=`<option ${y===now.getFullYear()?'selected':''}>${y}</option>`;
+const mnames=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+let mo2='';mnames.forEach((m,i)=>mo2+=`<option value="${String(i+1).padStart(2,'0')}"${i===now.getMonth()?' selected':''}>${m}</option>`);
+ge('sc-pl').innerHTML=`<div class="tabs" id="pltabs"><button class="tab a" onclick="plTab('monthly',this)">Monthly</button><button class="tab" onclick="plTab('annual',this)">Annual</button></div>
+<div id="plt-monthly">
+<div class="shdr"><h2>P&L STATEMENT</h2><div class="fb"><select id="plyr" onchange="calcPL()" style="width:auto;padding:6px 10px">${yo}</select><select id="plmo" onchange="calcPL()" style="width:auto;padding:6px 10px">${mo2}</select></div></div>
+<div class="g2 mb12"><div class="kpi"><div class="kl">Total Income</div><div class="kv gn" id="plinc">₹0</div></div><div class="kpi"><div class="kl">Total Expense</div><div class="kv rd" id="plexp">₹0</div></div></div>
+<div class="kpi mb12" style="padding:20px;text-align:center"><div class="kl">NET SURPLUS / DEFICIT</div><div class="kv mono" id="plnet" style="font-size:1.8rem">₹0</div><div class="txs mt8" id="plsav"></div></div>
+<div class="card mb12"><div class="ctitle">INCOME BREAKDOWN</div><div id="plib"></div></div>
+<div class="card mb12"><div class="ctitle">EXPENSE BREAKDOWN</div><div id="pleb"></div></div>
+<div class="card"><div class="ctitle">LAST 6 MONTHS TREND</div><div id="plmom"></div></div>
+</div>
+<div id="plt-annual" style="display:none">
+<div class="shdr"><h2>ANNUAL P&L</h2><select id="planyr" onchange="calcAnnualPL()" style="width:auto;padding:6px 10px">${yo}</select></div>
+<div id="pl-annual-content"></div>
+</div>`;
+calcPL();
+}
+function plTab(t,el){document.querySelectorAll('#pltabs .tab').forEach(x=>x.classList.remove('a'));el.classList.add('a');['monthly','annual'].forEach(x=>{const d=ge('plt-'+x);if(d)d.style.display=x===t?'':'none';});if(t==='annual')calcAnnualPL();}
+function calcPL(){const yr=ge('plyr')?.value;const mo=ge('plmo')?.value;if(!yr||!mo)return;const mk=`${yr}-${mo}`;if(mk<'2026-05'){ge('plnet').textContent='Select May 2026 or later';return;}const txs=D.tx.filter(t=>t.date?.slice(0,7)===mk);const inc=txs.filter(t=>t.type==='i').reduce((s,t)=>s+t.amt,0);const exp=txs.filter(t=>t.type==='e').reduce((s,t)=>s+t.amt,0);const net=inc-exp;ge('plinc').textContent=fmt(inc);ge('plexp').textContent=fmt(exp);const nel=ge('plnet');nel.textContent=fmt(net);nel.className='kv mono '+(net>=0?'gn':'rd');nel.style.fontSize='1.8rem';const sav=inc>0?Math.round((inc-exp)/inc*100):0;ge('plsav').textContent=`Savings Rate: ${sav}% | Budget Used: ${Object.values(D.bfc[mk]||{}).reduce((s,v)=>s+v,0)>0?Math.round(exp/Object.values(D.bfc[mk]||{}).reduce((s,v)=>s+v,0)*100):0}%`;const ic={};txs.filter(t=>t.type==='i').forEach(t=>ic[t.cat]=(ic[t.cat]||0)+t.amt);ge('plib').innerHTML=Object.entries(ic).length?Object.entries(ic).map(([c,a])=>`<div class="fbt mb8 txm"><span>${c}</span><span class="mono tg">${fmt(a)}</span></div>`).join(''):'<div class="empty">No income recorded</div>';const ec={};txs.filter(t=>t.type==='e').forEach(t=>ec[t.cat]=(ec[t.cat]||0)+t.amt);ge('pleb').innerHTML=Object.entries(ec).length?Object.entries(ec).sort((a,b)=>b[1]-a[1]).map(([c,a])=>`<div class="fbt mb8 txm"><span>${c}</span><span class="mono tr2c">${fmt(a)}</span></div>`).join(''):'<div class="empty">No expenses recorded</div>';const months=[];for(let i=5;i>=0;i--){const d=new Date(parseInt(yr),parseInt(mo)-1-i,1);if(d>=new Date(2026,4,1))months.push(d.toISOString().slice(0,7));}ge('plmom').innerHTML=`<table class="tbl"><tr><th>Month</th><th class="tar">Income</th><th class="tar">Expense</th><th class="tar">Net</th></tr>${months.map(m=>{const mt=D.tx.filter(t=>t.date?.slice(0,7)===m);const mi=mt.filter(t=>t.type==='i').reduce((s,t)=>s+t.amt,0);const me=mt.filter(t=>t.type==='e').reduce((s,t)=>s+t.amt,0);const mn=mi-me;const dl=new Date(m+'-01');return`<tr><td class="txs">${dl.toLocaleDateString('en-IN',{month:'short',year:'2-digit'})}</td><td class="tar mono tg">${fmt(mi)}</td><td class="tar mono tr2c">${fmt(me)}</td><td class="tar mono ${mn>=0?'tg':'tr2c'}">${fmt(mn)}</td></tr>`;}).join('')}</table>`;}
+function calcAnnualPL(){const yr=ge('planyr')?.value||new Date().getFullYear();const el=ge('pl-annual-content');if(!el)return;const txs=D.tx.filter(t=>t.date?.startsWith(yr));const inc=txs.filter(t=>t.type==='i').reduce((s,t)=>s+t.amt,0);const exp=txs.filter(t=>t.type==='e').reduce((s,t)=>s+t.amt,0);const net=inc-exp;const sav=inc>0?Math.round(net/inc*100):0;el.innerHTML=`<div class="g3 mb12"><div class="kpi"><div class="kl">Annual Income</div><div class="kv gn">${fmt(inc)}</div></div><div class="kpi"><div class="kl">Annual Expense</div><div class="kv rd">${fmt(exp)}</div></div><div class="kpi"><div class="kl">Annual Surplus</div><div class="kv ${net>=0?'gn':'rd'}">${fmt(net)}</div></div></div><div class="kpi mb12"><div class="kl">SAVINGS RATE ${yr}</div><div class="kv mono ${sav>=20?'gn':sav>=0?'or':'rd'}" style="font-size:1.8rem">${sav}%</div></div>`+rBudget_Annual_Detail(yr);}
+function rBudget_Annual_Detail(yr){const txs=D.tx.filter(t=>t.date?.startsWith(yr)&&t.type==='e');const ec={};txs.forEach(t=>ec[t.cat]=(ec[t.cat]||0)+t.amt);return`<div class="card"><div class="ctitle">EXPENSE BREAKDOWN ${yr}</div>${Object.entries(ec).sort((a,b)=>b[1]-a[1]).map(([c,a])=>`<div class="fbt mb8 txm"><span>${c}</span><span class="mono tr2c">${fmt(a)}</span></div>`).join('')||'<div class="empty">No expenses</div>'}</div>`;}
+// ── BALANCE SHEET ──
+function rBS(){
+syncLinks();
+const {demat,idxFund,bankCash,lgTotal}=D._synced||{demat:0,idxFund:0,bankCash:0,lgTotal:0};
+const manualAssets=D.assets.reduce((s,a)=>s+(a.v||0),0);
+const ta=manualAssets+demat+idxFund+bankCash+lgTotal;
+const tl=D.loans.reduce((s,l)=>s+(l.out||0),0);const nw=ta-tl;
+ge('sc-bs').innerHTML=`<div class="nw-hero mb12"><div class="nw-label">NET WORTH — REAL TIME</div><div class="nw-val">${fmt(nw)}</div><div class="fbt mt8 txs"><span>Total Assets: <span class="mono tg">${fmt(ta)}</span></span><span>Total Liabilities: <span class="mono tr2c">${fmt(tl)}</span></span></div></div>
+<div class="card mb12"><div class="ctitle" style="color:var(--gn)">ASSETS <button class="btn bg2 bsm" onclick="addAsset()">+ Manual Asset</button></div>
+<div class="bs-row"><div style="flex:1"><div class="txm">Demat Portfolio (Auto)</div><div class="txs"><span class="badge b-ac">AUTO — 101 Steps</span></div></div><span class="mono tgo">${fmt(demat)}</span></div>
+<div class="bs-row"><div style="flex:1"><div class="txm">Index Trading Fund (Auto)</div><div class="txs"><span class="badge b-pu">AUTO — Index Trading</span></div></div><span class="mono pu">${fmt(idxFund)}</span></div>
+<div class="bs-row"><div style="flex:1"><div class="txm">Bank & Cash Accounts (Auto)</div><div class="txs"><span class="badge b-ac">AUTO — Account Master</span></div></div><span class="mono ta">${fmt(bankCash)}</span></div>
+${lgTotal>0?`<div class="bs-row"><div style="flex:1"><div class="txm">Loans Given / Receivable (Auto)</div><div class="txs"><span class="badge b-gn">AUTO — Loans Given</span></div></div><span class="mono tg">${fmt(lgTotal)}</span></div>`:''}
+${D.assets.map(a=>`<div class="bs-row"><div style="flex:1"><div class="txm">${a.n}</div><div class="txs">${a.cat}</div></div><input type="number" value="${a.v||''}" placeholder="0" style="width:120px;text-align:right;padding:6px 8px;font-size:.82rem" onchange="D.assets.find(x=>x.id==='${a.id}').v=parseFloat(this.value)||0;syncLinks();sv();updateBSTotals()"><div class="fb" style="margin-left:6px"><button class="btn bxs bg2" onclick="editAsset('${a.id}')">Edit</button><button class="btn bxs bd2" onclick="delAsset('${a.id}')">×</button></div></div>`).join('')}
+<div class="bs-tot"><span class="ta">Total Assets</span><span class="tg mono" id="bs-ta">${fmt(ta)}</span></div>
+</div>
+<div class="card"><div class="ctitle" style="color:var(--rd)">LIABILITIES (Auto — from Loans Taken)</div>
+${D.loans.filter(l=>l.out>0).map(l=>`<div class="bs-row"><div style="flex:1"><div class="txm">${l.n}</div><div class="txs"><span class="badge ${l.type==='formal'?'b-ac':'b-or'}">${l.type}</span></div></div><span class="mono tr2c">${fmt(l.out)}</span></div>`).join('')||'<div class="empty txs">No outstanding loans</div>'}
+<div class="bs-tot"><span class="tr2c">Total Liabilities</span><span class="tr2c mono">${fmt(tl)}</span></div>
+</div>`;ge('tnw').textContent='NW: '+fmt(nw);}
+function updateBSTotals(){syncLinks();const {demat,idxFund,bankCash,lgTotal}=D._synced||{};const ta=(D.assets.reduce((s,a)=>s+(a.v||0),0))+demat+idxFund+bankCash+lgTotal;const tl=D.loans.reduce((s,l)=>s+(l.out||0),0);const el=ge('bs-ta');if(el)el.textContent=fmt(ta);ge('tnw').textContent='NW: '+fmt(ta-tl);}
+function addAsset(){omo('ADD MANUAL ASSET',`<div class="fr c2"><div><label>Name</label><input id="an"></div><div><label>Category</label><select id="ac">${['Property','Gold','Jewellery','PF','e-NPS','FD','Other'].map(c=>`<option>${c}</option>`).join('')}</select></div></div><div class="fr"><div><label>Current Value ₹</label><input type="number" id="av"></div></div>`,()=>{const n=ge('an').value.trim();if(!n)return;D.assets.push({id:uid(),n,cat:ge('ac').value,v:parseFloat(ge('av').value)||0});sv();rBS();cmo();notify('Added');});}
+function editAsset(id){const a=D.assets.find(a=>a.id===id);if(!a)return;omo('EDIT ASSET',`<div class="fr c2"><div><label>Name</label><input id="an" value="${a.n}"></div><div><label>Category</label><select id="ac">${['Property','Gold','Jewellery','PF','e-NPS','FD','Other'].map(c=>`<option ${c===a.cat?'selected':''}>${c}</option>`).join('')}</select></div></div><div class="fr"><div><label>Value ₹</label><input type="number" id="av" value="${a.v}"></div></div>`,()=>{a.n=ge('an').value.trim();a.cat=ge('ac').value;a.v=parseFloat(ge('av').value)||0;sv();rBS();cmo();notify('Updated');});}
+function delAsset(id){if(!confirm('Delete?'))return;D.assets=D.assets.filter(a=>a.id!==id);sv();rBS();}
+// ── SETTINGS ──
+function rSet(){
+ge('sc-set').innerHTML=`<div class="tabs" id="settabs"><button class="tab a" onclick="setTab('profile',this)">Profile</button><button class="tab" onclick="setTab('accounts',this)">Accounts</button><button class="tab" onclick="setTab('security',this)">Security</button><button class="tab" onclick="setTab('s101',this)">101 Steps</button><button class="tab" onclick="setTab('incsrc',this)">Income</button><button class="tab" onclick="setTab('expcats',this)">Expenses</button><button class="tab" onclick="setTab('quotes',this)">Quotes</button><button class="tab" onclick="setTab('data',this)">Data</button></div>
+<div id="set-profile"><div class="card"><div class="ctitle">YOUR PROFILE</div><div class="fr c2"><div><label>Full Name</label><input id="pname" value="${D.profile?.name||''}"></div><div><label>Date of Birth</label><input type="date" id="pdob" value="${D.profile?.dob||''}"></div></div><button class="btn bp" onclick="saveProfile()">Save Profile</button></div></div>
+<div id="set-accounts" style="display:none"><div class="card"><div class="ctitle">ACCOUNT MASTER <button class="btn bg2 bsm" onclick="addAccount()">+ Account</button></div>${(D.accounts||[]).map(a=>`<div class="bs-row"><div style="flex:1"><div class="txm">${a.n}</div><div class="txs">${a.type} — Opening Balance: ${fmt(a.ob||0)}</div></div><div class="fb"><button class="btn bxs bg2" onclick="editAccount('${a.id}')">Edit</button><button class="btn bxs bd2" onclick="delAccount('${a.id}')">×</button></div></div>`).join('')||'<div class="empty">No accounts</div>'}</div></div>
+<div id="set-security" style="display:none"><div class="card"><div class="ctitle">CHANGE PASSWORD</div><div class="fr"><div><label>New Password</label><input type="password" id="npwd" placeholder="Min 4 characters"></div></div><button class="btn bp" onclick="chgPwd()">Change Password</button></div></div>
+<div id="set-s101" style="display:none"><div class="card"><div class="ctitle">101 STEPS CONFIGURATION</div><div class="fr c2"><div><label>Start Capital per Demat ₹</label><input type="number" id="s101cap" value="${D.s101.cap||100000}"></div><div><label>Multiplier % (12.5 = 12.5%)</label><input type="number" id="s101mult" step="0.1" value="${D.s101.mult||12.5}"></div></div><div class="fr c2"><div><label>Global Tax Rate % (per step overridable)</label><input type="number" id="s101tax" step="0.1" value="${D.s101.gtax||0}"></div><div><label>Current Active Step</label><input type="number" id="s101cur" min="1" max="101" value="${D.s101.cur||1}"></div></div><div class="fr c2"><div><label>Index Trading Capital ₹</label><input type="number" id="s101idx" value="${D.idx?.cap||25000}"></div></div><button class="btn bgd wf" onclick="saveS101Settings()">Save & Regenerate 101 Steps</button></div></div>
+<div id="set-incsrc" style="display:none"><div class="card"><div class="ctitle">INCOME SOURCES <button class="btn bg2 bsm" onclick="addIncSrc()">+ Add</button></div>${D.inc.map((s,i)=>`<div class="fbt mb8 txm"><span>${s}</span><div class="fb"><button class="btn bxs bg2" onclick="editIncSrc(${i})">Edit</button><button class="btn bxs bd2" onclick="delIncSrc(${i})">×</button></div></div>`).join('')}</div></div>
+<div id="set-expcats" style="display:none"><div class="card"><div class="ctitle">EXPENSE CATEGORIES <button class="btn bg2 bsm" onclick="addExpCat()">+ Add</button></div>${D.exp.map((c,i)=>`<div class="fbt mb8 txm"><span>${c}</span><div class="fb"><button class="btn bxs bg2" onclick="editExpCat(${i})">Edit</button><button class="btn bxs bd2" onclick="delExpCat(${i})">×</button></div></div>`).join('')}</div></div>
+<div id="set-quotes" style="display:none"><div class="card"><div class="ctitle">DAILY QUOTES <button class="btn bg2 bsm" onclick="addQuote()">+ Add</button></div><div class="txs mb12" style="color:var(--tx3)">These rotate on the Dashboard. Write from your soul — spiritual, grounding, yours.</div>${(D.quotes||[]).map((q,i)=>`<div class="fbt mb8" style="gap:10px"><span class="txm" style="flex:1;font-style:italic">"${q}"</span><div class="fb"><button class="btn bxs bg2" onclick="editQuote(${i})">Edit</button><button class="btn bxs bd2" onclick="delQuote(${i})">×</button></div></div>`).join('')}</div></div>
+<div id="set-data" style="display:none"><div class="card mb12"><div class="ctitle">DATA MANAGEMENT</div><div class="fb mb12"><button class="btn bs2" onclick="expData()">📥 Export JSON Backup</button><button class="btn bg2" onclick="ge('impf').click()">📤 Import JSON</button><input type="file" id="impf" accept=".json" style="display:none" onchange="impData(event)"></div></div><div class="card" style="border-color:var(--rd)"><div class="ctitle" style="color:var(--rd)">DANGER ZONE — RESET ALL DATA</div><div class="txs mb12" style="color:var(--tx3)">This will permanently delete ALL your data. Cannot be undone.</div><button class="btn bd2" onclick="resetConfirm()">🗑 Reset All Data</button></div></div>`;
+}
+function setTab(t,el){document.querySelectorAll('#settabs .tab').forEach(x=>x.classList.remove('a'));el.classList.add('a');['profile','accounts','security','s101','incsrc','expcats','quotes','data'].forEach(x=>{const d=ge('set-'+x);if(d)d.style.display=x===t?'':'none';});}
+function saveProfile(){if(!D.profile)D.profile={};D.profile.name=ge('pname').value.trim();D.profile.dob=ge('pdob').value;sv();notify('Profile saved');}
+function addAccount(){omo('ADD ACCOUNT',`<div class="fr c2"><div><label>Account Name</label><input id="acn" placeholder="HDFC Savings"></div><div><label>Type</label><select id="actype"><option>Savings</option><option>Current</option><option>Cash</option><option>FD</option><option>Wallet</option></select></div></div><div class="fr"><div><label>Opening Balance ₹ (as on May 2026)</label><input type="number" id="acob"></div></div>`,()=>{const n=ge('acn').value.trim();if(!n)return;if(!D.accounts)D.accounts=[];D.accounts.push({id:uid(),n,type:ge('actype').value,ob:parseFloat(ge('acob').value)||0});sv();rSet();cmo();notify('Account added');});}
+function editAccount(id){const a=(D.accounts||[]).find(a=>a.id===id);if(!a)return;omo('EDIT ACCOUNT',`<div class="fr c2"><div><label>Name</label><input id="acn" value="${a.n}"></div><div><label>Type</label><select id="actype">${['Savings','Current','Cash','FD','Wallet'].map(t=>`<option ${t===a.type?'selected':''}>${t}</option>`).join('')}</select></div></div><div class="fr"><div><label>Opening Balance ₹</label><input type="number" id="acob" value="${a.ob||0}"></div></div>`,()=>{a.n=ge('acn').value.trim();a.type=ge('actype').value;a.ob=parseFloat(ge('acob').value)||0;sv();syncLinks();rSet();cmo();notify('Updated');});}
+function delAccount(id){if(!confirm('Delete account?'))return;D.accounts=(D.accounts||[]).filter(a=>a.id!==id);syncLinks();sv();rSet();}
+function chgPwd(){const p=ge('npwd').value;if(!p||p.length<4)return notify('Min 4 characters',true);D.pwd=p;sv();notify('Password changed');}
+function saveS101Settings(){D.s101.cap=parseFloat(ge('s101cap').value)||100000;D.s101.mult=parseFloat(ge('s101mult').value)||12.5;D.s101.gtax=parseFloat(ge('s101tax').value)||0;D.s101.cur=parseInt(ge('s101cur').value)||1;if(!D.idx)D.idx={cap:25000,log:[]};D.idx.cap=parseFloat(ge('s101idx').value)||25000;genSteps();syncLinks();sv();notify('Settings saved — 101 Steps regenerated');}
+function addIncSrc(){omo('ADD INCOME SOURCE','<div class="fr"><div><label>Source Name</label><input id="isn"></div></div>',()=>{const n=ge('isn').value.trim();if(!n)return;D.inc.push(n);sv();rSet();cmo();notify('Added');});}
+function editIncSrc(i){omo('EDIT INCOME SOURCE',`<div class="fr"><div><label>Source Name</label><input id="isn" value="${D.inc[i]}"></div></div>`,()=>{D.inc[i]=ge('isn').value.trim();sv();rSet();cmo();notify('Updated');});}
+function delIncSrc(i){if(!confirm('Delete?'))return;D.inc.splice(i,1);sv();rSet();}
+function addExpCat(){omo('ADD EXPENSE CATEGORY','<div class="fr"><div><label>Category Name</label><input id="ecn"></div></div>',()=>{const n=ge('ecn').value.trim();if(!n)return;D.exp.push(n);sv();rSet();cmo();notify('Added');});}
+function editExpCat(i){omo('EDIT CATEGORY',`<div class="fr"><div><label>Name</label><input id="ecn" value="${D.exp[i]}"></div></div>`,()=>{D.exp[i]=ge('ecn').value.trim();sv();rSet();cmo();notify('Updated');});}
+function delExpCat(i){if(!confirm('Delete?'))return;D.exp.splice(i,1);sv();rSet();}
+function addQuote(){omo('ADD QUOTE','<div class="fr"><div><label>Your Quote (from the soul)</label><textarea id="qtext" rows="3" style="resize:none" placeholder="Write from your truth..."></textarea></div></div>',()=>{const q=ge('qtext').value.trim();if(!q)return;if(!D.quotes)D.quotes=[];D.quotes.push(q);sv();rSet();cmo();notify('Quote added');});}
+function editQuote(i){omo('EDIT QUOTE',`<div class="fr"><div><label>Quote</label><textarea id="qtext" rows="3" style="resize:none">${D.quotes[i]}</textarea></div></div>`,()=>{D.quotes[i]=ge('qtext').value.trim();sv();rSet();cmo();notify('Updated');});}
+function delQuote(i){if(!confirm('Delete?'))return;D.quotes.splice(i,1);sv();rSet();}
+function expData(){const b=new Blob([JSON.stringify(D,null,2)],{type:'application/json'});const a=document.createElement('a');a.href=URL.createObjectURL(b);a.download='ssjarvis_backup_'+td()+'.json';a.click();notify('Exported');}
+function impData(e){const f=e.target.files[0];if(!f)return;const r=new FileReader();r.onload=ev=>{try{D=JSON.parse(ev.target.result);sv();location.reload();}catch{notify('Invalid file',true);}};r.readAsText(f);}
+function resetConfirm(){omo('CONFIRM RESET — PERMANENT',`<div class="card" style="border-color:var(--rd);margin-bottom:12px"><div style="color:var(--rd);font-weight:700;margin-bottom:8px">⚠ ALL DATA WILL BE DELETED PERMANENTLY</div><div class="txs">This cannot be undone. All transactions, trades, goals, settings — everything will be gone.</div></div><div class="fr"><div><label>Enter your password to confirm</label><input type="password" id="rdpwd"></div></div><div class="fr"><div><label>Type RESET in capital letters</label><input id="rdword" placeholder="RESET"></div></div>`,()=>{if(ge('rdpwd').value!==D.pwd)return notify('Wrong password',true);if(ge('rdword').value!=='RESET')return notify('Type RESET in capitals',true);localStorage.removeItem('ssjv3');location.reload();});}
+// ── BOOT ──
+ld();ge('pi').focus();
 </script>
 </body>
 </html>
